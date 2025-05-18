@@ -9,6 +9,7 @@ const SubcontractorPreferencesRoutes = () => {
     <Routes>
       <Route element={<PreferencesLayout />}>
         <Route index element={<PreferencesPage />} />
+        <Route path="edit" element={<PreferencesPage />} />
       </Route>
     </Routes>
   );

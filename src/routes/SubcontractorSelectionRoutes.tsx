@@ -3,6 +3,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import SelectionCriteriaLayout from '@/pages/subcontractor/SelectionCriteriaLayout';
 import PreferencesOverview from '@/pages/subcontractor/selection/PreferencesOverview';
+import PreferencesPage from '@/pages/subcontractor/PreferencesPage';
 import PrequalificationsOverview from '@/pages/subcontractor/selection/PrequalificationsOverview';
 import PrequalificationsForm from '@/pages/subcontractor/selection/PrequalificationsForm';
 import ReferencesOverview from '@/pages/subcontractor/selection/ReferencesOverview';
@@ -14,6 +15,7 @@ const SubcontractorSelectionRoutes: React.FC = () => {
     <Routes>
       <Route path="/" element={<SelectionCriteriaLayout />}>
         <Route path="preferences" element={<PreferencesOverview />} />
+        <Route path="preferences/edit" element={<PreferencesPage />} />
         <Route path="prequalifications" element={<PrequalificationsOverview />} />
         <Route path="prequalifications/edit" element={<PrequalificationsForm />} />
         <Route path="references" element={<ReferencesOverview />} />
