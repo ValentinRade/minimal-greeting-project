@@ -30,7 +30,7 @@ const CompanyUsers = () => {
     try {
       setLoading(true);
       
-      // Korrigierte Abfrage - Beachte die Änderungen im JOIN
+      // Query structure corrected to properly join with profiles and auth_users tables
       const { data, error } = await supabase
         .from('company_users')
         .select(`
@@ -40,13 +40,13 @@ const CompanyUsers = () => {
           role,
           invited_at,
           accepted_at,
-          profiles:user_id(
+          profiles (
             id,
             first_name,
             last_name,
             phone
           ),
-          auth_users:user_id(
+          auth.users (
             email
           )
         `)
@@ -54,14 +54,16 @@ const CompanyUsers = () => {
       
       if (error) throw error;
       
-      // Formatierung der Benutzerdaten für die Anzeige
+      console.log('Raw response:', data);
+      
+      // Format the data for display in the UI
       const formattedUsers = data?.map(user => ({
         ...user,
-        email: user.auth_users?.email,
-        profile: user.profiles
+        email: user.users?.email || '',
+        profile: user.profiles || []
       })) || [];
       
-      console.log('Fetched users:', formattedUsers);
+      console.log('Formatted users:', formattedUsers);
       setUsers(formattedUsers);
     } catch (error: any) {
       console.error('Error fetching company users:', error.message);
@@ -167,7 +169,11 @@ const CompanyUsers = () => {
                 </TableHeader>
                 <TableBody>
                   {users.map((userItem) => {
-                    const profile = userItem.profile?.[0] || {};
+                    // Get the first profile or use empty object as fallback
+                    const profile = Array.isArray(userItem.profile) && userItem.profile.length > 0 
+                      ? userItem.profile[0] 
+                      : userItem.profile || {};
+                      
                     const email = userItem.email || '';
                     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
                     
