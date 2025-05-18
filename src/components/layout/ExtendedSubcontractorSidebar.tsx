@@ -38,7 +38,7 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
               alt="Logo"
               className="h-8 w-8 mr-2"
             />
-            Transportflow
+            {t('common.appName', 'Transportflow')}
           </SheetTitle>
         </SheetHeader>
         <div className="px-3 py-4">
@@ -55,28 +55,28 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
                 <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
-                <span>Dashboard</span>
+                <span>{t('dashboard.overview', 'Dashboard')}</span>
               </NavLink>
               <NavLink
                 to="/dashboard/subcontractor/preferences"
                 className={navLinkClass}
               >
                 <Heart className="h-5 w-5" />
-                <span>{t('profile.preferences')}</span>
+                <span>{t('dashboard.preferences', 'Präferenzen')}</span>
               </NavLink>
               <NavLink
                 to="/dashboard/subcontractor/selection"
                 className={navLinkClass}
               >
                 <FileText className="h-5 w-5" />
-                <span>{t('selection.title')}</span>
+                <span>{t('selection.title', 'Auswahlkriterien')}</span>
               </NavLink>
               <NavLink
                 to="/dashboard/subcontractor/vehicles"
                 className={navLinkClass}
               >
                 <Truck className="h-5 w-5" />
-                <span>{t('vehicles.title')}</span>
+                <span>{t('vehicles.title', 'Fahrzeuge')}</span>
               </NavLink>
             </nav>
           </div>
@@ -91,7 +91,7 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
                 className={navLinkClass}
               >
                 <Settings className="h-5 w-5" />
-                <span>{t('profile.settings')}</span>
+                <span>{t('profile.settings', 'Einstellungen')}</span>
               </NavLink>
             </nav>
           </div>

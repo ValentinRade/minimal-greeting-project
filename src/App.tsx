@@ -68,7 +68,6 @@ const App = () => (
                 <Route path="users" element={<CompanyUsers />} />
                 <Route path="invitations" element={<CompanyInvitations />} />
                 <Route path="roles" element={<RolesInfo />} />
-                {/* The index route now handled by SettingsLayout component directly */}
               </Route>
               
               {/* Subcontractor routes */}
@@ -96,7 +95,6 @@ const App = () => (
                 <Route path="users" element={<CompanyUsers />} />
                 <Route path="invitations" element={<CompanyInvitations />} />
                 <Route path="roles" element={<RolesInfo />} />
-                {/* The index route now handled by SettingsLayout component directly */}
               </Route>
               
               {/* Add the selection routes */}
