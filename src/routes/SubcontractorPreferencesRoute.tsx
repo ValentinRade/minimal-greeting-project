@@ -5,7 +5,9 @@ import PreferencesPage from '@/pages/subcontractor/PreferencesPage';
 
 const SubcontractorPreferencesRoute: React.FC = () => {
   return (
-    <PreferencesPage />
+    <AppLayout>
+      <PreferencesPage />
+    </AppLayout>
   );
 };
 
