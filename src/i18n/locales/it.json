@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Benvenuto",
@@ -234,7 +235,13 @@
   "preferences": {
     "title": "Preferenze",
     "overview": "Panoramica Preferenze",
-    "edit": "Modifica Preferenze"
+    "edit": "Modifica Preferenze",
+    "formTitle": "Preferenze Aziendali",
+    "formDescription": "Condividi le tue preferenze con noi per aiutarci a trovare incarichi adatti a te.",
+    "saveSuccess": "Preferenze salvate con successo",
+    "updateSuccess": "Preferenze aggiornate con successo",
+    "saveError": "Errore nel salvare le preferenze",
+    "loadError": "Errore nel caricare le preferenze"
   },
   "references": {
     "title": "Referenze",
@@ -284,6 +291,18 @@
     "no": "No",
     "actions": "Azioni",
     "error": "Errore",
-    "noCompanyId": "Nessun ID azienda trovato"
+    "noCompanyId": "Nessun ID azienda trovato",
+    "appName": "CARRINEX",
+    "loading": "Caricamento...",
+    "submit": "Invia",
+    "confirmDelete": "Sei sicuro di voler eliminare questo elemento?",
+    "success": "Successo",
+    "required": "Obbligatorio",
+    "optional": "Opzionale",
+    "search": "Cerca...",
+    "noResults": "Nessun risultato trovato",
+    "show": "Mostra",
+    "hide": "Nascondi",
+    "close": "Chiudi"
   }
 }

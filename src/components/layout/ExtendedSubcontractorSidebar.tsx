@@ -62,14 +62,14 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
                 className={navLinkClass}
               >
                 <FileText className="h-5 w-5" />
-                <span>{t('selection.title', 'Auswahlkriterien')}</span>
+                <span>{t('selection.title', 'Selection Criteria')}</span>
               </NavLink>
               <NavLink
                 to="/dashboard/subcontractor/vehicles"
                 className={navLinkClass}
               >
                 <Truck className="h-5 w-5" />
-                <span>{t('vehicles.title', 'Fahrzeuge')}</span>
+                <span>{t('vehicles.title', 'Vehicles')}</span>
               </NavLink>
             </nav>
           </div>
@@ -84,7 +84,7 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
                 className={navLinkClass}
               >
                 <Settings className="h-5 w-5" />
-                <span>{t('profile.settings', 'Einstellungen')}</span>
+                <span>{t('profile.settings', 'Settings')}</span>
               </NavLink>
             </nav>
           </div>

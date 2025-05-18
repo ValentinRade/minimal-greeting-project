@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Bun venit",
@@ -234,7 +235,13 @@
   "preferences": {
     "title": "Preferințe",
     "overview": "Prezentare generală a Preferințelor",
-    "edit": "Editare Preferințe"
+    "edit": "Editare Preferințe",
+    "formTitle": "Preferințe Companie",
+    "formDescription": "Vă rugăm să împărtășiți preferințele dvs. cu noi pentru a vă putea potrivi cu sarcini adecvate.",
+    "saveSuccess": "Preferințele au fost salvate cu succes",
+    "updateSuccess": "Preferințele au fost actualizate cu succes",
+    "saveError": "Eroare la salvarea preferințelor",
+    "loadError": "Eroare la încărcarea preferințelor"
   },
   "references": {
     "title": "Referințe",
@@ -284,6 +291,18 @@
     "no": "Nu",
     "actions": "Acțiuni",
     "error": "Eroare",
-    "noCompanyId": "Nu s-a găsit ID-ul companiei"
+    "noCompanyId": "Nu s-a găsit ID-ul companiei",
+    "appName": "CARRINEX",
+    "loading": "Se încarcă...",
+    "submit": "Trimiteți",
+    "confirmDelete": "Sunteți sigur că doriți să ștergeți acest element?",
+    "success": "Succes",
+    "required": "Obligatoriu",
+    "optional": "Opțional",
+    "search": "Căutare...",
+    "noResults": "Nu s-au găsit rezultate",
+    "show": "Afișează",
+    "hide": "Ascunde",
+    "close": "Închide"
   }
 }

@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Hoş geldiniz",
@@ -183,7 +184,7 @@
     "financeManager": "Finans Müdürü",
     "employee": "Çalışan",
     "driver": "Sürücü",
-    "companyAdminDesc": "Şirket ayarlarını ve kullanıcılar��nı yönetmek için tam erişime sahip",
+    "companyAdminDesc": "Şirket ayarlarını ve kullanıcıları yönetmek için tam erişime sahip",
     "logisticsManagerDesc": "Lojistik operasyonlarını ve görevleri yönetebilir",
     "financeManagerDesc": "Finansal operasyonları ve raporları yönetebilir",
     "employeeDesc": "Atanan görevleri gerçekleştirmek için temel erişime sahip",
@@ -258,7 +259,13 @@
   "preferences": {
     "title": "Tercihler",
     "overview": "Tercihler Genel Bakış",
-    "edit": "Tercihleri Düzenle"
+    "edit": "Tercihleri Düzenle",
+    "formTitle": "Şirket Tercihleri",
+    "formDescription": "Lütfen size uygun görevler bulabilmemiz için tercihlerinizi bizimle paylaşın.",
+    "saveSuccess": "Tercihler başarıyla kaydedildi",
+    "updateSuccess": "Tercihler başarıyla güncellendi",
+    "saveError": "Tercihleri kaydetme hatası",
+    "loadError": "Tercihleri yükleme hatası"
   },
   "references": {
     "title": "Referanslar",
@@ -308,6 +315,18 @@
     "no": "Hayır",
     "actions": "İşlemler",
     "error": "Hata",
-    "noCompanyId": "Şirket ID'si bulunamadı"
+    "noCompanyId": "Şirket ID'si bulunamadı",
+    "appName": "CARRINEX",
+    "loading": "Yükleniyor...",
+    "submit": "Gönder",
+    "confirmDelete": "Bu öğeyi silmek istediğinizden emin misiniz?",
+    "success": "Başarı",
+    "required": "Zorunlu",
+    "optional": "İsteğe bağlı",
+    "search": "Ara...",
+    "noResults": "Sonuç bulunamadı",
+    "show": "Göster",
+    "hide": "Gizle",
+    "close": "Kapat"
   }
 }

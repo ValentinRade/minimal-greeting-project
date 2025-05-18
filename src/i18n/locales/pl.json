@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Witamy",
@@ -234,7 +235,13 @@
   "preferences": {
     "title": "Preferencje",
     "overview": "Przegląd Preferencji",
-    "edit": "Edytuj Preferencje"
+    "edit": "Edytuj Preferencje",
+    "formTitle": "Preferencje Firmy",
+    "formDescription": "Prosimy o udostępnienie swoich preferencji, abyśmy mogli dopasować Cię do odpowiednich zleceń.",
+    "saveSuccess": "Preferencje zapisane pomyślnie",
+    "updateSuccess": "Preferencje zaktualizowane pomyślnie",
+    "saveError": "Błąd zapisywania preferencji",
+    "loadError": "Błąd ładowania preferencji"
   },
   "ranking": {
     "title": "Ranking",
@@ -284,6 +291,18 @@
     "no": "Nie",
     "actions": "Akcje",
     "error": "Błąd",
-    "noCompanyId": "Nie znaleziono ID firmy"
+    "noCompanyId": "Nie znaleziono ID firmy",
+    "appName": "CARRINEX",
+    "loading": "Ładowanie...",
+    "submit": "Wyślij",
+    "confirmDelete": "Czy na pewno chcesz usunąć ten element?",
+    "success": "Sukces",
+    "required": "Wymagane",
+    "optional": "Opcjonalne",
+    "search": "Szukaj...",
+    "noResults": "Nie znaleziono wyników",
+    "show": "Pokaż",
+    "hide": "Ukryj",
+    "close": "Zamknij"
   }
 }
