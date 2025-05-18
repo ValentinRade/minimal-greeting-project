@@ -23,7 +23,6 @@ interface CompanyInvitation {
   accepted_at: string | null;
   expires_at: string;
   token: string;
-  invited_by_email?: string;
 }
 
 const CompanyInvitationsContainer = () => {
@@ -51,7 +50,7 @@ const CompanyInvitationsContainer = () => {
       
       console.log('Fetching invitations for company:', company.id);
       
-      // Fetch the invitations data with proper RLS policies in place
+      // Fetch invitations using RLS policies without joining with auth.users
       const { data: invitationsData, error } = await supabase
         .from('company_invitations')
         .select('*')
@@ -71,16 +70,8 @@ const CompanyInvitationsContainer = () => {
         return;
       }
       
-      // Format invitations for display - using the email field directly
-      const formattedInvitations = invitationsData.map(invitation => ({
-        ...invitation,
-        // We'll display the invitee's email as we don't have direct access to auth.users
-        invited_by_email: invitation.email 
-      } as CompanyInvitation));
-      
-      console.log('Formatted invitations:', formattedInvitations);
-      
-      setInvitations(formattedInvitations);
+      // Simply use the data as is - no need to join with user table
+      setInvitations(invitationsData);
     } catch (error: any) {
       console.error('Error in fetchInvitations:', error);
       toast({

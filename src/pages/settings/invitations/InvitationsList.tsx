@@ -31,7 +31,6 @@ interface CompanyInvitation {
   accepted_at: string | null;
   expires_at: string;
   token: string;
-  invited_by_email?: string;
 }
 
 interface InvitationsListProps {
