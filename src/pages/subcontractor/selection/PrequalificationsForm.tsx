@@ -49,6 +49,7 @@ const PrequalificationsForm: React.FC = () => {
     if (!company?.id) return;
     
     try {
+      // Using the proper table name from the newly created database table
       const { error } = await supabase
         .from('subcontractor_prequalifications')
         .upsert({

@@ -276,6 +276,74 @@ export type Database = {
           },
         ]
       }
+      subcontractor_prequalifications: {
+        Row: {
+          adr_1000_points: boolean
+          adr_1000_points_document: string | null
+          adr_certificate: boolean
+          adr_certificate_document: string | null
+          bna_registration: boolean
+          bna_registration_document: string | null
+          company_id: string
+          created_at: string
+          eu_license: boolean
+          eu_license_document: string | null
+          id: string
+          other_qualification: boolean
+          other_qualification_document: string | null
+          other_qualification_name: string | null
+          pq_kep: boolean
+          pq_kep_document: string | null
+          updated_at: string
+        }
+        Insert: {
+          adr_1000_points?: boolean
+          adr_1000_points_document?: string | null
+          adr_certificate?: boolean
+          adr_certificate_document?: string | null
+          bna_registration?: boolean
+          bna_registration_document?: string | null
+          company_id: string
+          created_at?: string
+          eu_license?: boolean
+          eu_license_document?: string | null
+          id?: string
+          other_qualification?: boolean
+          other_qualification_document?: string | null
+          other_qualification_name?: string | null
+          pq_kep?: boolean
+          pq_kep_document?: string | null
+          updated_at?: string
+        }
+        Update: {
+          adr_1000_points?: boolean
+          adr_1000_points_document?: string | null
+          adr_certificate?: boolean
+          adr_certificate_document?: string | null
+          bna_registration?: boolean
+          bna_registration_document?: string | null
+          company_id?: string
+          created_at?: string
+          eu_license?: boolean
+          eu_license_document?: string | null
+          id?: string
+          other_qualification?: boolean
+          other_qualification_document?: string | null
+          other_qualification_name?: string | null
+          pq_kep?: boolean
+          pq_kep_document?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_prequalifications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
