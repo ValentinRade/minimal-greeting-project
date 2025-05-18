@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   const { t } = useTranslation();
   const location = useLocation();
   
-  // Überprüfen, ob der Benutzer authentifiziert ist
+  // Checking if the user is authenticated
   if (loading) {
     return <div className="flex min-h-screen items-center justify-center">{t('loading')}</div>;
   }
@@ -23,7 +23,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
     return <Navigate to="/auth" />;
   }
   
-  // Überprüfen, ob die Unternehmensregistrierung erforderlich ist
+  // Check if company registration is required
   if (requireCompany && !hasCompany && location.pathname !== '/create-company') {
     return <Navigate to="/create-company" />;
   }
