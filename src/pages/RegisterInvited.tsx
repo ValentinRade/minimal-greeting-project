@@ -109,18 +109,24 @@ const RegisterInvited = () => {
       if (error) throw error;
       
       if (data.user) {
-        // 2. Update the profile with additional information
+        console.log("User created successfully:", data.user.id);
+        
+        // 2. Create profile entry manually since trigger might not work immediately
         const { error: profileError } = await supabase
           .from('profiles')
-          .update({
+          .upsert({
+            id: data.user.id,
             first_name: firstName,
             last_name: lastName,
             phone: phone,
             language: language
-          })
-          .eq('id', data.user.id);
+          });
 
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.error("Profile creation error:", profileError);
+          throw profileError;
+        }
+        console.log("Profile created successfully");
         
         // 3. Create a company_users entry
         const { error: companyUserError } = await supabase
@@ -134,7 +140,11 @@ const RegisterInvited = () => {
             accepted_at: new Date().toISOString()
           });
           
-        if (companyUserError) throw companyUserError;
+        if (companyUserError) {
+          console.error("Company user creation error:", companyUserError);
+          throw companyUserError;
+        }
+        console.log("User added to company successfully");
         
         // 4. Update the invitation as accepted
         const { error: invitationError } = await supabase
@@ -144,12 +154,29 @@ const RegisterInvited = () => {
           })
           .eq('id', invitation.id);
           
-        if (invitationError) throw invitationError;
+        if (invitationError) {
+          console.error("Invitation update error:", invitationError);
+          throw invitationError;
+        }
+        console.log("Invitation marked as accepted");
         
         toast({
           title: t('auth.registrationSuccess'),
           description: t('invitation.accountCreated'),
         });
+        
+        // 5. Log in the user automatically
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        
+        if (signInError) {
+          console.error("Auto-login error:", signInError);
+          // Don't throw, just navigate to login page instead
+          navigate('/auth');
+          return;
+        }
         
         navigate('/');
       }
