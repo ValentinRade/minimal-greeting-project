@@ -73,12 +73,26 @@
     "returnHome": "Return Home"
   },
   "auth": {
+    "welcome": "Welcome",
+    "signInOrCreate": "Sign in or create a new account",
+    "login": "Login",
+    "register": "Register",
     "email": "Email",
     "password": "Password",
     "firstName": "First Name",
     "lastName": "Last Name",
     "phone": "Phone",
-    "language": "Language"
+    "language": "Language",
+    "signingIn": "Signing in...",
+    "signIn": "Sign In",
+    "creatingAccount": "Creating account...",
+    "createAccount": "Create Account",
+    "registrationSuccess": "Registration Successful",
+    "accountCreated": "Your account has been created.",
+    "registrationFailed": "Registration Failed",
+    "loginSuccess": "Login Successful",
+    "welcomeBack": "Welcome back!",
+    "loginFailed": "Login Failed"
   },
   "companyInfo": {
     "title": "Company Information",
@@ -188,5 +202,28 @@
       "accessDriverFeatures": "Access driver features"
     }
   },
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "company": {
+    "create": "Create Company",
+    "companyData": "Company Information",
+    "pleaseProvide": "Please provide your company information",
+    "companyType": "Company Type",
+    "selectType": "Select company type",
+    "companyName": "Company Name",
+    "legalForm": "Legal Form",
+    "selectLegalForm": "Select legal form",
+    "address": "Address",
+    "street": "Street and House Number",
+    "postalCode": "Postal Code",
+    "city": "City",
+    "country": "Country",
+    "vatId": "VAT ID (optional)",
+    "taxNumber": "Tax Number (optional)",
+    "creating": "Creating company...",
+    "create": "Create Company",
+    "success": "Company Created",
+    "successMessage": "Your company has been successfully created.",
+    "error": "Error",
+    "errorMessage": "Error creating company: "
+  }
 }
