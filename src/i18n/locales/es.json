@@ -1,0 +1,34 @@
+
+{
+  "auth": {
+    "welcome": "Bienvenido",
+    "signInOrCreate": "Inicie sesión o cree una nueva cuenta",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "phone": "Número de teléfono",
+    "language": "Idioma",
+    "signingIn": "Iniciando sesión...",
+    "signIn": "Iniciar sesión",
+    "creatingAccount": "Creando cuenta...",
+    "createAccount": "Crear cuenta",
+    "registrationSuccess": "Registro exitoso",
+    "accountCreated": "Su cuenta ha sido creada.",
+    "registrationFailed": "Registro fallido",
+    "loginSuccess": "Inicio de sesión exitoso",
+    "welcomeBack": "¡Bienvenido de nuevo!",
+    "loginFailed": "Error de inicio de sesión"
+  },
+  "profile": {
+    "welcome": "Bienvenido, {{name}}",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "language": "Idioma",
+    "logOut": "Cerrar sesión"
+  },
+  "loading": "Cargando..."
+}

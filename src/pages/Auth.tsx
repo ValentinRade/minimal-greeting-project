@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { toast } from '@/components/ui/use-toast';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useTranslation } from 'react-i18next';
+import { languages } from '@/i18n/languages';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -19,6 +21,7 @@ const Auth = () => {
   const [language, setLanguage] = useState('Deutsch');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     // Check if user is already logged in
@@ -65,15 +68,15 @@ const Auth = () => {
         if (profileError) throw profileError;
         
         toast({
-          title: "Registration successful",
-          description: "Your account has been created.",
+          title: t('auth.registrationSuccess'),
+          description: t('auth.accountCreated'),
         });
         
         navigate('/');
       }
     } catch (error: any) {
       toast({
-        title: "Registration failed",
+        title: t('auth.registrationFailed'),
         description: error.message,
         variant: "destructive"
       });
@@ -95,14 +98,14 @@ const Auth = () => {
       if (error) throw error;
       
       toast({
-        title: "Login successful",
-        description: "Welcome back!",
+        title: t('auth.loginSuccess'),
+        description: t('auth.welcomeBack'),
       });
       
       navigate('/');
     } catch (error: any) {
       toast({
-        title: "Login failed",
+        title: t('auth.loginFailed'),
         description: error.message,
         variant: "destructive"
       });
@@ -111,37 +114,24 @@ const Auth = () => {
     }
   };
 
-  const languages = [
-    "Deutsch",
-    "Englisch",
-    "Spanisch",
-    "Französisch",
-    "Italienisch",
-    "Polnisch",
-    "Rumänisch",
-    "Bulgarisch",
-    "Türkisch",
-    "Arabisch"
-  ];
-
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center">Welcome</CardTitle>
-          <CardDescription className="text-center">Sign in or create a new account</CardDescription>
+          <CardTitle className="text-center">{t('auth.welcome')}</CardTitle>
+          <CardDescription className="text-center">{t('auth.signInOrCreate')}</CardDescription>
         </CardHeader>
         <Tabs defaultValue="login" className="w-full">
           <TabsList className="grid grid-cols-2 mb-4 w-full">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="register">Register</TabsTrigger>
+            <TabsTrigger value="login">{t('auth.login')}</TabsTrigger>
+            <TabsTrigger value="register">{t('auth.register')}</TabsTrigger>
           </TabsList>
           
           <TabsContent value="login">
             <form onSubmit={handleSignIn}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('auth.email')}</Label>
                   <Input 
                     id="email"
                     type="email" 
@@ -152,7 +142,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t('auth.password')}</Label>
                   <Input 
                     id="password"
                     type="password" 
@@ -165,7 +155,7 @@ const Auth = () => {
               </CardContent>
               <CardFooter>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Signing in..." : "Sign in"}
+                  {loading ? t('auth.signingIn') : t('auth.signIn')}
                 </Button>
               </CardFooter>
             </form>
@@ -175,7 +165,7 @@ const Auth = () => {
             <form onSubmit={handleSignUp}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-email">Email</Label>
+                  <Label htmlFor="register-email">{t('auth.email')}</Label>
                   <Input 
                     id="register-email"
                     type="email" 
@@ -186,7 +176,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="register-password">Password</Label>
+                  <Label htmlFor="register-password">{t('auth.password')}</Label>
                   <Input 
                     id="register-password"
                     type="password" 
@@ -197,7 +187,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="first-name">First Name</Label>
+                  <Label htmlFor="first-name">{t('auth.firstName')}</Label>
                   <Input 
                     id="first-name"
                     placeholder="John" 
@@ -207,7 +197,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="last-name">Last Name</Label>
+                  <Label htmlFor="last-name">{t('auth.lastName')}</Label>
                   <Input 
                     id="last-name"
                     placeholder="Doe" 
@@ -217,7 +207,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone">{t('auth.phone')}</Label>
                   <Input 
                     id="phone"
                     type="tel" 
@@ -228,18 +218,25 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="language">Language</Label>
+                  <Label htmlFor="language">{t('auth.language')}</Label>
                   <Select
                     value={language}
-                    onValueChange={setLanguage}
+                    onValueChange={(val) => {
+                      setLanguage(val);
+                      // Also change the current UI language for better UX
+                      const langObj = languages.find(l => l.name === val);
+                      if (langObj) {
+                        i18n.changeLanguage(langObj.code);
+                      }
+                    }}
                   >
                     <SelectTrigger id="language">
                       <SelectValue placeholder="Select your language" />
                     </SelectTrigger>
                     <SelectContent>
                       {languages.map((lang) => (
-                        <SelectItem key={lang} value={lang}>
-                          {lang}
+                        <SelectItem key={lang.code} value={lang.name}>
+                          {lang.nativeName}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -248,7 +245,7 @@ const Auth = () => {
               </CardContent>
               <CardFooter>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Creating account..." : "Create account"}
+                  {loading ? t('auth.creatingAccount') : t('auth.createAccount')}
                 </Button>
               </CardFooter>
             </form>

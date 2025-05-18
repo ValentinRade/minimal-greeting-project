@@ -1,0 +1,34 @@
+
+{
+  "auth": {
+    "welcome": "Добре дошли",
+    "signInOrCreate": "Влезте или създайте нов акаунт",
+    "login": "Вход",
+    "register": "Регистрация",
+    "email": "Имейл",
+    "password": "Парола",
+    "firstName": "Име",
+    "lastName": "Фамилия",
+    "phone": "Телефонен номер",
+    "language": "Език",
+    "signingIn": "Влизане...",
+    "signIn": "Вход",
+    "creatingAccount": "Създаване на акаунт...",
+    "createAccount": "Създаване на акаунт",
+    "registrationSuccess": "Успешна регистрация",
+    "accountCreated": "Вашият акаунт беше създаден.",
+    "registrationFailed": "Неуспешна регистрация",
+    "loginSuccess": "Успешно влизане",
+    "welcomeBack": "Добре дошли отново!",
+    "loginFailed": "Неуспешно влизане"
+  },
+  "profile": {
+    "welcome": "Добре дошли, {{name}}",
+    "name": "Име",
+    "email": "Имейл",
+    "phone": "Телефон",
+    "language": "Език",
+    "logOut": "Изход"
+  },
+  "loading": "Зареждане..."
+}

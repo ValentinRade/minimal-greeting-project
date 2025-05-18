@@ -1,0 +1,34 @@
+
+{
+  "auth": {
+    "welcome": "Witamy",
+    "signInOrCreate": "Zaloguj się lub utwórz nowe konto",
+    "login": "Logowanie",
+    "register": "Rejestracja",
+    "email": "Email",
+    "password": "Hasło",
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "phone": "Numer telefonu",
+    "language": "Język",
+    "signingIn": "Logowanie...",
+    "signIn": "Zaloguj się",
+    "creatingAccount": "Tworzenie konta...",
+    "createAccount": "Utwórz konto",
+    "registrationSuccess": "Rejestracja udana",
+    "accountCreated": "Twoje konto zostało utworzone.",
+    "registrationFailed": "Rejestracja nieudana",
+    "loginSuccess": "Logowanie udane",
+    "welcomeBack": "Witamy ponownie!",
+    "loginFailed": "Logowanie nieudane"
+  },
+  "profile": {
+    "welcome": "Witamy, {{name}}",
+    "name": "Nazwa",
+    "email": "Email",
+    "phone": "Telefon",
+    "language": "Język",
+    "logOut": "Wyloguj"
+  },
+  "loading": "Ładowanie..."
+}

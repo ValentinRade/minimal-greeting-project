@@ -1,0 +1,34 @@
+
+{
+  "auth": {
+    "welcome": "Hoş geldiniz",
+    "signInOrCreate": "Giriş yapın veya yeni bir hesap oluşturun",
+    "login": "Giriş",
+    "register": "Kayıt",
+    "email": "E-posta",
+    "password": "Şifre",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "phone": "Telefon numarası",
+    "language": "Dil",
+    "signingIn": "Giriş yapılıyor...",
+    "signIn": "Giriş Yap",
+    "creatingAccount": "Hesap oluşturuluyor...",
+    "createAccount": "Hesap oluştur",
+    "registrationSuccess": "Kayıt başarılı",
+    "accountCreated": "Hesabınız oluşturuldu.",
+    "registrationFailed": "Kayıt başarısız",
+    "loginSuccess": "Giriş başarılı",
+    "welcomeBack": "Tekrar hoş geldiniz!",
+    "loginFailed": "Giriş başarısız"
+  },
+  "profile": {
+    "welcome": "Hoş geldiniz, {{name}}",
+    "name": "İsim",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "language": "Dil",
+    "logOut": "Çıkış Yap"
+  },
+  "loading": "Yükleniyor..."
+}

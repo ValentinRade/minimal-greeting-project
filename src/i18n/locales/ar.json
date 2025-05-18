@@ -1,0 +1,34 @@
+
+{
+  "auth": {
+    "welcome": "مرحبًا",
+    "signInOrCreate": "تسجيل الدخول أو إنشاء حساب جديد",
+    "login": "تسجيل الدخول",
+    "register": "التسجيل",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "phone": "رقم الهاتف",
+    "language": "اللغة",
+    "signingIn": "جاري تسجيل الدخول...",
+    "signIn": "تسجيل الدخول",
+    "creatingAccount": "جاري إنشاء الحساب...",
+    "createAccount": "إنشاء حساب",
+    "registrationSuccess": "تم التسجيل بنجاح",
+    "accountCreated": "تم إنشاء حسابك.",
+    "registrationFailed": "فشل التسجيل",
+    "loginSuccess": "تم تسجيل الدخول بنجاح",
+    "welcomeBack": "مرحبًا بعودتك!",
+    "loginFailed": "فشل تسجيل الدخول"
+  },
+  "profile": {
+    "welcome": "مرحبًا، {{name}}",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "language": "اللغة",
+    "logOut": "تسجيل الخروج"
+  },
+  "loading": "جار التحميل..."
+}

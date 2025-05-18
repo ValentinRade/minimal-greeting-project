@@ -1,0 +1,34 @@
+
+{
+  "auth": {
+    "welcome": "Welcome",
+    "signInOrCreate": "Sign in or create a new account",
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone Number",
+    "language": "Language",
+    "signingIn": "Signing in...",
+    "signIn": "Sign in",
+    "creatingAccount": "Creating account...",
+    "createAccount": "Create account",
+    "registrationSuccess": "Registration successful",
+    "accountCreated": "Your account has been created.",
+    "registrationFailed": "Registration failed",
+    "loginSuccess": "Login successful",
+    "welcomeBack": "Welcome back!",
+    "loginFailed": "Login failed"
+  },
+  "profile": {
+    "welcome": "Welcome, {{name}}",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "language": "Language",
+    "logOut": "Log out"
+  },
+  "loading": "Loading..."
+}
