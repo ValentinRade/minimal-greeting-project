@@ -51,7 +51,13 @@ const SubcontractorSidebar: React.FC = () => {
     <Sidebar>
       <SidebarHeader className="px-2 py-4">
         <div className="flex items-center px-2">
-          <div className="text-xl font-bold text-blue-600">LogiConnect</div>
+          <div className="text-xl font-bold text-blue-600">
+            <img 
+              src="/lovable-uploads/06b4ddc9-cf35-4d98-bf2f-1c90619ef8a7.png" 
+              alt="CARRINEX" 
+              className="h-8 w-auto" 
+            />
+          </div>
         </div>
       </SidebarHeader>
       
@@ -81,7 +87,7 @@ const SubcontractorSidebar: React.FC = () => {
       
       <SidebarFooter className="px-4 py-2">
         <div className="text-xs text-muted-foreground">
-          © {new Date().getFullYear()} LogiConnect
+          © {new Date().getFullYear()} CARRINEX
         </div>
       </SidebarFooter>
     </Sidebar>
