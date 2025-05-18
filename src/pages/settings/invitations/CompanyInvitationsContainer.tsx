@@ -51,7 +51,7 @@ const CompanyInvitationsContainer = () => {
       
       console.log('Fetching invitations for company:', company.id);
       
-      // 1. Get the invitations data
+      // Fetch the invitations data
       const { data: invitationsData, error } = await supabase
         .from('company_invitations')
         .select('*')
@@ -71,77 +71,18 @@ const CompanyInvitationsContainer = () => {
         return;
       }
       
-      // 2. Get all invited_by user IDs to fetch their emails
-      const invitedByUserIds = invitationsData
-        .map(invitation => invitation.invited_by)
-        .filter(Boolean);
+      // Simply set the invitations without trying to fetch additional email data
+      // This avoids the permission issue with the auth.users table
+      const formattedInvitations = invitationsData.map(invitation => ({
+        ...invitation,
+        // We'll display the invitee's email instead of the inviter's email
+        // as we don't have permission to access the inviter's email
+        invited_by_email: invitation.email 
+      } as CompanyInvitation));
       
-      console.log('Invited by user IDs:', invitedByUserIds);
+      console.log('Formatted invitations:', formattedInvitations);
       
-      // Only fetch emails if we have valid user IDs
-      if (invitedByUserIds.length === 0) {
-        // No invited_by IDs to look up, just format and return the data we have
-        const formattedInvitations = invitationsData.map(invitation => ({
-          ...invitation,
-          invited_by_email: ''
-        } as CompanyInvitation));
-        
-        setInvitations(formattedInvitations);
-        setLoading(false);
-        return;
-      }
-      
-      // 3. Use our PostgreSQL function to fetch user emails for the inviter
-      try {
-        console.log('Calling get_user_emails with user IDs:', invitedByUserIds);
-        
-        const { data: emailData, error: emailError } = await supabase
-          .rpc('get_user_emails', { 
-            user_ids: invitedByUserIds 
-          });
-          
-        console.log('Email data:', emailData);
-          
-        if (emailError) {
-          console.error('Error fetching emails:', emailError);
-          // Continue without email data
-          const formattedInvitations = invitationsData.map(invitation => ({
-            ...invitation,
-            invited_by_email: ''
-          } as CompanyInvitation));
-          
-          setInvitations(formattedInvitations);
-          setLoading(false);
-          return;
-        }
-        
-        // Map emails to inviters
-        const emailMap = new Map<string, string>();
-        if (emailData && Array.isArray(emailData)) {
-          emailData.forEach((item: { user_id: string, email: string }) => {
-            emailMap.set(item.user_id, item.email);
-          });
-        }
-        
-        // 4. Combine all the data
-        const formattedInvitations = invitationsData.map(invitation => ({
-          ...invitation,
-          invited_by_email: emailMap.get(invitation.invited_by) || ''
-        } as CompanyInvitation));
-        
-        console.log('Formatted invitations:', formattedInvitations);
-        
-        setInvitations(formattedInvitations);
-      } catch (innerError: any) {
-        console.error('Unexpected error fetching emails:', innerError);
-        // Continue without email data
-        const formattedInvitations = invitationsData.map(invitation => ({
-          ...invitation,
-          invited_by_email: ''
-        } as CompanyInvitation));
-        
-        setInvitations(formattedInvitations);
-      }
+      setInvitations(formattedInvitations);
     } catch (error: any) {
       console.error('Error in fetchInvitations:', error);
       toast({
