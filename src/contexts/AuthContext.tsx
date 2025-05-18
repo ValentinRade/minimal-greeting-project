@@ -11,6 +11,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   loading: boolean;
   hasCompany: boolean;
+  refreshCompanyData: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -99,6 +100,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchCompany = async (userId: string) => {
     try {
+      console.log("Fetching company data for user:", userId);
+      
       // First, get company information
       const { data: companyData, error: companyError } = await supabase
         .from('companies')
@@ -127,7 +130,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             )
           `)
           .eq('user_id', userId)
-          .single();
+          .maybeSingle(); // Use maybeSingle() instead of single()
         
         if (companyUserError) {
           if (companyUserError.code !== 'PGRST116') { // PGRST116 means no rows returned
@@ -145,6 +148,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             role: companyUserData.role
           };
           
+          console.log("Found company through company_users:", companyWithRole);
           setCompany(companyWithRole);
           setHasCompany(true);
           return;
@@ -170,6 +174,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           role: roleData?.role || 'company_admin' // Default to company_admin for creator
         };
         
+        console.log("Found company through companies table:", companyWithRole);
         setCompany(companyWithRole);
         setHasCompany(true);
       }
@@ -177,6 +182,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Error fetching company:', error);
       setCompany(null);
       setHasCompany(false);
+    }
+  };
+
+  const refreshCompanyData = async () => {
+    if (user) {
+      await fetchCompany(user.id);
     }
   };
 
@@ -194,7 +205,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     company,
     signOut,
     loading,
-    hasCompany
+    hasCompany,
+    refreshCompanyData
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

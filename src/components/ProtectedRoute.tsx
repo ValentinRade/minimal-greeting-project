@@ -25,7 +25,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
       // Set a small timeout to ensure company data is fully loaded
       const timer = setTimeout(() => {
         setIsReady(true);
-      }, 100);
+      }, 200); // Increased timeout to ensure data is loaded
       
       return () => clearTimeout(timer);
     }
@@ -45,6 +45,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   if (!user) {
     return <Navigate to="/auth" />;
   }
+  
+  // Log the current state to help debug
+  console.log("Protected Route Check:", {
+    hasCompany,
+    requireCompany,
+    pathname: location.pathname,
+    isReady
+  });
   
   // Only check company requirements when we're sure auth and company data are fully loaded
   if (isReady && requireCompany && !hasCompany && location.pathname !== '/create-company') {
