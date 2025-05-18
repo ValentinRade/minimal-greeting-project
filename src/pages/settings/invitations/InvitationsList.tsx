@@ -1,10 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow, addDays, isPast } from 'date-fns';
-import { RefreshCw, Trash2 } from 'lucide-react';
+import { RefreshCw, Trash2, UserPlus, Copy } from 'lucide-react';
 import { Database } from '@/integrations/supabase/types';
 
 import {
@@ -17,6 +17,12 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 // Define type for company role using the Database type
 type CompanyRole = Database['public']['Enums']['company_role'];
@@ -42,6 +48,7 @@ interface InvitationsListProps {
 const InvitationsList = ({ invitations, loading, onRefresh }: InvitationsListProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const [copyTimeouts, setCopyTimeouts] = useState<{[key: string]: boolean}>({});
 
   const handleDeleteInvitation = async (id: string) => {
     try {
@@ -109,6 +116,27 @@ const InvitationsList = ({ invitations, loading, onRefresh }: InvitationsListPro
     }
   };
 
+  const getRegistrationLink = (invitation: CompanyInvitation) => {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/register-invited?token=${invitation.token}`;
+  };
+
+  const copyToClipboard = (invitation: CompanyInvitation) => {
+    const link = getRegistrationLink(invitation);
+    navigator.clipboard.writeText(link);
+    
+    // Show copied status for 2 seconds
+    setCopyTimeouts(prev => ({ ...prev, [invitation.id]: true }));
+    setTimeout(() => {
+      setCopyTimeouts(prev => ({ ...prev, [invitation.id]: false }));
+    }, 2000);
+    
+    toast({
+      title: t('settings.linkCopied'),
+      description: t('settings.invitationLinkCopied'),
+    });
+  };
+
   const getRoleTranslation = (role: string) => {
     switch (role) {
       case 'company_admin':
@@ -170,6 +198,9 @@ const InvitationsList = ({ invitations, loading, onRefresh }: InvitationsListPro
       <TableBody>
         {invitations.map((invitation) => {
           const status = getInvitationStatus(invitation);
+          const isAccepted = !!invitation.accepted_at;
+          const isExpired = isPast(new Date(invitation.expires_at));
+          const isActive = !isAccepted && !isExpired;
           
           return (
             <TableRow key={invitation.id}>
@@ -190,8 +221,29 @@ const InvitationsList = ({ invitations, loading, onRefresh }: InvitationsListPro
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  {!invitation.accepted_at && (
+                  {isActive && (
                     <>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => copyToClipboard(invitation)}
+                            >
+                              {copyTimeouts[invitation.id] ? (
+                                <span className="text-green-500 text-xs">✓</span>
+                              ) : (
+                                <UserPlus className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {t('settings.copyInvitationLink')}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
                       <Button
                         variant="ghost"
                         size="icon"
@@ -200,6 +252,7 @@ const InvitationsList = ({ invitations, loading, onRefresh }: InvitationsListPro
                       >
                         <RefreshCw className="h-4 w-4" />
                       </Button>
+                      
                       <Button
                         variant="ghost"
                         size="icon"

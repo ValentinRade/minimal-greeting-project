@@ -9,6 +9,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import RegisterInvited from "./pages/RegisterInvited";
 import CreateCompany from "./pages/CreateCompany";
 import ShipperDashboard from "./pages/ShipperDashboard";
 import SubcontractorDashboard from "./pages/SubcontractorDashboard";
@@ -37,6 +38,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/auth" element={<Auth />} />
+              <Route path="/register-invited" element={<RegisterInvited />} />
               <Route path="/create-company" element={
                 <ProtectedRoute requireCompany={false}>
                   <CreateCompany />

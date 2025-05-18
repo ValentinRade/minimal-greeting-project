@@ -15,6 +15,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   const location = useLocation();
   const [isReady, setIsReady] = useState(false);
   
+  // Exclude certain paths from protection
+  const isRegisterInvitedRoute = location.pathname === '/register-invited';
+  
   // Wait for authentication and company data to be fully loaded
   useEffect(() => {
     if (!authLoading) {
@@ -26,6 +29,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
       return () => clearTimeout(timer);
     }
   }, [authLoading]);
+  
+  // Skip checks for registration via invitation routes
+  if (isRegisterInvitedRoute) {
+    return <>{children}</>;
+  }
   
   // Show loading state until both auth and company data are ready
   if (authLoading || !isReady) {
