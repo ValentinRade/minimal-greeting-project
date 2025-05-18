@@ -55,7 +55,7 @@ const SubcontractorSidebar: React.FC = () => {
             <img 
               src="/lovable-uploads/e1e17d41-ee90-43a7-9385-0f9c70f85639.png" 
               alt="CARRINEX" 
-              className="h-8 w-auto" 
+              className="h-12 w-auto" 
             />
           </div>
         </div>
