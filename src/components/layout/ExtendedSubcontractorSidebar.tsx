@@ -58,13 +58,6 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
                 <span>{t('dashboard.overview', 'Dashboard')}</span>
               </NavLink>
               <NavLink
-                to="/dashboard/subcontractor/preferences"
-                className={navLinkClass}
-              >
-                <Heart className="h-5 w-5" />
-                <span>{t('dashboard.preferences', 'Präferenzen')}</span>
-              </NavLink>
-              <NavLink
                 to="/dashboard/subcontractor/selection"
                 className={navLinkClass}
               >
