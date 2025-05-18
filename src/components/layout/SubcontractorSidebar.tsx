@@ -57,7 +57,12 @@ const SubcontractorSidebar: React.FC = () => {
     if (location.pathname === path) return true;
     
     // For nested pages that should keep parent menu item active
-    // Only apply this to settings path to prevent preferences from being active when on settings pages
+    if (path !== '/dashboard/subcontractor/settings' && 
+        location.pathname.startsWith(path)) {
+      return true;
+    }
+    
+    // For settings path to be active when on settings pages
     if (path === '/dashboard/subcontractor/settings' && 
         location.pathname.startsWith(path + '/')) {
       return true;

@@ -1,9 +1,12 @@
 
 import React from 'react';
+import AppLayout from '@/components/layout/AppLayout';
 import PreferencesPage from '@/pages/subcontractor/PreferencesPage';
 
 const SubcontractorPreferencesRoute: React.FC = () => {
-  return <PreferencesPage />;
+  return (
+    <PreferencesPage />
+  );
 };
 
 export default SubcontractorPreferencesRoute;
