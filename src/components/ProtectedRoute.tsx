@@ -61,11 +61,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   }
 
   // Only redirect to dashboard when we're sure company data is fully loaded
+  // This section was blocking navigation to specific pages - let's fix it
   if (isReady && hasCompany && company && 
-      location.pathname !== '/dashboard/shipper' && 
-      location.pathname !== '/dashboard/subcontractor' && 
-      !location.pathname.includes('/settings') &&
-      location.pathname !== '/create-company') {
+      location.pathname === '/' && 
+      !location.pathname.includes('/dashboard')) {
     
     // Company type 2 is for Shipper (Versender)
     // Company type 1 is for Subcontractor (Subunternehmer)

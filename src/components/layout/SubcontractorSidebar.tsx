@@ -1,5 +1,6 @@
+
 import { useTranslation } from 'react-i18next';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { Package, Truck, Users, Settings, Home, Heart } from 'lucide-react';
 import {
   Sidebar,
@@ -17,6 +18,7 @@ import {
 const SubcontractorSidebar: React.FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   
   const menuItems = [
     { 
@@ -71,6 +73,12 @@ const SubcontractorSidebar: React.FC = () => {
     return false;
   };
 
+  // Handle menu item click
+  const handleMenuItemClick = (path: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(path);
+  };
+
   return (
     <Sidebar>
       <SidebarHeader className="px-2 py-4">
@@ -94,13 +102,10 @@ const SubcontractorSidebar: React.FC = () => {
                 <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
                     isActive={isPathActive(item.path)}
-                    asChild
-                    tooltip={item.label}
+                    onClick={handleMenuItemClick(item.path)}
                   >
-                    <Link to={item.path}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.label}</span>
-                    </Link>
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.label}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
