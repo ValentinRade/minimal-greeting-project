@@ -2,79 +2,78 @@
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { format } from 'date-fns';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { format } from 'date-fns';
-import { Calendar as CalendarIcon, Upload, File } from 'lucide-react';
-import { CardContent } from '@/components/ui/card';
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { CardContent } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { VehicleFormData } from '../VehicleForm';
+import { CalendarIcon, Upload, X, FileText } from 'lucide-react';
+import { toast } from 'sonner';
 
-const VehicleFormStep3 = () => {
+const VehicleFormStep3: React.FC = () => {
   const { t } = useTranslation();
-  const { control, setValue, watch } = useFormContext<VehicleFormData>();
   const { company } = useAuth();
-  const [uploadingReport, setUploadingReport] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-
+  const { control, setValue, watch } = useFormContext();
+  const [isUploading, setIsUploading] = useState(false);
   const inspectionReportUrl = watch('inspection_report_url');
-  const reportFileName = inspectionReportUrl?.split('/').pop() || '';
+  const lastInspection = watch('last_inspection');
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !company) return;
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !company) {
+      return;
+    }
 
     try {
-      setUploadingReport(true);
-      setUploadError(null);
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${company.id}/inspection-reports/${fileName}`;
+      setIsUploading(true);
 
-      const { error: uploadError, data } = await supabase.storage
+      // Generate a unique filename to prevent collisions
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+      const filePath = `${company.id}/documents/${fileName}`;
+
+      // Upload file to Supabase Storage
+      const { error: uploadError } = await supabase.storage
         .from('vehicle_documents')
         .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false,
-          onUploadProgress: (progress) => {
-            setUploadProgress((progress.loaded / progress.total) * 100);
-          },
+          cacheControl: '3600'
+          // Remove the problematic onUploadProgress property
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        throw uploadError;
+      }
 
-      const { data: { publicUrl } } = supabase.storage
+      // Get the public URL for the uploaded file
+      const { data } = supabase.storage
         .from('vehicle_documents')
         .getPublicUrl(filePath);
 
-      setValue('inspection_report_url', publicUrl);
+      if (data) {
+        setValue('inspection_report_url', data.publicUrl);
+        toast.success(t('vehicles.form.fileUploaded'));
+      }
     } catch (error) {
       console.error('Error uploading file:', error);
-      setUploadError((error as Error).message);
+      toast.error(t('vehicles.form.fileUploadError'));
     } finally {
-      setUploadingReport(false);
-      setUploadProgress(0);
+      setIsUploading(false);
     }
   };
 
+  const removeFile = () => {
+    setValue('inspection_report_url', null);
+  };
+
   return (
-    <CardContent className="space-y-6">
+    <CardContent className="space-y-4 pt-6">
+      <h2 className="text-lg font-semibold mb-4">{t('vehicles.form.maintenanceTitle')}</h2>
+      
       <FormField
         control={control}
         name="maintenance_interval"
@@ -83,10 +82,11 @@ const VehicleFormStep3 = () => {
             <FormLabel>{t('vehicles.form.maintenanceInterval')}</FormLabel>
             <FormControl>
               <Input 
-                type="number"
+                type="number" 
+                placeholder={t('vehicles.form.maintenanceIntervalPlaceholder')} 
                 {...field}
-                value={field.value === null ? '' : field.value}
-                onChange={(e) => field.onChange(e.target.value === '' ? null : parseInt(e.target.value))}
+                value={field.value || ''}
+                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
               />
             </FormControl>
             <FormMessage />
@@ -104,7 +104,7 @@ const VehicleFormStep3 = () => {
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
-                    variant={"outline"}
+                    variant="outline"
                     className={cn(
                       "w-full pl-3 text-left font-normal",
                       !field.value && "text-muted-foreground"
@@ -113,7 +113,7 @@ const VehicleFormStep3 = () => {
                     {field.value ? (
                       format(new Date(field.value), "PPP")
                     ) : (
-                      <span>{t('common.pickDate')}</span>
+                      <span>{t('vehicles.form.selectDate')}</span>
                     )}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
@@ -123,9 +123,7 @@ const VehicleFormStep3 = () => {
                 <Calendar
                   mode="single"
                   selected={field.value ? new Date(field.value) : undefined}
-                  onSelect={(date) => 
-                    field.onChange(date ? format(date, 'yyyy-MM-dd') : null)
-                  }
+                  onSelect={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : null)}
                   initialFocus
                 />
               </PopoverContent>
@@ -135,69 +133,58 @@ const VehicleFormStep3 = () => {
         )}
       />
 
-      <FormItem>
-        <FormLabel>{t('vehicles.form.inspectionReport')}</FormLabel>
-        <div className="grid grid-cols-1 gap-4">
-          <div className="mt-2">
-            <div className="flex items-center justify-center w-full">
-              <label
-                htmlFor="inspection-report-upload"
-                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-3 text-gray-500" />
-                  <p className="mb-2 text-sm text-gray-500">
-                    <span className="font-semibold">{t('vehicles.form.uploadInspectionReport')}</span>
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    PDF, DOCX {t('common.upTo')} 10MB
-                  </p>
+      <FormField
+        control={control}
+        name="inspection_report_url"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('vehicles.form.inspectionReport')}</FormLabel>
+            <div className="mt-2">
+              {!inspectionReportUrl ? (
+                <div className="flex items-center">
+                  <label className="cursor-pointer">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-secondary rounded hover:bg-secondary/80 transition-colors">
+                      <Upload className="h-4 w-4" />
+                      <span>{t('vehicles.form.uploadFile')}</span>
+                    </div>
+                    <Input 
+                      type="file" 
+                      className="hidden" 
+                      accept=".pdf,.doc,.docx" 
+                      onChange={handleFileUpload}
+                      disabled={isUploading}
+                    />
+                  </label>
+                  {isUploading && <span className="ml-2 text-sm">{t('common.uploading')}...</span>}
                 </div>
-                <Input 
-                  id="inspection-report-upload"
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  className="hidden"
-                  onChange={handleFileUpload}
-                  disabled={uploadingReport}
-                />
-              </label>
+              ) : (
+                <div className="flex items-center gap-2 px-4 py-2 bg-secondary/30 rounded">
+                  <FileText className="h-4 w-4" />
+                  <a 
+                    href={inspectionReportUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex-1 truncate text-sm text-primary hover:underline"
+                  >
+                    {t('vehicles.form.viewFile')}
+                  </a>
+                  <Button 
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={removeFile}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-            {uploadingReport && (
-              <div className="w-full bg-gray-200 rounded-full h-2.5 mt-4">
-                <div 
-                  className="bg-primary h-2.5 rounded-full" 
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
-              </div>
-            )}
-
-            {uploadError && (
-              <p className="text-sm text-destructive mt-2">
-                {uploadError}
-              </p>
-            )}
-
-            {inspectionReportUrl && (
-              <div className="flex items-center mt-4 p-3 bg-muted rounded-md">
-                <File className="h-5 w-5 mr-2 text-primary" />
-                <span className="text-sm font-medium flex-1 truncate">
-                  {reportFileName}
-                </span>
-                <a 
-                  href={inspectionReportUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline ml-2"
-                >
-                  {t('common.view')}
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
-      </FormItem>
     </CardContent>
   );
 };

@@ -24,7 +24,7 @@ import CompanyInvitations from "./pages/settings/CompanyInvitations";
 import RolesInfo from "./pages/settings/RolesInfo";
 
 // Subcontractor routes
-import SubcontractorPreferencesRoute from "./routes/SubcontractorPreferencesRoute";
+import SubcontractorPreferencesRoutes from "./routes/SubcontractorPreferencesRoutes";
 import SubcontractorSelectionRoutes from './routes/SubcontractorSelectionRoutes';
 import SubcontractorVehiclesRoutes from './routes/SubcontractorVehiclesRoutes';
 
@@ -79,9 +79,9 @@ const App = () => (
               } />
               
               {/* Subcontractor Preferences route */}
-              <Route path="/dashboard/subcontractor/preferences" element={
+              <Route path="/dashboard/subcontractor/preferences/*" element={
                 <ProtectedRoute>
-                  <SubcontractorPreferencesRoute />
+                  <SubcontractorPreferencesRoutes />
                 </ProtectedRoute>
               } />
               

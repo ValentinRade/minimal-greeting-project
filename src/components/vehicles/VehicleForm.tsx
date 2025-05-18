@@ -57,7 +57,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   isEditing = false,
 }) => {
   const { t } = useTranslation();
-  const { company } = useAuth();
+  const { company, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -150,6 +150,16 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       });
       return;
     }
+    
+    if (!user) {
+      toast({
+        title: t('common.error'),
+        description: t('common.notLoggedIn'),
+        variant: 'destructive',
+        duration: 3000,
+      });
+      return;
+    }
 
     try {
       setIsSubmitting(true);
@@ -157,7 +167,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       const vehicleData = {
         ...data,
         company_id: company.id,
-        user_id: supabase.auth.getUser().then(res => res.data.user?.id),
+        user_id: user.id, // Use the user.id directly instead of a Promise
       };
 
       let result;
@@ -173,7 +183,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         // Insert new vehicle
         result = await supabase
           .from('vehicles')
-          .insert({ ...vehicleData, user_id: (await supabase.auth.getUser()).data.user?.id })
+          .insert(vehicleData)
           .select('id')
           .single();
       }
