@@ -122,6 +122,12 @@ const CreateCompany = () => {
         company_type_id: parseInt(data.company_type_id),
         legal_form_id: parseInt(data.legal_form_id),
         user_id: user.id,
+        // Ensure all required fields are present and non-optional
+        name: data.name,
+        street: data.street,
+        postal_code: data.postal_code,
+        city: data.city,
+        country: data.country || 'Deutschland'
       };
 
       const { error } = await supabase.from('companies').insert([companyData]);
@@ -129,15 +135,15 @@ const CreateCompany = () => {
       if (error) throw error;
 
       toast({
-        title: "Unternehmen erstellt",
-        description: "Ihr Unternehmen wurde erfolgreich angelegt.",
+        title: t('company.success'),
+        description: t('company.successMessage'),
       });
 
       navigate('/');
     } catch (error: any) {
       toast({
-        title: "Fehler",
-        description: `Fehler beim Erstellen des Unternehmens: ${error.message}`,
+        title: t('company.error'),
+        description: `${t('company.errorMessage')}${error.message}`,
         variant: "destructive"
       });
     } finally {
@@ -149,15 +155,15 @@ const CreateCompany = () => {
     <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
       <Card className="w-full max-w-2xl">
         <CardHeader>
-          <CardTitle>Unternehmen anlegen</CardTitle>
+          <CardTitle>{t('company.create')}</CardTitle>
           <CardDescription>
-            Bitte geben Sie die Daten Ihres Unternehmens ein.
+            {t('company.pleaseProvide')}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="company_type_id">Unternehmenstyp</Label>
+              <Label htmlFor="company_type_id">{t('company.companyType')}</Label>
               <Controller
                 name="company_type_id"
                 control={control}
@@ -167,7 +173,7 @@ const CreateCompany = () => {
                     value={field.value}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Unternehmenstyp auswählen" />
+                      <SelectValue placeholder={t('company.selectType')} />
                     </SelectTrigger>
                     <SelectContent>
                       {companyTypes.map((type) => (
@@ -185,7 +191,7 @@ const CreateCompany = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="name">Unternehmensname</Label>
+              <Label htmlFor="name">{t('company.companyName')}</Label>
               <Input 
                 id="name"
                 {...register('name')}
@@ -197,7 +203,7 @@ const CreateCompany = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="legal_form_id">Rechtsform</Label>
+              <Label htmlFor="legal_form_id">{t('company.legalForm')}</Label>
               <Controller
                 name="legal_form_id"
                 control={control}
@@ -207,7 +213,7 @@ const CreateCompany = () => {
                     value={field.value}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Rechtsform auswählen" />
+                      <SelectValue placeholder={t('company.selectLegalForm')} />
                     </SelectTrigger>
                     <SelectContent>
                       {legalForms.map((form) => (
@@ -225,7 +231,7 @@ const CreateCompany = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="street">Straße und Hausnummer</Label>
+              <Label htmlFor="street">{t('company.street')}</Label>
               <Input 
                 id="street"
                 {...register('street')}
@@ -238,7 +244,7 @@ const CreateCompany = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="postal_code">Postleitzahl</Label>
+                <Label htmlFor="postal_code">{t('company.postalCode')}</Label>
                 <Input 
                   id="postal_code"
                   {...register('postal_code')}
@@ -250,7 +256,7 @@ const CreateCompany = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="city">Ort</Label>
+                <Label htmlFor="city">{t('company.city')}</Label>
                 <Input 
                   id="city"
                   {...register('city')}
@@ -263,7 +269,7 @@ const CreateCompany = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="country">Land</Label>
+              <Label htmlFor="country">{t('company.country')}</Label>
               <Input 
                 id="country"
                 {...register('country')}
@@ -275,7 +281,7 @@ const CreateCompany = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="vat_id">Umsatzsteuer-ID (optional)</Label>
+              <Label htmlFor="vat_id">{t('company.vatId')}</Label>
               <Input 
                 id="vat_id"
                 {...register('vat_id')}
@@ -287,7 +293,7 @@ const CreateCompany = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="tax_number">Steuernummer (optional)</Label>
+              <Label htmlFor="tax_number">{t('company.taxNumber')}</Label>
               <Input 
                 id="tax_number"
                 {...register('tax_number')}
@@ -300,7 +306,7 @@ const CreateCompany = () => {
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Unternehmen wird erstellt..." : "Unternehmen erstellen"}
+              {loading ? t('company.creating') : t('company.create')}
             </Button>
           </CardFooter>
         </form>
