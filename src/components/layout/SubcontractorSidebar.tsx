@@ -1,4 +1,3 @@
-
 import { useTranslation } from 'react-i18next';
 import { useLocation, Link } from 'react-router-dom';
 import { Package, Truck, Users, Settings, Home, Heart } from 'lucide-react';
@@ -52,6 +51,21 @@ const SubcontractorSidebar: React.FC = () => {
     }
   ];
 
+  // Helper function to check if a path is active
+  const isPathActive = (path: string) => {
+    // For exact matches
+    if (location.pathname === path) return true;
+    
+    // For nested pages that should keep parent menu item active
+    // Only apply this to settings path to prevent preferences from being active when on settings pages
+    if (path === '/dashboard/subcontractor/settings' && 
+        location.pathname.startsWith(path + '/')) {
+      return true;
+    }
+    
+    return false;
+  };
+
   return (
     <Sidebar>
       <SidebarHeader className="px-2 py-4">
@@ -74,7 +88,7 @@ const SubcontractorSidebar: React.FC = () => {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
-                    isActive={location.pathname === item.path}
+                    isActive={isPathActive(item.path)}
                     asChild
                     tooltip={item.label}
                   >
