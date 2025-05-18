@@ -92,9 +92,9 @@ type PreferencesFormValues = z.infer<typeof formSchema>;
 // Helper type for Supabase JSON format
 // Updated to account for the Json type from Supabase
 type JsonFormData = {
-  start_date_transport: Json; // Changed to Json type
-  team_size: Json; // Changed to Json type
-  communication: Json; // Changed to Json type
+  start_date_transport: Json; 
+  team_size: Json; 
+  communication: Json; 
   preferred_tour_types: string[];
   flexibility: string;
   specialization: string | null;
@@ -272,14 +272,24 @@ const PreferencesForm: React.FC = () => {
           }
         }
         
-        // Handle communication
-        let communication = { response_time: '1_4h' as const, languages: ['german'] };
+        // Handle communication with proper type handling
+        let communication = { 
+          response_time: '1_4h' as 'less_1h' | '1_4h' | '4_24h' | 'more_24h', 
+          languages: ['german'] 
+        };
+        
         if (userPreferences.communication) {
           const comm = userPreferences.communication as any;
           if (typeof comm === 'object' && comm !== null) {
+            // Make sure the response_time is one of the valid enum values
+            const validResponseTimes = ['less_1h', '1_4h', '4_24h', 'more_24h'];
+            const responseTime = typeof comm.response_time === 'string' && 
+              validResponseTimes.includes(comm.response_time) ? 
+              comm.response_time as 'less_1h' | '1_4h' | '4_24h' | 'more_24h' : 
+              '1_4h';
+              
             communication = {
-              response_time: typeof comm.response_time === 'string' ? 
-                (comm.response_time as 'less_1h' | '1_4h' | '4_24h' | 'more_24h') : '1_4h',
+              response_time: responseTime,
               languages: Array.isArray(comm.languages) ? comm.languages : ['german']
             };
           }
