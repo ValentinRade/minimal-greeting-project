@@ -1,7 +1,7 @@
 
 import { useTranslation } from 'react-i18next';
-import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { Package, Truck, Users, Settings, Home, Heart } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Package, Truck, Users, Settings, Home, FileCheck } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -42,9 +42,9 @@ const SubcontractorSidebar: React.FC = () => {
       path: '/dashboard/subcontractor/drivers' 
     },
     {
-      icon: Heart,
-      label: t('dashboard.preferences', 'Präferenzen'),
-      path: '/dashboard/subcontractor/preferences'
+      icon: FileCheck,
+      label: t('dashboard.selectionCriteria', 'Auswahlkriterien'),
+      path: '/dashboard/subcontractor/selection'
     },
     { 
       icon: Settings, 

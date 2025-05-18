@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +24,7 @@ import RolesInfo from "./pages/settings/RolesInfo";
 
 // Subcontractor routes
 import SubcontractorPreferencesRoute from "./routes/SubcontractorPreferencesRoute";
+import SubcontractorSelectionRoutes from './routes/SubcontractorSelectionRoutes';
 
 // Import i18n for internationalization
 import '@/i18n';
@@ -96,6 +96,13 @@ const App = () => (
                 <Route path="roles" element={<RolesInfo />} />
                 {/* The index route now handled by SettingsLayout component directly */}
               </Route>
+              
+              {/* Add the new selection routes */}
+              <Route path="/dashboard/subcontractor/selection/*" element={
+                <ProtectedRoute>
+                  <SubcontractorSelectionRoutes />
+                </ProtectedRoute>
+              } />
               
               <Route path="/" element={
                 <ProtectedRoute>
