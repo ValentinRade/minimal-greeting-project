@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Witamy",
@@ -28,7 +29,8 @@
     "phone": "Telefon",
     "language": "Język",
     "logOut": "Wyloguj",
-    "selectLanguage": "Wybierz język"
+    "selectLanguage": "Wybierz język",
+    "settings": "Ustawienia"
   },
   "dashboard": {
     "shipperWelcome": "Panel Nadawcy",
@@ -52,7 +54,9 @@
     "transportActivity": "Aktywność Transportowa",
     "recentTransports": "Ostatnie zlecenia transportowe",
     "assigned": "Przypisany",
-    "viewAllTransports": "Zobacz wszystkie transporty"
+    "viewAllTransports": "Zobacz wszystkie transporty",
+    "overview": "Przegląd",
+    "navigation": "Nawigacja"
   },
   "loading": "Ładowanie..."
 }

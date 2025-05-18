@@ -1,37 +1,17 @@
 
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { Package, Truck, Users } from 'lucide-react';
-import LanguageSelector from '@/components/LanguageSelector';
+import AppLayout from '@/components/layout/AppLayout';
 
 const SubcontractorDashboard = () => {
-  const { company, signOut, profile } = useAuth();
   const { t } = useTranslation();
-  const [language, setLanguage] = useState(profile?.language || 'Deutsch');
   
-  useEffect(() => {
-    if (profile?.language) {
-      setLanguage(profile.language);
-    }
-  }, [profile]);
-
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
+    <AppLayout>
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold">{t('dashboard.subcontractorWelcome')}</h1>
-            <p className="text-slate-600">{company?.name}</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <LanguageSelector currentLanguage={language} />
-            <Button variant="outline" onClick={signOut}>{t('profile.logOut')}</Button>
-          </div>
-        </div>
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -93,7 +73,7 @@ const SubcontractorDashboard = () => {
           </CardFooter>
         </Card>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 

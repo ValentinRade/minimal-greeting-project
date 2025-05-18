@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Benvenuto",
@@ -28,7 +29,34 @@
     "phone": "Telefono",
     "language": "Lingua",
     "logOut": "Esci",
-    "selectLanguage": "Seleziona lingua"
+    "selectLanguage": "Seleziona lingua",
+    "settings": "Impostazioni"
+  },
+  "dashboard": {
+    "shipperWelcome": "Pannello Mittente",
+    "subcontractorWelcome": "Pannello Subappaltatore",
+    "shipments": "Spedizioni",
+    "activeShipments": "Spedizioni attive",
+    "contractors": "Fornitori",
+    "activeContractors": "Fornitori attivi",
+    "customers": "Clienti",
+    "activeCustomers": "Clienti attivi",
+    "shipmentActivity": "Attività Spedizioni",
+    "recentShipments": "Spedizioni recenti e aggiornamenti di stato",
+    "inTransit": "In Transito",
+    "viewAllShipments": "Visualizza tutte le spedizioni",
+    "assignments": "Incarichi",
+    "activeAssignments": "Incarichi attivi",
+    "vehicles": "Veicoli",
+    "registeredVehicles": "Veicoli registrati",
+    "drivers": "Autisti",
+    "activeDrivers": "Autisti attivi",
+    "transportActivity": "Attività di Trasporto",
+    "recentTransports": "Incarichi di trasporto recenti",
+    "assigned": "Assegnato",
+    "viewAllTransports": "Visualizza tutti i trasporti",
+    "overview": "Panoramica",
+    "navigation": "Navigazione"
   },
   "loading": "Caricamento..."
 }

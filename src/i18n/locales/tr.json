@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Hoş geldiniz",
@@ -28,7 +29,8 @@
     "phone": "Telefon",
     "language": "Dil",
     "logOut": "Çıkış Yap",
-    "selectLanguage": "Dil seçin"
+    "selectLanguage": "Dil seçin",
+    "settings": "Ayarlar"
   },
   "dashboard": {
     "shipperWelcome": "Gönderici Paneli",
@@ -52,7 +54,9 @@
     "transportActivity": "Taşıma Aktivitesi",
     "recentTransports": "Son taşıma görevlendirmeleri",
     "assigned": "Atanmış",
-    "viewAllTransports": "Tüm taşımaları görüntüle"
+    "viewAllTransports": "Tüm taşımaları görüntüle",
+    "overview": "Genel Bakış",
+    "navigation": "Navigasyon"
   },
   "loading": "Yükleniyor..."
 }

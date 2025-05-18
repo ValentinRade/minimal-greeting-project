@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "مرحبًا",
@@ -28,7 +29,34 @@
     "phone": "الهاتف",
     "language": "اللغة",
     "logOut": "تسجيل الخروج",
-    "selectLanguage": "اختر اللغة"
+    "selectLanguage": "اختر اللغة",
+    "settings": "الإعدادات"
+  },
+  "dashboard": {
+    "shipperWelcome": "لوحة الشاحن",
+    "subcontractorWelcome": "لوحة المقاول من الباطن",
+    "shipments": "الشحنات",
+    "activeShipments": "الشحنات النشطة",
+    "contractors": "المقاولون",
+    "activeContractors": "المقاولون النشطون",
+    "customers": "العملاء",
+    "activeCustomers": "العملاء النشطون",
+    "shipmentActivity": "نشاط الشحن",
+    "recentShipments": "آخر الشحنات وتحديثات الحالة",
+    "inTransit": "قيد النقل",
+    "viewAllShipments": "عرض جميع الشحنات",
+    "assignments": "المهام",
+    "activeAssignments": "المهام النشطة",
+    "vehicles": "المركبات",
+    "registeredVehicles": "المركبات المسجلة",
+    "drivers": "السائقون",
+    "activeDrivers": "السائقون النشطون",
+    "transportActivity": "نشاط النقل",
+    "recentTransports": "آخر مهام النقل",
+    "assigned": "تم التعيين",
+    "viewAllTransports": "عرض جميع عمليات النقل",
+    "overview": "نظرة عامة",
+    "navigation": "التنقل"
   },
   "loading": "جار التحميل..."
 }
