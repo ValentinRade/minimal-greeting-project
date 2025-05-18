@@ -17,10 +17,14 @@ import { UserPlus, RefreshCw, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { Database } from '@/integrations/supabase/types';
+
+// Define type for company role using the Database type
+type CompanyRole = Database['public']['Enums']['company_role'];
 
 const inviteFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-  role: z.string(),
+  role: z.enum(['company_admin', 'logistics_manager', 'finance_manager', 'employee', 'driver'] as const),
 });
 
 type InviteFormValues = z.infer<typeof inviteFormSchema>;
@@ -33,13 +37,13 @@ const CompanyInvitations = () => {
   const [loading, setLoading] = useState(true);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [availableRoles, setAvailableRoles] = useState<string[]>([]);
+  const [availableRoles, setAvailableRoles] = useState<CompanyRole[]>([]);
 
   const form = useForm<InviteFormValues>({
     resolver: zodResolver(inviteFormSchema),
     defaultValues: {
       email: '',
-      role: '',
+      role: undefined,
     },
   });
 
@@ -50,7 +54,7 @@ const CompanyInvitations = () => {
     }
   }, [company]);
 
-  const determineAvailableRoles = () => {
+  const determineAvailableRoles = (): CompanyRole[] => {
     if (!company) return [];
 
     // For company type 1 (subcontractor)
@@ -102,12 +106,15 @@ const CompanyInvitations = () => {
       // Set expiration date to 7 days from now
       const expiresAt = addDays(new Date(), 7).toISOString();
       
+      // Use the typed role value from the form
+      const role = values.role as CompanyRole;
+      
       const { data, error } = await supabase
         .from('company_invitations')
         .insert({
           company_id: company.id,
           email: values.email,
-          role: values.role,
+          role: role,
           invited_by: user.id,
           token,
           expires_at: expiresAt
