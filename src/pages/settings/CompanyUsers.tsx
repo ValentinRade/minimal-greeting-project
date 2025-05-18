@@ -30,7 +30,6 @@ const CompanyUsers = () => {
     try {
       setLoading(true);
       
-      // Query structure corrected to properly join with profiles and auth_users tables
       const { data, error } = await supabase
         .from('company_users')
         .select(`
@@ -40,31 +39,55 @@ const CompanyUsers = () => {
           role,
           invited_at,
           accepted_at,
-          profiles (
-            id,
-            first_name,
-            last_name,
-            phone
-          ),
-          auth.users (
-            email
-          )
+          profiles!inner(id, first_name, last_name, phone)
         `)
         .eq('company_id', company?.id);
       
       if (error) throw error;
       
-      console.log('Raw response:', data);
+      console.log('Raw company users data:', data);
       
-      // Format the data for display in the UI
-      const formattedUsers = data?.map(user => ({
-        ...user,
-        email: user.users?.email || '',
-        profile: user.profiles || []
-      })) || [];
-      
-      console.log('Formatted users:', formattedUsers);
-      setUsers(formattedUsers);
+      // Now let's get email addresses from auth.users in a separate query
+      // since we can't directly join to auth.users in the client library
+      if (data && data.length > 0) {
+        // Get all user IDs from the results
+        const userIds = data.map(user => user.user_id);
+        
+        // Query emails for these users
+        const { data: emailData, error: emailError } = await supabase
+          .rpc('get_user_emails', { user_ids: userIds });
+          
+        if (emailError) {
+          console.error('Error fetching user emails:', emailError);
+          // Continue with processing the data we have
+        } else {
+          console.log('Email data:', emailData);
+        }
+        
+        // Map emails to users if we have them
+        const emailMap = new Map();
+        if (emailData) {
+          emailData.forEach((item: any) => {
+            emailMap.set(item.user_id, item.email);
+          });
+        }
+        
+        // Format the data for display in the UI
+        const formattedUsers = data.map(user => {
+          const profile = user.profiles;
+          return {
+            ...user,
+            email: emailMap.get(user.user_id) || '',
+            profile: profile
+          };
+        });
+        
+        console.log('Formatted users:', formattedUsers);
+        setUsers(formattedUsers);
+      } else {
+        // No data returned, set empty array
+        setUsers([]);
+      }
     } catch (error: any) {
       console.error('Error fetching company users:', error.message);
       toast({
@@ -72,6 +95,7 @@ const CompanyUsers = () => {
         description: error.message,
         variant: 'destructive'
       });
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -169,11 +193,7 @@ const CompanyUsers = () => {
                 </TableHeader>
                 <TableBody>
                   {users.map((userItem) => {
-                    // Get the first profile or use empty object as fallback
-                    const profile = Array.isArray(userItem.profile) && userItem.profile.length > 0 
-                      ? userItem.profile[0] 
-                      : userItem.profile || {};
-                      
+                    const profile = userItem.profile || {};
                     const email = userItem.email || '';
                     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
                     
