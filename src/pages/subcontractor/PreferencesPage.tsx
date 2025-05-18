@@ -1,0 +1,31 @@
+
+import React from 'react';
+import AppLayout from '@/components/layout/AppLayout';
+import { useTranslation } from 'react-i18next';
+import PreferencesForm from '@/components/preferences/PreferencesForm';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+const PreferencesPage: React.FC = () => {
+  const { t } = useTranslation();
+
+  return (
+    <AppLayout>
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        <h1 className="text-2xl font-bold mb-6">{t('preferences.title', 'Präferenzen')}</h1>
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('preferences.formTitle', 'Unternehmens-Präferenzen')}</CardTitle>
+            <CardDescription>
+              {t('preferences.formDescription', 'Bitte teilen Sie Ihre Präferenzen mit uns, damit wir Ihnen passende Aufträge vermitteln können.')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PreferencesForm />
+          </CardContent>
+        </Card>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default PreferencesPage;

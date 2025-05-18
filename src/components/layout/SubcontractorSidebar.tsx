@@ -1,7 +1,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useLocation, Link } from 'react-router-dom';
-import { Package, Truck, Users, Settings, Home } from 'lucide-react';
+import { Package, Truck, Users, Settings, Home, Heart } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -40,10 +40,15 @@ const SubcontractorSidebar: React.FC = () => {
       label: t('dashboard.drivers'), 
       path: '/dashboard/subcontractor/drivers' 
     },
+    {
+      icon: Heart,
+      label: t('dashboard.preferences', 'Präferenzen'),
+      path: '/dashboard/subcontractor/preferences'
+    },
     { 
       icon: Settings, 
       label: t('profile.settings'), 
-      path: '/dashboard/subcontractor/settings' // Updated to point to the main settings page
+      path: '/dashboard/subcontractor/settings' 
     }
   ];
 
@@ -69,7 +74,7 @@ const SubcontractorSidebar: React.FC = () => {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
-                    isActive={location.pathname.startsWith(item.path)}
+                    isActive={location.pathname === item.path || location.pathname.startsWith(item.path + '/')}
                     asChild
                     tooltip={item.label}
                   >
