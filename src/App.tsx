@@ -9,6 +9,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import CreateCompany from "./pages/CreateCompany";
 import NotFound from "./pages/NotFound";
 
 // Import i18n for internationalization
@@ -26,6 +27,11 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/auth" element={<Auth />} />
+              <Route path="/create-company" element={
+                <ProtectedRoute requireCompany={false}>
+                  <CreateCompany />
+                </ProtectedRoute>
+              } />
               <Route path="/" element={
                 <ProtectedRoute>
                   <Index />

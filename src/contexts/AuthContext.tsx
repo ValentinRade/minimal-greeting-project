@@ -7,8 +7,10 @@ type AuthContextType = {
   session: Session | null;
   user: User | null;
   profile: any | null;
+  company: any | null;
   signOut: () => Promise<void>;
   loading: boolean;
+  hasCompany: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,6 +19,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
+  const [company, setCompany] = useState<any | null>(null);
+  const [hasCompany, setHasCompany] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,9 +34,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (currentSession?.user) {
           setTimeout(() => {
             fetchProfile(currentSession.user.id);
+            fetchCompany(currentSession.user.id);
           }, 0);
         } else {
           setProfile(null);
+          setCompany(null);
+          setHasCompany(false);
         }
       }
     );
@@ -44,6 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (currentSession?.user) {
         fetchProfile(currentSession.user.id);
+        fetchCompany(currentSession.user.id);
       }
       
       setLoading(false);
@@ -69,17 +77,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchCompany = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('companies')
+        .select(`
+          *,
+          company_types(name),
+          company_legal_forms(name)
+        `)
+        .eq('user_id', userId)
+        .single();
+        
+      if (error) {
+        if (error.code !== 'PGRST116') { // PGRST116 means no rows returned
+          console.error('Error fetching company:', error);
+        }
+        setHasCompany(false);
+        return;
+      }
+      
+      setCompany(data);
+      setHasCompany(true);
+    } catch (error) {
+      console.error('Error fetching company:', error);
+      setHasCompany(false);
+    }
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     setProfile(null);
+    setCompany(null);
+    setHasCompany(false);
   };
 
   const value = {
     session,
     user,
     profile,
+    company,
     signOut,
-    loading
+    loading,
+    hasCompany
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

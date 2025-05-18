@@ -30,5 +30,28 @@
     "language": "Language",
     "logOut": "Log out"
   },
+  "company": {
+    "create": "Create Company",
+    "companyData": "Company Information",
+    "pleaseProvide": "Please provide your company information",
+    "companyType": "Company Type",
+    "selectType": "Select company type",
+    "companyName": "Company Name",
+    "legalForm": "Legal Form",
+    "selectLegalForm": "Select legal form",
+    "address": "Address",
+    "street": "Street and Number",
+    "postalCode": "Postal Code",
+    "city": "City",
+    "country": "Country",
+    "vatId": "VAT ID (optional)",
+    "taxNumber": "Tax Number (optional)",
+    "creating": "Creating company...",
+    "create": "Create company",
+    "success": "Company created",
+    "successMessage": "Your company has been successfully created.",
+    "error": "Error",
+    "errorMessage": "Error creating company: "
+  },
   "loading": "Loading..."
 }

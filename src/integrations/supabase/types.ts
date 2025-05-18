@@ -9,6 +9,99 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      companies: {
+        Row: {
+          city: string
+          company_type_id: number
+          country: string
+          created_at: string
+          id: string
+          legal_form_id: number
+          name: string
+          postal_code: string
+          street: string
+          tax_number: string | null
+          updated_at: string
+          user_id: string
+          vat_id: string | null
+        }
+        Insert: {
+          city: string
+          company_type_id: number
+          country?: string
+          created_at?: string
+          id?: string
+          legal_form_id: number
+          name: string
+          postal_code: string
+          street: string
+          tax_number?: string | null
+          updated_at?: string
+          user_id: string
+          vat_id?: string | null
+        }
+        Update: {
+          city?: string
+          company_type_id?: number
+          country?: string
+          created_at?: string
+          id?: string
+          legal_form_id?: number
+          name?: string
+          postal_code?: string
+          street?: string
+          tax_number?: string | null
+          updated_at?: string
+          user_id?: string
+          vat_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "companies_company_type_id_fkey"
+            columns: ["company_type_id"]
+            isOneToOne: false
+            referencedRelation: "company_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "companies_legal_form_id_fkey"
+            columns: ["legal_form_id"]
+            isOneToOne: false
+            referencedRelation: "company_legal_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_legal_forms: {
+        Row: {
+          id: number
+          name: string
+        }
+        Insert: {
+          id?: number
+          name: string
+        }
+        Update: {
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      company_types: {
+        Row: {
+          id: number
+          name: string
+        }
+        Insert: {
+          id?: number
+          name: string
+        }
+        Update: {
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
