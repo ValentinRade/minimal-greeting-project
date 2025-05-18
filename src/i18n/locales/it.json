@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "Benvenuto",
@@ -28,7 +27,8 @@
     "email": "Email",
     "phone": "Telefono",
     "language": "Lingua",
-    "logOut": "Esci"
+    "logOut": "Esci",
+    "selectLanguage": "Seleziona lingua"
   },
   "loading": "Caricamento..."
 }

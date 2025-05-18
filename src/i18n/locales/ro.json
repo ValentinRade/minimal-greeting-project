@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "Bun venit",
@@ -28,7 +27,32 @@
     "email": "Email",
     "phone": "Telefon",
     "language": "Limbă",
-    "logOut": "Deconectare"
+    "logOut": "Deconectare",
+    "selectLanguage": "Selectează limba"
+  },
+  "dashboard": {
+    "shipperWelcome": "Tabloul de Bord al Expeditorului",
+    "subcontractorWelcome": "Tabloul de Bord al Subcontractorului",
+    "shipments": "Expedieri",
+    "activeShipments": "Expedieri active",
+    "contractors": "Contractori",
+    "activeContractors": "Contractori activi",
+    "customers": "Clienți",
+    "activeCustomers": "Clienți activi",
+    "shipmentActivity": "Activitate de Expediere",
+    "recentShipments": "Expedieri recente și actualizări de stare",
+    "inTransit": "În Transit",
+    "viewAllShipments": "Vizualizați toate expedierile",
+    "assignments": "Sarcini",
+    "activeAssignments": "Sarcini active",
+    "vehicles": "Vehicule",
+    "registeredVehicles": "Vehicule înregistrate",
+    "drivers": "Șoferi",
+    "activeDrivers": "Șoferi activi",
+    "transportActivity": "Activitate de Transport",
+    "recentTransports": "Sarcini de transport recente",
+    "assigned": "Atribuit",
+    "viewAllTransports": "Vizualizați toate transporturile"
   },
   "loading": "Se încarcă..."
 }

@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "Bienvenue",
@@ -28,7 +27,32 @@
     "email": "Email",
     "phone": "Téléphone",
     "language": "Langue",
-    "logOut": "Déconnexion"
+    "logOut": "Déconnexion",
+    "selectLanguage": "Sélectionner la langue"
+  },
+  "dashboard": {
+    "shipperWelcome": "Tableau de Bord Expéditeur",
+    "subcontractorWelcome": "Tableau de Bord Sous-traitant",
+    "shipments": "Expéditions",
+    "activeShipments": "Expéditions actives",
+    "contractors": "Contractants",
+    "activeContractors": "Contractants actifs",
+    "customers": "Clients",
+    "activeCustomers": "Clients actifs",
+    "shipmentActivity": "Activité d'Expédition",
+    "recentShipments": "Expéditions récentes et mises à jour de statut",
+    "inTransit": "En Transit",
+    "viewAllShipments": "Voir toutes les expéditions",
+    "assignments": "Affectations",
+    "activeAssignments": "Affectations actives",
+    "vehicles": "Véhicules",
+    "registeredVehicles": "Véhicules enregistrés",
+    "drivers": "Chauffeurs",
+    "activeDrivers": "Chauffeurs actifs",
+    "transportActivity": "Activité de Transport",
+    "recentTransports": "Affectations de transport récentes",
+    "assigned": "Affecté",
+    "viewAllTransports": "Voir tous les transports"
   },
   "loading": "Chargement..."
 }

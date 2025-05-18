@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "Bienvenido",
@@ -28,7 +27,32 @@
     "email": "Correo electrónico",
     "phone": "Teléfono",
     "language": "Idioma",
-    "logOut": "Cerrar sesión"
+    "logOut": "Cerrar sesión",
+    "selectLanguage": "Seleccionar idioma"
+  },
+  "dashboard": {
+    "shipperWelcome": "Panel de Control del Remitente",
+    "subcontractorWelcome": "Panel de Control del Subcontratista",
+    "shipments": "Envíos",
+    "activeShipments": "Envíos activos",
+    "contractors": "Contratistas",
+    "activeContractors": "Contratistas activos",
+    "customers": "Clientes",
+    "activeCustomers": "Clientes activos",
+    "shipmentActivity": "Actividad de Envíos",
+    "recentShipments": "Envíos recientes y actualizaciones de estado",
+    "inTransit": "En Tránsito",
+    "viewAllShipments": "Ver todos los envíos",
+    "assignments": "Asignaciones",
+    "activeAssignments": "Asignaciones activas",
+    "vehicles": "Vehículos",
+    "registeredVehicles": "Vehículos registrados",
+    "drivers": "Conductores",
+    "activeDrivers": "Conductores activos",
+    "transportActivity": "Actividad de Transporte",
+    "recentTransports": "Asignaciones de transporte recientes",
+    "assigned": "Asignado",
+    "viewAllTransports": "Ver todos los transportes"
   },
   "loading": "Cargando..."
 }

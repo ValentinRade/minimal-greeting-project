@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "Hoş geldiniz",
@@ -28,7 +27,32 @@
     "email": "E-posta",
     "phone": "Telefon",
     "language": "Dil",
-    "logOut": "Çıkış Yap"
+    "logOut": "Çıkış Yap",
+    "selectLanguage": "Dil seçin"
+  },
+  "dashboard": {
+    "shipperWelcome": "Gönderici Paneli",
+    "subcontractorWelcome": "Taşeron Paneli",
+    "shipments": "Sevkiyatlar",
+    "activeShipments": "Aktif sevkiyatlar",
+    "contractors": "Yükleniciler",
+    "activeContractors": "Aktif yükleniciler",
+    "customers": "Müşteriler",
+    "activeCustomers": "Aktif müşteriler",
+    "shipmentActivity": "Sevkiyat Aktivitesi",
+    "recentShipments": "Son sevkiyatlar ve durum güncellemeleri",
+    "inTransit": "Taşıma Aşamasında",
+    "viewAllShipments": "Tüm sevkiyatları görüntüle",
+    "assignments": "Görevlendirmeler",
+    "activeAssignments": "Aktif görevlendirmeler",
+    "vehicles": "Araçlar",
+    "registeredVehicles": "Kayıtlı araçlar",
+    "drivers": "Sürücüler",
+    "activeDrivers": "Aktif sürücüler",
+    "transportActivity": "Taşıma Aktivitesi",
+    "recentTransports": "Son taşıma görevlendirmeleri",
+    "assigned": "Atanmış",
+    "viewAllTransports": "Tüm taşımaları görüntüle"
   },
   "loading": "Yükleniyor..."
 }

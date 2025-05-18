@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "Welcome",
@@ -28,7 +27,8 @@
     "email": "Email",
     "phone": "Phone",
     "language": "Language",
-    "logOut": "Log out"
+    "logOut": "Log out",
+    "selectLanguage": "Select language"
   },
   "company": {
     "create": "Create Company",

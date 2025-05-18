@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "Добре дошли",
@@ -28,7 +27,32 @@
     "email": "Имейл",
     "phone": "Телефон",
     "language": "Език",
-    "logOut": "Изход"
+    "logOut": "Изход",
+    "selectLanguage": "Изберете език"
+  },
+  "dashboard": {
+    "shipperWelcome": "Контролен Панел на Изпращача",
+    "subcontractorWelcome": "Контролен Панел на Подизпълнителя",
+    "shipments": "Пратки",
+    "activeShipments": "Активни пратки",
+    "contractors": "Контрактори",
+    "activeContractors": "Активни контрактори",
+    "customers": "Клиенти",
+    "activeCustomers": "Активни клиенти",
+    "shipmentActivity": "Активност на Пратките",
+    "recentShipments": "Последни пратки и обновления на статуса",
+    "inTransit": "В Движение",
+    "viewAllShipments": "Прегледайте всички пратки",
+    "assignments": "Задачи",
+    "activeAssignments": "Активни задачи",
+    "vehicles": "Превозни средства",
+    "registeredVehicles": "Регистрирани превозни средства",
+    "drivers": "Шофьори",
+    "activeDrivers": "Активни шофьори",
+    "transportActivity": "Транспортна Активност",
+    "recentTransports": "Последни транспортни задачи",
+    "assigned": "Назначен",
+    "viewAllTransports": "Прегледайте всички транспорти"
   },
   "loading": "Зареждане..."
 }
