@@ -29,11 +29,24 @@ const inviteFormSchema = z.object({
 
 type InviteFormValues = z.infer<typeof inviteFormSchema>;
 
+interface CompanyInvitation {
+  id: string;
+  company_id: string;
+  email: string;
+  role: CompanyRole;
+  invited_by: string;
+  invited_at: string | null;
+  accepted_at: string | null;
+  expires_at: string;
+  token: string;
+  invited_by_email?: string;
+}
+
 const CompanyInvitations = () => {
   const { t } = useTranslation();
   const { company, user } = useAuth();
   const { toast } = useToast();
-  const [invitations, setInvitations] = useState<any[]>([]);
+  const [invitations, setInvitations] = useState<CompanyInvitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,7 +86,8 @@ const CompanyInvitations = () => {
     try {
       setLoading(true);
       
-      const { data, error } = await supabase
+      // 1. Get the invitations data
+      const { data: invitationsData, error } = await supabase
         .from('company_invitations')
         .select('*')
         .eq('company_id', company?.id)
@@ -81,7 +95,43 @@ const CompanyInvitations = () => {
       
       if (error) throw error;
       
-      setInvitations(data || []);
+      if (!invitationsData || invitationsData.length === 0) {
+        setInvitations([]);
+        setLoading(false);
+        return;
+      }
+      
+      // 2. Get all invited_by user IDs to fetch their emails
+      const invitedByUserIds = invitationsData
+        .map(invitation => invitation.invited_by)
+        .filter(Boolean);
+      
+      // 3. Use our PostgreSQL function to fetch user emails for the inviter
+      const { data: emailData, error: emailError } = await supabase
+        .rpc('get_user_emails', { user_ids: invitedByUserIds });
+        
+      if (emailError) {
+        console.error('Error fetching user emails:', emailError);
+        // Continue with processing the data we have
+      }
+      
+      // Map emails to inviters
+      const emailMap = new Map<string, string>();
+      if (emailData && Array.isArray(emailData)) {
+        emailData.forEach((item: { user_id: string, email: string }) => {
+          emailMap.set(item.user_id, item.email);
+        });
+      }
+      
+      // 4. Combine all the data
+      const formattedInvitations = invitationsData.map(invitation => {
+        return {
+          ...invitation,
+          invited_by_email: emailMap.get(invitation.invited_by) || ''
+        } as CompanyInvitation;
+      });
+      
+      setInvitations(formattedInvitations);
     } catch (error: any) {
       toast({
         title: t('settings.fetchError'),
@@ -165,7 +215,7 @@ const CompanyInvitations = () => {
     }
   };
 
-  const handleResendInvitation = async (invitation: any) => {
+  const handleResendInvitation = async (invitation: CompanyInvitation) => {
     try {
       // Update the expiration date to 7 days from now
       const expiresAt = addDays(new Date(), 7).toISOString();
@@ -212,7 +262,7 @@ const CompanyInvitations = () => {
     }
   };
 
-  const getInvitationStatus = (invitation: any) => {
+  const getInvitationStatus = (invitation: CompanyInvitation) => {
     if (invitation.accepted_at) {
       return {
         label: t('settings.accepted'),
