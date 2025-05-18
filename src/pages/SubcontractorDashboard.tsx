@@ -13,7 +13,7 @@ const SubcontractorDashboard = () => {
     <AppLayout>
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold">{t('dashboard.welcomeMessage')}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold">{t('dashboard.subcontractorWelcome')}</h1>
           <p className="text-gray-500 mt-1">{t('dashboard.todayDate', { date: new Date().toLocaleDateString() })}</p>
         </div>
         
