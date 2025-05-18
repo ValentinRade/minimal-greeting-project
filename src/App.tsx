@@ -23,6 +23,9 @@ import CompanyUsers from "./pages/settings/CompanyUsers";
 import CompanyInvitations from "./pages/settings/CompanyInvitations";
 import RolesInfo from "./pages/settings/RolesInfo";
 
+// Subcontractor routes
+import SubcontractorPreferencesRoute from "./routes/SubcontractorPreferencesRoute";
+
 // Import i18n for internationalization
 import '@/i18n';
 
@@ -70,6 +73,13 @@ const App = () => (
               <Route path="/dashboard/subcontractor" element={
                 <ProtectedRoute>
                   <SubcontractorDashboard />
+                </ProtectedRoute>
+              } />
+              
+              {/* Subcontractor Preferences route */}
+              <Route path="/dashboard/subcontractor/preferences" element={
+                <ProtectedRoute>
+                  <SubcontractorPreferencesRoute />
                 </ProtectedRoute>
               } />
               
