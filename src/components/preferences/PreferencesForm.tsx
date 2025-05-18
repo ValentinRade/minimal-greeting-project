@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,6 +14,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
+import { Json } from '@/integrations/supabase/types';
 
 // Generate year options from 2000 to 2025
 const yearOptions = Array.from({ length: 26 }, (_, i) => (2000 + i).toString());
@@ -90,20 +90,19 @@ const formSchema = z.object({
 type PreferencesFormValues = z.infer<typeof formSchema>;
 
 // Helper type for Supabase JSON format
+// Updated to account for the Json type from Supabase
 type JsonFormData = {
-  start_date_transport: {
-    month: string;
-    year: string;
-  };
-  team_size: {
-    drivers: number;
-    dispatchers: number;
-    others: number;
-  };
-  communication: {
-    response_time: 'less_1h' | '1_4h' | '4_24h' | 'more_24h';
-    languages: string[];
-  };
+  start_date_transport: Json; // Changed to Json type
+  team_size: Json; // Changed to Json type
+  communication: Json; // Changed to Json type
+  preferred_tour_types: string[];
+  flexibility: string;
+  specialization: string | null;
+  frequent_routes: string[];
+  client_types: string[];
+  problem_handling: string | null;
+  expectations_from_shipper: string | null;
+  order_preference: string;
   [key: string]: any;
 }
 
@@ -184,7 +183,7 @@ const PreferencesForm: React.FC = () => {
           throw error;
         }
         
-        return data as JsonFormData;
+        return data as unknown as JsonFormData; // Properly cast through unknown
       } catch (error) {
         console.error('Error in preferences query:', error);
         return null;
@@ -246,36 +245,71 @@ const PreferencesForm: React.FC = () => {
   // Load existing preferences into form when data is fetched
   useEffect(() => {
     if (userPreferences) {
-      // Parse the JSON data safely from Supabase
-      const startDateTransport = userPreferences.start_date_transport && typeof userPreferences.start_date_transport === 'object'
-        ? userPreferences.start_date_transport
-        : { month: monthOptions[0], year: yearOptions[0] };
-      
-      const teamSize = userPreferences.team_size && typeof userPreferences.team_size === 'object'
-        ? userPreferences.team_size
-        : { drivers: 0, dispatchers: 0, others: 0 };
-      
-      const communication = userPreferences.communication && typeof userPreferences.communication === 'object'
-        ? userPreferences.communication
-        : { response_time: '1_4h', languages: ['german'] };
-      
-      // Reset the form with the parsed values
-      form.reset({
-        start_date_transport: startDateTransport as { month: string; year: string },
-        team_size: teamSize as { drivers: number; dispatchers: number; others: number },
-        preferred_tour_types: userPreferences.preferred_tour_types || [],
-        flexibility: userPreferences.flexibility as any || 'both',
-        specialization: userPreferences.specialization || '',
-        frequent_routes: userPreferences.frequent_routes || [],
-        client_types: userPreferences.client_types || [],
-        communication: communication as { response_time: 'less_1h' | '1_4h' | '4_24h' | 'more_24h'; languages: string[] },
-        problem_handling: userPreferences.problem_handling || '',
-        expectations_from_shipper: userPreferences.expectations_from_shipper || '',
-        order_preference: userPreferences.order_preference as any || 'regular',
-      });
-      
-      // Update routes state to match the loaded preferences
-      setRoutes(userPreferences.frequent_routes || []);
+      try {
+        // Parse JSON data safely from Supabase
+        // Handle start_date_transport
+        let startDateTransport = { month: monthOptions[0], year: yearOptions[0] };
+        if (userPreferences.start_date_transport) {
+          const startTransport = userPreferences.start_date_transport as any;
+          if (typeof startTransport === 'object' && startTransport !== null) {
+            startDateTransport = {
+              month: typeof startTransport.month === 'string' ? startTransport.month : monthOptions[0],
+              year: typeof startTransport.year === 'string' ? startTransport.year : yearOptions[0]
+            };
+          }
+        }
+        
+        // Handle team_size
+        let teamSize = { drivers: 0, dispatchers: 0, others: 0 };
+        if (userPreferences.team_size) {
+          const team = userPreferences.team_size as any;
+          if (typeof team === 'object' && team !== null) {
+            teamSize = {
+              drivers: typeof team.drivers === 'number' ? team.drivers : 0,
+              dispatchers: typeof team.dispatchers === 'number' ? team.dispatchers : 0,
+              others: typeof team.others === 'number' ? team.others : 0
+            };
+          }
+        }
+        
+        // Handle communication
+        let communication = { response_time: '1_4h' as const, languages: ['german'] };
+        if (userPreferences.communication) {
+          const comm = userPreferences.communication as any;
+          if (typeof comm === 'object' && comm !== null) {
+            communication = {
+              response_time: typeof comm.response_time === 'string' ? 
+                (comm.response_time as 'less_1h' | '1_4h' | '4_24h' | 'more_24h') : '1_4h',
+              languages: Array.isArray(comm.languages) ? comm.languages : ['german']
+            };
+          }
+        }
+        
+        // Reset the form with the parsed values
+        form.reset({
+          start_date_transport: startDateTransport,
+          team_size: teamSize,
+          preferred_tour_types: Array.isArray(userPreferences.preferred_tour_types) ? 
+            userPreferences.preferred_tour_types : [],
+          flexibility: (userPreferences.flexibility || 'both') as 'spot' | 'fixed' | 'both' | '24_7',
+          specialization: userPreferences.specialization || '',
+          frequent_routes: Array.isArray(userPreferences.frequent_routes) ? 
+            userPreferences.frequent_routes : [],
+          client_types: Array.isArray(userPreferences.client_types) ? 
+            userPreferences.client_types : [],
+          communication: communication,
+          problem_handling: userPreferences.problem_handling || '',
+          expectations_from_shipper: userPreferences.expectations_from_shipper || '',
+          order_preference: (userPreferences.order_preference || 'regular') as 'regular' | 'spontaneous',
+        });
+        
+        // Update routes state to match the loaded preferences
+        setRoutes(Array.isArray(userPreferences.frequent_routes) ? 
+          userPreferences.frequent_routes : []);
+      } catch (error) {
+        console.error('Error parsing preference data:', error);
+        toast.error('Fehler beim Laden der Präferenzen');
+      }
     }
   }, [userPreferences, form]);
 
