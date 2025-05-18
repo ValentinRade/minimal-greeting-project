@@ -198,5 +198,59 @@
       "basicAccess": "Acceso básico al sistema",
       "accessDriverFeatures": "Acceder a funciones para conductores"
     }
+  },
+  "selection": {
+    "title": "Criterios de Selección",
+    "description": "Gestiona tus criterios de selección",
+    "categories": "Categorías",
+    "prequalifications": "Precalificaciones",
+    "preferences": "Preferencias",
+    "ranking": "Clasificación",
+    "overview": "Resumen",
+    "edit": "Editar",
+    "editButton": "Editar",
+    "noData": "No hay datos disponibles. Haga clic en 'Editar' para añadir sus criterios de selección."
+  },
+  "prequalifications": {
+    "title": "Precalificaciones",
+    "overview": "Resumen de Precalificaciones",
+    "edit": "Editar Precalificaciones",
+    "formTitle": "Introducir Precalificaciones",
+    "pqKepDescription": "Precalificación para Servicios de Mensajería, Express y Paquetería",
+    "bnaRegistration": "Registro en la Agencia Federal de Redes (KEP)",
+    "adrCertificate": "Certificado ADR",
+    "adr1000": "ADR hasta 1000 puntos",
+    "euLicense": "Licencia UE",
+    "other": "Otra Precalificación",
+    "otherName": "Nombre de otra precalificación",
+    "uploadDocument": "Subir documento",
+    "submit": "Enviar",
+    "saveSuccess": "Guardado con éxito",
+    "saveSuccessMessage": "Sus precalificaciones se han actualizado con éxito.",
+    "saveError": "Error al guardar",
+    "saveErrorMessage": "No se pudieron guardar sus precalificaciones."
+  },
+  "preferences": {
+    "title": "Preferencias",
+    "overview": "Resumen de Preferencias",
+    "edit": "Editar Preferencias"
+  },
+  "ranking": {
+    "title": "Clasificación",
+    "overview": "Resumen de Clasificación",
+    "description": "Aquí puede ver su clasificación actual y cómo mejorarla.",
+    "yourRank": "Su Clasificación",
+    "outOf": "de",
+    "improve": "Mejorar Clasificación",
+    "factors": "Factores que afectan a su clasificación",
+    "noData": "No hay datos de clasificación disponibles"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "back": "Atrás"
   }
 }

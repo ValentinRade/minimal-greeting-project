@@ -198,5 +198,59 @@
       "basicAccess": "Podstawowy dostęp do systemu",
       "accessDriverFeatures": "Dostęp do funkcji dla kierowców"
     }
+  },
+  "selection": {
+    "title": "Kryteria Wyboru",
+    "description": "Zarządzaj kryteriami wyboru",
+    "categories": "Kategorie",
+    "prequalifications": "Prekwalifikacje",
+    "preferences": "Preferencje",
+    "ranking": "Ranking",
+    "overview": "Przegląd",
+    "edit": "Edytuj",
+    "editButton": "Edytuj",
+    "noData": "Brak dostępnych danych. Kliknij 'Edytuj', aby dodać swoje kryteria wyboru."
+  },
+  "prequalifications": {
+    "title": "Prekwalifikacje",
+    "overview": "Przegląd Prekwalifikacji",
+    "edit": "Edytuj Prekwalifikacje",
+    "formTitle": "Wprowadź Prekwalifikacje",
+    "pqKepDescription": "Prekwalifikacja dla usług Kurierskich, Ekspresowych i Paczkowych",
+    "bnaRegistration": "Rejestracja w Federalnej Agencji Sieci (KEP)",
+    "adrCertificate": "Certyfikat ADR",
+    "adr1000": "ADR do 1000 punktów",
+    "euLicense": "Licencja UE",
+    "other": "Inna Prekwalifikacja",
+    "otherName": "Nazwa innej prekwalifikacji",
+    "uploadDocument": "Prześlij dokument",
+    "submit": "Wyślij",
+    "saveSuccess": "Zapisano pomyślnie",
+    "saveSuccessMessage": "Twoje prekwalifikacje zostały pomyślnie zaktualizowane.",
+    "saveError": "Błąd zapisywania",
+    "saveErrorMessage": "Nie można było zapisać Twoich prekwalifikacji."
+  },
+  "preferences": {
+    "title": "Preferencje",
+    "overview": "Przegląd Preferencji",
+    "edit": "Edytuj Preferencje"
+  },
+  "ranking": {
+    "title": "Ranking",
+    "overview": "Przegląd Rankingu",
+    "description": "Tutaj możesz zobaczyć swój obecny ranking i jak go poprawić.",
+    "yourRank": "Twój Ranking",
+    "outOf": "z",
+    "improve": "Popraw Ranking",
+    "factors": "Czynniki wpływające na Twój ranking",
+    "noData": "Brak dostępnych danych rankingu"
+  },
+  "common": {
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "confirm": "Potwierdź",
+    "back": "Wróć"
   }
 }

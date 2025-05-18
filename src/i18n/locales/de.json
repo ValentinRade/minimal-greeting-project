@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "Willkommen",
@@ -222,5 +221,59 @@
       "basicAccess": "Grundlegender Systemzugriff",
       "accessDriverFeatures": "Zugriff auf Fahrerfunktionen"
     }
+  },
+  "selection": {
+    "title": "Auswahlkriterien",
+    "description": "Verwalten Sie Ihre Auswahlkriterien",
+    "categories": "Kategorien",
+    "prequalifications": "Präqualifikationen",
+    "preferences": "Präferenzen",
+    "ranking": "Ranking",
+    "overview": "Übersicht",
+    "edit": "Bearbeiten",
+    "editButton": "Bearbeiten",
+    "noData": "Keine Daten vorhanden. Klicken Sie auf 'Bearbeiten', um Ihre Auswahlkriterien hinzuzufügen."
+  },
+  "prequalifications": {
+    "title": "Präqualifikationen",
+    "overview": "Präqualifikationen Übersicht",
+    "edit": "Präqualifikationen bearbeiten",
+    "formTitle": "Präqualifikationen angeben",
+    "pqKepDescription": "Präqualifikation für Kurier-, Express- und Paketdienste",
+    "bnaRegistration": "Registrierung bei der Bundesnetzagentur (KEP)",
+    "adrCertificate": "ADR-Schein",
+    "adr1000": "ADR bis 1000 Punkte",
+    "euLicense": "EU-Lizenz",
+    "other": "Weitere Präqualifikation",
+    "otherName": "Bezeichnung der weiteren Präqualifikation",
+    "uploadDocument": "Dokument hochladen",
+    "submit": "Absenden",
+    "saveSuccess": "Erfolgreich gespeichert",
+    "saveSuccessMessage": "Ihre Präqualifikationen wurden erfolgreich aktualisiert.",
+    "saveError": "Fehler beim Speichern",
+    "saveErrorMessage": "Ihre Präqualifikationen konnten nicht gespeichert werden."
+  },
+  "preferences": {
+    "title": "Präferenzen",
+    "overview": "Präferenzen Übersicht",
+    "edit": "Präferenzen bearbeiten"
+  },
+  "ranking": {
+    "title": "Ranking",
+    "overview": "Ranking Übersicht",
+    "description": "Hier sehen Sie Ihr aktuelles Ranking und wie Sie es verbessern können.",
+    "yourRank": "Ihr Ranking",
+    "outOf": "von",
+    "improve": "Ranking verbessern",
+    "factors": "Einflussfaktoren auf Ihr Ranking",
+    "noData": "Keine Ranking-Daten verfügbar"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "confirm": "Bestätigen",
+    "back": "Zurück"
   }
 }

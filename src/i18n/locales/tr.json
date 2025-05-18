@@ -1,5 +1,3 @@
-
-
 {
   "auth": {
     "welcome": "Hoş geldiniz",
@@ -185,7 +183,7 @@
     "financeManager": "Finans Müdürü",
     "employee": "Çalışan",
     "driver": "Sürücü",
-    "companyAdminDesc": "Şirket ayarlarını ve kullanıcılarını yönetmek için tam erişime sahip",
+    "companyAdminDesc": "Şirket ayarlarını ve kullanıcılar��nı yönetmek için tam erişime sahip",
     "logisticsManagerDesc": "Lojistik operasyonlarını ve görevleri yönetebilir",
     "financeManagerDesc": "Finansal operasyonları ve raporları yönetebilir",
     "employeeDesc": "Atanan görevleri gerçekleştirmek için temel erişime sahip",
@@ -224,6 +222,59 @@
     "successMessage": "Şirketiniz başarıyla oluşturuldu.",
     "error": "Hata",
     "errorMessage": "Şirket oluşturulurken hata oluştu: "
+  },
+  "selection": {
+    "title": "Seçim Kriterleri",
+    "description": "Seçim kriterlerinizi yönetin",
+    "categories": "Kategoriler",
+    "prequalifications": "Ön Yeterlilikler",
+    "preferences": "Tercihler",
+    "ranking": "Sıralama",
+    "overview": "Genel Bakış",
+    "edit": "Düzenle",
+    "editButton": "Düzenle",
+    "noData": "Veri yok. Seçim kriterlerinizi eklemek için 'Düzenle'ye tıklayın."
+  },
+  "prequalifications": {
+    "title": "Ön Yeterlilikler",
+    "overview": "Ön Yeterlilikler Genel Bakış",
+    "edit": "Ön Yeterlilikleri Düzenle",
+    "formTitle": "Ön Yeterlilikleri Girin",
+    "pqKepDescription": "Kurye, Express ve Paket Hizmetleri için Ön Yeterlilik",
+    "bnaRegistration": "Federal Ağ Ajansına (KEP) Kayıt",
+    "adrCertificate": "ADR Sertifikası",
+    "adr1000": "1000 puana kadar ADR",
+    "euLicense": "AB Lisansı",
+    "other": "Diğer Ön Yeterlilik",
+    "otherName": "Diğer ön yeterliliğin adı",
+    "uploadDocument": "Belge Yükle",
+    "submit": "Gönder",
+    "saveSuccess": "Başarıyla Kaydedildi",
+    "saveSuccessMessage": "Ön yeterlilikleriniz başarıyla güncellendi.",
+    "saveError": "Kaydetme Hatası",
+    "saveErrorMessage": "Ön yeterlilikleriniz kaydedilemedi."
+  },
+  "preferences": {
+    "title": "Tercihler",
+    "overview": "Tercihler Genel Bakış",
+    "edit": "Tercihleri Düzenle"
+  },
+  "ranking": {
+    "title": "Sıralama",
+    "overview": "Sıralama Genel Bakış",
+    "description": "Burada mevcut sıralamanızı ve nasıl iyileştirebileceğinizi görebilirsiniz.",
+    "yourRank": "Sıralamanız",
+    "outOf": "/",
+    "improve": "Sıralamayı İyileştir",
+    "factors": "Sıralamanızı etkileyen faktörler",
+    "noData": "Sıralama verisi yok"
+  },
+  "common": {
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "confirm": "Onayla",
+    "back": "Geri"
   }
 }
-

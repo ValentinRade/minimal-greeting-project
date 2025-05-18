@@ -198,5 +198,59 @@
       "basicAccess": "Accès de base au système",
       "accessDriverFeatures": "Accéder aux fonctionnalités du chauffeur"
     }
+  },
+  "selection": {
+    "title": "Critères de Sélection",
+    "description": "Gérez vos critères de sélection",
+    "categories": "Catégories",
+    "prequalifications": "Préqualifications",
+    "preferences": "Préférences",
+    "ranking": "Classement",
+    "overview": "Aperçu",
+    "edit": "Modifier",
+    "editButton": "Modifier",
+    "noData": "Aucune donnée disponible. Cliquez sur 'Modifier' pour ajouter vos critères de sélection."
+  },
+  "prequalifications": {
+    "title": "Préqualifications",
+    "overview": "Aperçu des Préqualifications",
+    "edit": "Modifier les Préqualifications",
+    "formTitle": "Saisir les Préqualifications",
+    "pqKepDescription": "Préqualification pour les services de Courrier, Express et Colis",
+    "bnaRegistration": "Enregistrement auprès de l'Agence Fédérale des Réseaux (KEP)",
+    "adrCertificate": "Certificat ADR",
+    "adr1000": "ADR jusqu'à 1000 points",
+    "euLicense": "Licence UE",
+    "other": "Autre Préqualification",
+    "otherName": "Nom de l'autre préqualification",
+    "uploadDocument": "Télécharger le document",
+    "submit": "Soumettre",
+    "saveSuccess": "Enregistré avec succès",
+    "saveSuccessMessage": "Vos préqualifications ont été mises à jour avec succès.",
+    "saveError": "Erreur lors de l'enregistrement",
+    "saveErrorMessage": "Vos préqualifications n'ont pas pu être enregistrées."
+  },
+  "preferences": {
+    "title": "Préférences",
+    "overview": "Aperçu des Préférences",
+    "edit": "Modifier les Préférences"
+  },
+  "ranking": {
+    "title": "Classement",
+    "overview": "Aperçu du Classement",
+    "description": "Voici votre classement actuel et comment l'améliorer.",
+    "yourRank": "Votre Classement",
+    "outOf": "sur",
+    "improve": "Améliorer le Classement",
+    "factors": "Facteurs influençant votre classement",
+    "noData": "Aucune donnée de classement disponible"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "confirm": "Confirmer",
+    "back": "Retour"
   }
 }

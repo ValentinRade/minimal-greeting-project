@@ -198,5 +198,59 @@
       "basicAccess": "Accesso base al sistema",
       "accessDriverFeatures": "Accedere a funzionalità per autisti"
     }
+  },
+  "selection": {
+    "title": "Criteri di Selezione",
+    "description": "Gestisci i tuoi criteri di selezione",
+    "categories": "Categorie",
+    "prequalifications": "Prequalificazioni",
+    "preferences": "Preferenze",
+    "ranking": "Classifica",
+    "overview": "Panoramica",
+    "edit": "Modifica",
+    "editButton": "Modifica",
+    "noData": "Nessun dato disponibile. Clicca su 'Modifica' per aggiungere i tuoi criteri di selezione."
+  },
+  "prequalifications": {
+    "title": "Prequalificazioni",
+    "overview": "Panoramica Prequalificazioni",
+    "edit": "Modifica Prequalificazioni",
+    "formTitle": "Inserisci Prequalificazioni",
+    "pqKepDescription": "Prequalificazione per Servizi di Corriere, Express e Pacchi",
+    "bnaRegistration": "Registrazione presso l'Agenzia Federale delle Reti (KEP)",
+    "adrCertificate": "Certificato ADR",
+    "adr1000": "ADR fino a 1000 punti",
+    "euLicense": "Licenza UE",
+    "other": "Altra Prequalificazione",
+    "otherName": "Nome dell'altra prequalificazione",
+    "uploadDocument": "Carica documento",
+    "submit": "Invia",
+    "saveSuccess": "Salvato con successo",
+    "saveSuccessMessage": "Le tue prequalificazioni sono state aggiornate con successo.",
+    "saveError": "Errore di salvataggio",
+    "saveErrorMessage": "Non è stato possibile salvare le tue prequalificazioni."
+  },
+  "preferences": {
+    "title": "Preferenze",
+    "overview": "Panoramica Preferenze",
+    "edit": "Modifica Preferenze"
+  },
+  "ranking": {
+    "title": "Classifica",
+    "overview": "Panoramica Classifica",
+    "description": "Qui puoi vedere la tua classifica attuale e come migliorarla.",
+    "yourRank": "La tua Classifica",
+    "outOf": "su",
+    "improve": "Migliora la Classifica",
+    "factors": "Fattori che influenzano la tua classifica",
+    "noData": "Nessun dato di classifica disponibile"
+  },
+  "common": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "confirm": "Conferma",
+    "back": "Indietro"
   }
 }

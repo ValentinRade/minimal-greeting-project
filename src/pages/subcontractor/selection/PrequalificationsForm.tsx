@@ -69,16 +69,16 @@ const PrequalificationsForm: React.FC = () => {
       if (error) throw error;
       
       toast({
-        title: t('prequalifications.saveSuccess', 'Erfolgreich gespeichert'),
-        description: t('prequalifications.saveSuccessMessage', 'Ihre Präqualifikationen wurden erfolgreich aktualisiert.'),
+        title: t('prequalifications.saveSuccess'),
+        description: t('prequalifications.saveSuccessMessage'),
       });
       
       navigate('/dashboard/subcontractor/selection/prequalifications');
     } catch (error) {
       console.error('Error saving prequalifications:', error);
       toast({
-        title: t('prequalifications.saveError', 'Fehler beim Speichern'),
-        description: t('prequalifications.saveErrorMessage', 'Ihre Präqualifikationen konnten nicht gespeichert werden.'),
+        title: t('prequalifications.saveError'),
+        description: t('prequalifications.saveErrorMessage'),
         variant: 'destructive',
       });
     }
@@ -86,11 +86,11 @@ const PrequalificationsForm: React.FC = () => {
   
   return (
     <div className="max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">{t('prequalifications.edit', 'Präqualifikationen bearbeiten')}</h1>
+      <h1 className="text-2xl font-bold mb-6">{t('prequalifications.edit')}</h1>
       
       <Card>
         <CardHeader>
-          <CardTitle>{t('prequalifications.formTitle', 'Präqualifikationen angeben')}</CardTitle>
+          <CardTitle>{t('prequalifications.formTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -109,7 +109,7 @@ const PrequalificationsForm: React.FC = () => {
                     <div className="space-y-1 leading-none">
                       <FormLabel>PQ KEP</FormLabel>
                       <FormDescription>
-                        {t('prequalifications.pqKepDescription', 'Präqualifikation für Kurier-, Express- und Paketdienste')}
+                        {t('prequalifications.pqKepDescription')}
                       </FormDescription>
                     </div>
                   </FormItem>
@@ -128,7 +128,7 @@ const PrequalificationsForm: React.FC = () => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>{t('prequalifications.bnaRegistration', 'Registrierung bei der Bundesnetzagentur (KEP)')}</FormLabel>
+                      <FormLabel>{t('prequalifications.bnaRegistration')}</FormLabel>
                     </div>
                   </FormItem>
                 )}
@@ -146,7 +146,7 @@ const PrequalificationsForm: React.FC = () => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>{t('prequalifications.adrCertificate', 'ADR-Schein')}</FormLabel>
+                      <FormLabel>{t('prequalifications.adrCertificate')}</FormLabel>
                     </div>
                   </FormItem>
                 )}
@@ -164,7 +164,7 @@ const PrequalificationsForm: React.FC = () => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>{t('prequalifications.adr1000', 'ADR bis 1000 Punkte')}</FormLabel>
+                      <FormLabel>{t('prequalifications.adr1000')}</FormLabel>
                     </div>
                   </FormItem>
                 )}
@@ -182,7 +182,7 @@ const PrequalificationsForm: React.FC = () => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>{t('prequalifications.euLicense', 'EU-Lizenz')}</FormLabel>
+                      <FormLabel>{t('prequalifications.euLicense')}</FormLabel>
                     </div>
                   </FormItem>
                 )}
@@ -200,7 +200,7 @@ const PrequalificationsForm: React.FC = () => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>{t('prequalifications.other', 'Weitere Präqualifikation')}</FormLabel>
+                      <FormLabel>{t('prequalifications.other')}</FormLabel>
                     </div>
                   </FormItem>
                 )}
@@ -212,7 +212,7 @@ const PrequalificationsForm: React.FC = () => {
                   name="other_qualification_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('prequalifications.otherName', 'Bezeichnung der weiteren Präqualifikation')}</FormLabel>
+                      <FormLabel>{t('prequalifications.otherName')}</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -227,10 +227,10 @@ const PrequalificationsForm: React.FC = () => {
                   variant="outline"
                   onClick={() => navigate('/dashboard/subcontractor/selection/prequalifications')}
                 >
-                  {t('common.cancel', 'Abbrechen')}
+                  {t('common.cancel')}
                 </Button>
                 <Button type="submit">
-                  {t('common.save', 'Speichern')}
+                  {t('common.save')}
                 </Button>
               </div>
             </form>

@@ -1,4 +1,3 @@
-
 {
   "dashboard": {
     "overview": "Overview",
@@ -225,5 +224,59 @@
     "successMessage": "Your company has been successfully created.",
     "error": "Error",
     "errorMessage": "Error creating company: "
+  },
+  "selection": {
+    "title": "Selection Criteria",
+    "description": "Manage your selection criteria",
+    "categories": "Categories",
+    "prequalifications": "Prequalifications",
+    "preferences": "Preferences",
+    "ranking": "Ranking",
+    "overview": "Overview",
+    "edit": "Edit",
+    "editButton": "Edit",
+    "noData": "No data available. Click 'Edit' to add your selection criteria."
+  },
+  "prequalifications": {
+    "title": "Prequalifications",
+    "overview": "Prequalifications Overview",
+    "edit": "Edit Prequalifications",
+    "formTitle": "Enter Prequalifications",
+    "pqKepDescription": "Prequalification for Courier, Express, and Package Services",
+    "bnaRegistration": "Registration with the Federal Network Agency (KEP)",
+    "adrCertificate": "ADR Certificate",
+    "adr1000": "ADR up to 1000 points",
+    "euLicense": "EU License",
+    "other": "Other Prequalification",
+    "otherName": "Name of other prequalification",
+    "uploadDocument": "Upload Document",
+    "submit": "Submit",
+    "saveSuccess": "Successfully Saved",
+    "saveSuccessMessage": "Your prequalifications have been successfully updated.",
+    "saveError": "Error Saving",
+    "saveErrorMessage": "Your prequalifications could not be saved."
+  },
+  "preferences": {
+    "title": "Preferences",
+    "overview": "Preferences Overview",
+    "edit": "Edit Preferences"
+  },
+  "ranking": {
+    "title": "Ranking",
+    "overview": "Ranking Overview",
+    "description": "Here you can see your current ranking and how to improve it.",
+    "yourRank": "Your Ranking",
+    "outOf": "out of",
+    "improve": "Improve Ranking",
+    "factors": "Factors affecting your ranking",
+    "noData": "No ranking data available"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back"
   }
 }

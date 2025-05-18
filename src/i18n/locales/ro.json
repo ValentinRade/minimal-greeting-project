@@ -198,5 +198,59 @@
       "basicAccess": "Acces de bază la sistem",
       "accessDriverFeatures": "Acces la funcționalități pentru șoferi"
     }
+  },
+  "selection": {
+    "title": "Criterii de Selecție",
+    "description": "Gestionați criteriile dvs. de selecție",
+    "categories": "Categorii",
+    "prequalifications": "Precalificări",
+    "preferences": "Preferințe",
+    "ranking": "Clasament",
+    "overview": "Prezentare generală",
+    "edit": "Editare",
+    "editButton": "Editare",
+    "noData": "Nu există date disponibile. Faceți clic pe 'Editare' pentru a adăuga criteriile dvs. de selecție."
+  },
+  "prequalifications": {
+    "title": "Precalificări",
+    "overview": "Prezentare generală a Precalificărilor",
+    "edit": "Editare Precalificări",
+    "formTitle": "Introduceți Precalificările",
+    "pqKepDescription": "Precalificare pentru Servicii de Curierat, Express și Colete",
+    "bnaRegistration": "Înregistrare la Agenția Federală de Rețea (KEP)",
+    "adrCertificate": "Certificat ADR",
+    "adr1000": "ADR până la 1000 de puncte",
+    "euLicense": "Licență UE",
+    "other": "Altă Precalificare",
+    "otherName": "Numele altei precalificări",
+    "uploadDocument": "Încărcați documentul",
+    "submit": "Trimiteți",
+    "saveSuccess": "Salvat cu succes",
+    "saveSuccessMessage": "Precalificările dvs. au fost actualizate cu succes.",
+    "saveError": "Eroare la salvare",
+    "saveErrorMessage": "Precalificările dvs. nu au putut fi salvate."
+  },
+  "preferences": {
+    "title": "Preferințe",
+    "overview": "Prezentare generală a Preferințelor",
+    "edit": "Editare Preferințe"
+  },
+  "ranking": {
+    "title": "Clasament",
+    "overview": "Prezentare generală a Clasamentului",
+    "description": "Aici puteți vedea clasamentul dvs. actual și cum să îl îmbunătățiți.",
+    "yourRank": "Clasamentul dvs.",
+    "outOf": "din",
+    "improve": "Îmbunătățiți Clasamentul",
+    "factors": "Factori care vă afectează clasamentul",
+    "noData": "Nu există date de clasament disponibile"
+  },
+  "common": {
+    "save": "Salvați",
+    "cancel": "Anulați",
+    "edit": "Editare",
+    "delete": "Ștergeți",
+    "confirm": "Confirmați",
+    "back": "Înapoi"
   }
 }
