@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -12,6 +12,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Loader2 } from 'lucide-react';
 
 // Generate year options from 2000 to 2025
 const yearOptions = Array.from({ length: 26 }, (_, i) => (2000 + i).toString());
@@ -90,6 +93,7 @@ const PreferencesForm: React.FC = () => {
   const { t } = useTranslation();
   const [routes, setRoutes] = useState<string[]>([]);
   const [currentRoute, setCurrentRoute] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<PreferencesFormValues>({
     resolver: zodResolver(formSchema),
@@ -118,11 +122,138 @@ const PreferencesForm: React.FC = () => {
     },
   });
 
-  const onSubmit = (data: PreferencesFormValues) => {
-    console.log('Form submitted:', data);
-    
-    // Here you would typically save the data to your backend
-    toast.success('Präferenzen erfolgreich gespeichert');
+  // Get current session and user information
+  const getUserAndCompany = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error('Not authenticated');
+    }
+
+    // Get user's company
+    const { data: companyUsers, error: companyError } = await supabase
+      .from('company_users')
+      .select('company_id')
+      .eq('user_id', session.user.id)
+      .single();
+
+    if (companyError || !companyUsers) {
+      throw new Error('Company not found');
+    }
+
+    return { userId: session.user.id, companyId: companyUsers.company_id };
+  };
+
+  // Query to fetch existing preferences
+  const { data: userPreferences, isLoading: isLoadingPreferences } = useQuery({
+    queryKey: ['subcontractorPreferences'],
+    queryFn: async () => {
+      try {
+        const { userId, companyId } = await getUserAndCompany();
+        
+        const { data, error } = await supabase
+          .from('subcontractor_preferences')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('company_id', companyId)
+          .single();
+          
+        if (error) {
+          // If no data is found, this isn't an error - the user just hasn't set preferences yet
+          if (error.code === 'PGRST116') {
+            return null;
+          }
+          console.error('Error fetching preferences:', error);
+          throw error;
+        }
+        
+        return data;
+      } catch (error) {
+        console.error('Error in preferences query:', error);
+        return null;
+      }
+    },
+  });
+  
+  // Mutation to save preferences
+  const saveMutation = useMutation({
+    mutationFn: async (data: PreferencesFormValues) => {
+      const { userId, companyId } = await getUserAndCompany();
+      
+      const preferenceData = {
+        user_id: userId,
+        company_id: companyId,
+        ...data
+      };
+      
+      // Check if preferences already exist
+      const { data: existingData } = await supabase
+        .from('subcontractor_preferences')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('company_id', companyId)
+        .single();
+      
+      if (existingData) {
+        // Update existing preferences
+        const { error } = await supabase
+          .from('subcontractor_preferences')
+          .update(preferenceData)
+          .eq('id', existingData.id);
+          
+        if (error) throw error;
+        return 'updated';
+      } else {
+        // Insert new preferences
+        const { error } = await supabase
+          .from('subcontractor_preferences')
+          .insert(preferenceData);
+          
+        if (error) throw error;
+        return 'created';
+      }
+    },
+    onSuccess: (result) => {
+      if (result === 'updated') {
+        toast.success('Präferenzen erfolgreich aktualisiert');
+      } else {
+        toast.success('Präferenzen erfolgreich gespeichert');
+      }
+    },
+    onError: (error) => {
+      console.error('Error saving preferences:', error);
+      toast.error('Fehler beim Speichern der Präferenzen');
+    },
+  });
+
+  // Load existing preferences into form when data is fetched
+  useEffect(() => {
+    if (userPreferences) {
+      form.reset({
+        start_date_transport: userPreferences.start_date_transport,
+        team_size: userPreferences.team_size,
+        preferred_tour_types: userPreferences.preferred_tour_types,
+        flexibility: userPreferences.flexibility as any,
+        specialization: userPreferences.specialization || '',
+        frequent_routes: userPreferences.frequent_routes,
+        client_types: userPreferences.client_types,
+        communication: userPreferences.communication as any,
+        problem_handling: userPreferences.problem_handling || '',
+        expectations_from_shipper: userPreferences.expectations_from_shipper || '',
+        order_preference: userPreferences.order_preference as any,
+      });
+      
+      // Update routes state to match the loaded preferences
+      setRoutes(userPreferences.frequent_routes);
+    }
+  }, [userPreferences, form]);
+
+  const onSubmit = async (data: PreferencesFormValues) => {
+    setIsSubmitting(true);
+    try {
+      await saveMutation.mutateAsync(data);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const addRoute = () => {
@@ -147,6 +278,15 @@ const PreferencesForm: React.FC = () => {
     setRoutes(newRoutes);
     form.setValue('frequent_routes', newRoutes);
   };
+
+  if (isLoadingPreferences) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="animate-spin h-8 w-8 text-blue-500" />
+        <span className="ml-2">Daten werden geladen...</span>
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
@@ -608,7 +748,20 @@ const PreferencesForm: React.FC = () => {
           )}
         />
 
-        <Button type="submit" className="w-full md:w-auto">Präferenzen speichern</Button>
+        <Button 
+          type="submit" 
+          className="w-full md:w-auto"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Wird gespeichert...
+            </>
+          ) : (
+            'Präferenzen speichern'
+          )}
+        </Button>
       </form>
     </Form>
   );

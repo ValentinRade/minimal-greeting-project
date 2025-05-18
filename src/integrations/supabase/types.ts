@@ -211,6 +211,71 @@ export type Database = {
         }
         Relationships: []
       }
+      subcontractor_preferences: {
+        Row: {
+          client_types: string[]
+          communication: Json
+          company_id: string
+          created_at: string
+          expectations_from_shipper: string | null
+          flexibility: string
+          frequent_routes: string[]
+          id: string
+          order_preference: string
+          preferred_tour_types: string[]
+          problem_handling: string | null
+          specialization: string | null
+          start_date_transport: Json
+          team_size: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_types?: string[]
+          communication?: Json
+          company_id: string
+          created_at?: string
+          expectations_from_shipper?: string | null
+          flexibility?: string
+          frequent_routes?: string[]
+          id?: string
+          order_preference?: string
+          preferred_tour_types?: string[]
+          problem_handling?: string | null
+          specialization?: string | null
+          start_date_transport?: Json
+          team_size?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_types?: string[]
+          communication?: Json
+          company_id?: string
+          created_at?: string
+          expectations_from_shipper?: string | null
+          flexibility?: string
+          frequent_routes?: string[]
+          id?: string
+          order_preference?: string
+          preferred_tour_types?: string[]
+          problem_handling?: string | null
+          specialization?: string | null
+          start_date_transport?: Json
+          team_size?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_preferences_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
