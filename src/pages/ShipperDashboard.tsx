@@ -68,12 +68,12 @@ const ShipperDashboard = () => {
                 {[1, 2, 3].map((item) => (
                   <div key={item} className="flex items-center justify-between border-b pb-3">
                     <div>
-                      <p className="font-medium">SHP-{2023000 + item}</p>
-                      <p className="text-sm text-gray-500">Berlin → Hamburg</p>
+                      <p className="font-medium">{t('dashboard.shipmentId')}: SHP-{2023000 + item}</p>
+                      <p className="text-sm text-gray-500">{t('dashboard.route')}: Berlin → Hamburg</p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-green-600">{t('dashboard.inTransit')}</p>
-                      <p className="text-sm text-gray-500">ETA: {new Date().toLocaleDateString()}</p>
+                      <p className="text-sm text-gray-500">{t('dashboard.eta')}: {new Date().toLocaleDateString()}</p>
                     </div>
                   </div>
                 ))}

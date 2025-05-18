@@ -68,8 +68,8 @@ const SubcontractorDashboard = () => {
                 {[1, 2, 3].map((item) => (
                   <div key={item} className="flex items-center justify-between border-b pb-3">
                     <div>
-                      <p className="font-medium">TRA-{2023000 + item}</p>
-                      <p className="text-sm text-gray-500">München → Stuttgart</p>
+                      <p className="font-medium">{t('dashboard.shipmentId')}: TRA-{2023000 + item}</p>
+                      <p className="text-sm text-gray-500">{t('dashboard.route')}: München → Stuttgart</p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-blue-600">{t('dashboard.assigned')}</p>
@@ -101,18 +101,18 @@ const SubcontractorDashboard = () => {
                 <div className="flex items-center justify-between border-b pb-3">
                   <div>
                     <p className="font-medium">MAN TGX</p>
-                    <p className="text-sm text-gray-500">M-TR-1234</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.vehicleId')}: M-TR-1234</p>
                   </div>
                   <div className="text-right">
                     <p className="font-medium text-green-600">{t('dashboard.active')}</p>
-                    <p className="text-sm text-gray-500">Klaus Müller</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.driver')}: Klaus Müller</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center justify-between border-b pb-3">
                   <div>
                     <p className="font-medium">Mercedes Actros</p>
-                    <p className="text-sm text-gray-500">M-TR-5678</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.vehicleId')}: M-TR-5678</p>
                   </div>
                   <div className="text-right">
                     <p className="font-medium text-yellow-600">{t('dashboard.maintenance')}</p>
@@ -123,11 +123,11 @@ const SubcontractorDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">Volvo FH</p>
-                    <p className="text-sm text-gray-500">M-TR-9012</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.vehicleId')}: M-TR-9012</p>
                   </div>
                   <div className="text-right">
                     <p className="font-medium text-green-600">{t('dashboard.active')}</p>
-                    <p className="text-sm text-gray-500">Michael Schmidt</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.driver')}: Michael Schmidt</p>
                   </div>
                 </div>
               </div>

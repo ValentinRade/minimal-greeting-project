@@ -37,7 +37,16 @@
     "maintenance": "Maintenance",
     "availableSoon": "Available soon",
     "shipperWelcome": "Shipper Dashboard",
-    "subcontractorWelcome": "Subcontractor Dashboard"
+    "subcontractorWelcome": "Subcontractor Dashboard",
+    "vehicleId": "Vehicle ID",
+    "driver": "Driver",
+    "status": "Status",
+    "eta": "ETA",
+    "shipmentId": "Shipment ID",
+    "route": "Route",
+    "metrics": "Metrics",
+    "value": "Value",
+    "percentage": "Percentage"
   },
   "profile": {
     "settings": "Settings",
