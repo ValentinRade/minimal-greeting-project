@@ -344,6 +344,62 @@ export type Database = {
           },
         ]
       }
+      subcontractor_references: {
+        Row: {
+          allow_publication: boolean
+          anonymize: boolean
+          category: string
+          company_id: string | null
+          created_at: string
+          customer_feedback_url: string | null
+          customer_name: string | null
+          end_date: string | null
+          id: string
+          industry: string
+          start_date: string
+          until_today: boolean
+          updated_at: string
+        }
+        Insert: {
+          allow_publication?: boolean
+          anonymize?: boolean
+          category: string
+          company_id?: string | null
+          created_at?: string
+          customer_feedback_url?: string | null
+          customer_name?: string | null
+          end_date?: string | null
+          id?: string
+          industry: string
+          start_date: string
+          until_today?: boolean
+          updated_at?: string
+        }
+        Update: {
+          allow_publication?: boolean
+          anonymize?: boolean
+          category?: string
+          company_id?: string | null
+          created_at?: string
+          customer_feedback_url?: string | null
+          customer_name?: string | null
+          end_date?: string | null
+          id?: string
+          industry?: string
+          start_date?: string
+          until_today?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_references_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

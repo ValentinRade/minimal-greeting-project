@@ -34,6 +34,7 @@ import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const INDUSTRY_OPTIONS = [
   { value: 'healthcare', labelKey: 'Gesundheit' },
@@ -80,6 +81,7 @@ const ReferencesForm: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { company } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(!!id);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
@@ -145,11 +147,19 @@ const ReferencesForm: React.FC = () => {
   }, [id, form, t]);
 
   const onSubmit = async (values: FormValues) => {
+    if (!company?.id) {
+      toast.error(t('common.error'), {
+        description: t('common.noCompanyId'),
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
       // Prepare data for saving
       const referenceData = {
+        company_id: company.id,
         allow_publication: values.allowPublication,
         customer_name: values.allowPublication ? values.customerName : null,
         industry: values.industry,
@@ -181,7 +191,7 @@ const ReferencesForm: React.FC = () => {
       if (fileList && fileList.length > 0) {
         const file = fileList[0];
         const fileExt = file.name.split('.').pop();
-        const fileName = `${id || result.data[0].id}-feedback.${fileExt}`;
+        const fileName = `${id || result.data?.[0]?.id}-feedback.${fileExt}`;
         
         const { error: uploadError } = await supabase.storage
           .from('reference_documents')
@@ -193,7 +203,7 @@ const ReferencesForm: React.FC = () => {
         const { error: updateError } = await supabase
           .from('subcontractor_references')
           .update({ customer_feedback_url: fileName })
-          .eq('id', id || result.data[0].id);
+          .eq('id', id || result.data?.[0]?.id);
           
         if (updateError) throw updateError;
       }
