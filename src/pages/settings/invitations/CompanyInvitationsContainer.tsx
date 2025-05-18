@@ -50,7 +50,14 @@ const CompanyInvitationsContainer = () => {
       
       console.log('Fetching invitations for company:', company.id);
       
-      // Fetch invitations using RLS policies without joining with auth.users
+      // Log the current user JWT role for debugging - TEST METHOD #3
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        console.log('Current user JWT role:', session.user.role);
+        console.log('Current user email:', session.user.email);
+      }
+      
+      // Fetch invitations from the company_invitations table
       const { data: invitationsData, error } = await supabase
         .from('company_invitations')
         .select('*')
