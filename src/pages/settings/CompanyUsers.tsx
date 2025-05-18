@@ -54,8 +54,11 @@ const CompanyUsers = () => {
         const userIds = data.map(user => user.user_id);
         
         // Query emails for these users
+        // Use ANY() style query instead of RPC to avoid type issues
         const { data: emailData, error: emailError } = await supabase
-          .rpc('get_user_emails', { user_ids: userIds });
+          .from('auth.users')
+          .select('id, email')
+          .in('id', userIds);
           
         if (emailError) {
           console.error('Error fetching user emails:', emailError);
@@ -66,9 +69,9 @@ const CompanyUsers = () => {
         
         // Map emails to users if we have them
         const emailMap = new Map();
-        if (emailData) {
-          emailData.forEach((item: any) => {
-            emailMap.set(item.user_id, item.email);
+        if (emailData && Array.isArray(emailData)) {
+          emailData.forEach((item) => {
+            emailMap.set(item.id, item.email);
           });
         }
         
