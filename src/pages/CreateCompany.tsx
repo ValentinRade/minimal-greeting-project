@@ -139,9 +139,11 @@ const CreateCompany = () => {
       });
 
       // Redirect to the appropriate dashboard based on company type
-      if (companyData.company_type_id === 1) {
+      // Company type 2 is for Shipper (Versender)
+      // Company type 1 is for Subcontractor (Subunternehmer)
+      if (companyData.company_type_id === 2) {
         navigate('/dashboard/shipper');
-      } else if (companyData.company_type_id === 2) {
+      } else if (companyData.company_type_id === 1) {
         navigate('/dashboard/subcontractor');
       } else {
         navigate('/');

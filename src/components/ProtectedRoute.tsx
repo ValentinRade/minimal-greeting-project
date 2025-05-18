@@ -30,11 +30,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
 
   // Redirect to appropriate dashboard based on company type
   if (hasCompany && company && location.pathname !== '/dashboard/shipper' && location.pathname !== '/dashboard/subcontractor') {
-    // Company type 1 is for Shipper (Versender)
-    // Company type 2 is for Subcontractor (Subunternehmer)
-    if (company.company_type_id === 1) {
+    // Company type 2 is for Shipper (Versender)
+    // Company type 1 is for Subcontractor (Subunternehmer)
+    if (company.company_type_id === 2) {
       return <Navigate to="/dashboard/shipper" />;
-    } else if (company.company_type_id === 2) {
+    } else if (company.company_type_id === 1) {
       return <Navigate to="/dashboard/subcontractor" />;
     }
   }
