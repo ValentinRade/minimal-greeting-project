@@ -20,12 +20,12 @@ const NotFound = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="card-modern p-8 max-w-md w-full">
         <div className="text-center">
-          <h1 className="text-6xl font-bold mb-4 text-primary">{t('notFound.title')}</h1>
-          <p className="text-xl text-gray-600 mb-8">{t('notFound.message')}</p>
+          <h1 className="text-6xl font-bold mb-4 text-primary">404</h1>
+          <p className="text-xl text-gray-600 mb-8">Ups! Seite nicht gefunden</p>
           <Button asChild className="btn-modern bg-gradient-primary">
             <a href="/" className="inline-flex items-center gap-2">
               <ChevronLeft size={16} />
-              {t('notFound.returnHome')}
+              Zurück zur Startseite
             </a>
           </Button>
         </div>
