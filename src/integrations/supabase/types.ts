@@ -9,6 +9,24 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      body_types: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           city: string
@@ -183,6 +201,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      financing_types: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -396,6 +432,155 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vehicle_types: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          additional_info: string | null
+          additional_tech_info: string | null
+          availability_schedule: Json | null
+          body_type_id: string | null
+          brand: string
+          company_id: string
+          created_at: string | null
+          driver_id: string | null
+          engine_power: number | null
+          engine_power_unit: string | null
+          fin: string | null
+          financing_details: Json | null
+          financing_type_id: string | null
+          fuel_consumption: number | null
+          height: number | null
+          id: string
+          inspection_report_url: string | null
+          last_inspection: string | null
+          length: number | null
+          license_plate: string
+          load_volume: number | null
+          location: string | null
+          maintenance_interval: number | null
+          model: string
+          operational_costs: Json | null
+          total_weight: number | null
+          updated_at: string | null
+          user_id: string
+          vehicle_type_id: string | null
+          width: number | null
+          year: number
+        }
+        Insert: {
+          additional_info?: string | null
+          additional_tech_info?: string | null
+          availability_schedule?: Json | null
+          body_type_id?: string | null
+          brand: string
+          company_id: string
+          created_at?: string | null
+          driver_id?: string | null
+          engine_power?: number | null
+          engine_power_unit?: string | null
+          fin?: string | null
+          financing_details?: Json | null
+          financing_type_id?: string | null
+          fuel_consumption?: number | null
+          height?: number | null
+          id?: string
+          inspection_report_url?: string | null
+          last_inspection?: string | null
+          length?: number | null
+          license_plate: string
+          load_volume?: number | null
+          location?: string | null
+          maintenance_interval?: number | null
+          model: string
+          operational_costs?: Json | null
+          total_weight?: number | null
+          updated_at?: string | null
+          user_id: string
+          vehicle_type_id?: string | null
+          width?: number | null
+          year: number
+        }
+        Update: {
+          additional_info?: string | null
+          additional_tech_info?: string | null
+          availability_schedule?: Json | null
+          body_type_id?: string | null
+          brand?: string
+          company_id?: string
+          created_at?: string | null
+          driver_id?: string | null
+          engine_power?: number | null
+          engine_power_unit?: string | null
+          fin?: string | null
+          financing_details?: Json | null
+          financing_type_id?: string | null
+          fuel_consumption?: number | null
+          height?: number | null
+          id?: string
+          inspection_report_url?: string | null
+          last_inspection?: string | null
+          length?: number | null
+          license_plate?: string
+          load_volume?: number | null
+          location?: string | null
+          maintenance_interval?: number | null
+          model?: string
+          operational_costs?: Json | null
+          total_weight?: number | null
+          updated_at?: string | null
+          user_id?: string
+          vehicle_type_id?: string | null
+          width?: number | null
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicles_body_type_id_fkey"
+            columns: ["body_type_id"]
+            isOneToOne: false
+            referencedRelation: "body_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vehicles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vehicles_financing_type_id_fkey"
+            columns: ["financing_type_id"]
+            isOneToOne: false
+            referencedRelation: "financing_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vehicles_vehicle_type_id_fkey"
+            columns: ["vehicle_type_id"]
+            isOneToOne: false
+            referencedRelation: "vehicle_types"
             referencedColumns: ["id"]
           },
         ]

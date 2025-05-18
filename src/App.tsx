@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +26,7 @@ import RolesInfo from "./pages/settings/RolesInfo";
 // Subcontractor routes
 import SubcontractorPreferencesRoute from "./routes/SubcontractorPreferencesRoute";
 import SubcontractorSelectionRoutes from './routes/SubcontractorSelectionRoutes';
+import SubcontractorVehiclesRoutes from './routes/SubcontractorVehiclesRoutes';
 
 // Import i18n for internationalization
 import '@/i18n';
@@ -97,10 +99,17 @@ const App = () => (
                 {/* The index route now handled by SettingsLayout component directly */}
               </Route>
               
-              {/* Add the new selection routes */}
+              {/* Add the selection routes */}
               <Route path="/dashboard/subcontractor/selection/*" element={
                 <ProtectedRoute>
                   <SubcontractorSelectionRoutes />
+                </ProtectedRoute>
+              } />
+              
+              {/* Add the vehicles routes */}
+              <Route path="/dashboard/subcontractor/vehicles/*" element={
+                <ProtectedRoute>
+                  <SubcontractorVehiclesRoutes />
                 </ProtectedRoute>
               } />
               
