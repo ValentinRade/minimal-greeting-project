@@ -30,26 +30,39 @@ const CompanyUsers = () => {
     try {
       setLoading(true);
       
+      // Korrigierte Abfrage - Beachte die Änderungen im JOIN
       const { data, error } = await supabase
         .from('company_users')
         .select(`
-          *,
-          user:user_id (
+          id,
+          company_id,
+          user_id,
+          role,
+          invited_at,
+          accepted_at,
+          profiles:user_id(
             id,
-            email,
-            profiles:profiles (
-              first_name,
-              last_name,
-              phone
-            )
+            first_name,
+            last_name,
+            phone
+          ),
+          auth_users:user_id(
+            email
           )
         `)
-        .eq('company_id', company?.id)
-        .order('role', { ascending: true });
+        .eq('company_id', company?.id);
       
       if (error) throw error;
       
-      setUsers(data || []);
+      // Formatierung der Benutzerdaten für die Anzeige
+      const formattedUsers = data?.map(user => ({
+        ...user,
+        email: user.auth_users?.email,
+        profile: user.profiles
+      })) || [];
+      
+      console.log('Fetched users:', formattedUsers);
+      setUsers(formattedUsers);
     } catch (error: any) {
       console.error('Error fetching company users:', error.message);
       toast({
@@ -154,8 +167,8 @@ const CompanyUsers = () => {
                 </TableHeader>
                 <TableBody>
                   {users.map((userItem) => {
-                    const profile = userItem.user?.profiles?.[0] || {};
-                    const email = userItem.user?.email || '';
+                    const profile = userItem.profile?.[0] || {};
+                    const email = userItem.email || '';
                     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
                     
                     return (
