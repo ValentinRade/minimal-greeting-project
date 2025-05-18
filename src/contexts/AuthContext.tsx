@@ -24,40 +24,60 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
     // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        if (!isMounted) return;
+        
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         
-        // Fetch profile data if user is signed in
-        if (currentSession?.user) {
-          setTimeout(() => {
-            fetchProfile(currentSession.user.id);
-            fetchCompany(currentSession.user.id);
-          }, 0);
-        } else {
+        // If user signs out, clear their data
+        if (event === 'SIGNED_OUT') {
           setProfile(null);
           setCompany(null);
           setHasCompany(false);
+          return;
+        }
+        
+        // Fetch profile data if user is signed in
+        if (currentSession?.user) {
+          fetchProfile(currentSession.user.id);
+          fetchCompany(currentSession.user.id);
         }
       }
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      
-      if (currentSession?.user) {
-        fetchProfile(currentSession.user.id);
-        fetchCompany(currentSession.user.id);
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        
+        if (isMounted) {
+          setSession(currentSession);
+          setUser(currentSession?.user ?? null);
+          
+          if (currentSession?.user) {
+            await fetchProfile(currentSession.user.id);
+            await fetchCompany(currentSession.user.id);
+          }
+          
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-      
-      setLoading(false);
-    });
+    };
+
+    initializeAuth();
 
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
   }, []);
@@ -113,6 +133,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (companyUserError.code !== 'PGRST116') { // PGRST116 means no rows returned
             console.error('Error fetching company user:', companyUserError);
           }
+          setCompany(null);
           setHasCompany(false);
           return;
         }
@@ -129,6 +150,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return;
         }
         
+        setCompany(null);
         setHasCompany(false);
         return;
       }
@@ -153,6 +175,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error('Error fetching company:', error);
+      setCompany(null);
       setHasCompany(false);
     }
   };
