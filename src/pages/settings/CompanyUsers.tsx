@@ -12,6 +12,13 @@ import { formatDistanceToNow } from 'date-fns';
 import { Shield, UserPlus, RefreshCw } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 
+interface Profile {
+  id: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+}
+
 interface CompanyUser {
   id: string;
   company_id: string;
@@ -20,12 +27,7 @@ interface CompanyUser {
   invited_at: string | null;
   accepted_at: string | null;
   email?: string;
-  profile?: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    phone: string;
-  };
+  profile?: Profile;
 }
 
 const CompanyUsers = () => {
@@ -84,10 +86,10 @@ const CompanyUsers = () => {
       }
       
       // Create a profiles map
-      const profilesMap = new Map();
+      const profilesMap = new Map<string, Profile>();
       if (profilesData && Array.isArray(profilesData)) {
         profilesData.forEach(profile => {
-          profilesMap.set(profile.id, profile);
+          profilesMap.set(profile.id, profile as Profile);
         });
       }
       
@@ -103,7 +105,7 @@ const CompanyUsers = () => {
       }
       
       // Map emails to users
-      const emailMap = new Map();
+      const emailMap = new Map<string, string>();
       if (emailData && Array.isArray(emailData)) {
         emailData.forEach((item: { user_id: string, email: string }) => {
           emailMap.set(item.user_id, item.email);
@@ -115,7 +117,7 @@ const CompanyUsers = () => {
         return {
           ...user,
           email: emailMap.get(user.user_id) || '',
-          profile: profilesMap.get(user.user_id) || {}
+          profile: profilesMap.get(user.user_id)
         };
       });
       
@@ -226,15 +228,15 @@ const CompanyUsers = () => {
                 </TableHeader>
                 <TableBody>
                   {users.map((userItem) => {
-                    const profile = userItem.profile || {};
+                    const profile = userItem.profile || {} as Profile;
                     const email = userItem.email || '';
-                    const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+                    const fullName = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : '';
                     
                     return (
                       <TableRow key={userItem.id}>
                         <TableCell>{fullName || email}</TableCell>
                         <TableCell>{email}</TableCell>
-                        <TableCell>{profile.phone || '-'}</TableCell>
+                        <TableCell>{profile && profile.phone ? profile.phone : '-'}</TableCell>
                         <TableCell>
                           <Badge className={getRoleBadgeColor(userItem.role)}>
                             {getRoleTranslation(userItem.role)}
