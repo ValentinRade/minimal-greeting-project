@@ -12,6 +12,17 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+// Helper function to determine the appropriate endpoint URL
+const getRegistrationEndpoint = () => {
+  // Check if we're using Netlify functions or Supabase Edge Functions
+  if (window.location.hostname.includes('netlify.app')) {
+    return `${window.location.origin}/.netlify/functions/register-invited-user`;
+  } else {
+    // Using Supabase Edge Functions endpoint
+    return `https://ryshjxguqwhlqhqievgx.supabase.co/functions/v1/register-invited-user`;
+  }
+};
+
 const RegisterInvited = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
@@ -115,43 +126,46 @@ const RegisterInvited = () => {
         
         // Wait a moment for the trigger to create the profile
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // 3. Create a company_users entry
-        const { error: companyUserError } = await supabase
-          .from('company_users')
-          .insert({
-            company_id: invitation.company_id,
-            user_id: data.user.id,
-            role: invitation.role,
-            invited_by: invitation.invited_by,
-            invited_at: invitation.invited_at,
-            accepted_at: new Date().toISOString()
+
+        try {
+          // Call the secure function (either Netlify or Supabase Edge Function)
+          const endpoint = getRegistrationEndpoint();
+          console.log(`Using registration endpoint: ${endpoint}`);
+          
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: data.user.id,
+              invitationId: invitation.id,
+              companyId: invitation.company_id,
+              role: invitation.role,
+              invitedBy: invitation.invited_by,
+              invitedAt: invitation.invited_at
+            }),
           });
           
-        if (companyUserError) {
-          console.error("Company user creation error:", companyUserError);
-          throw companyUserError;
-        }
-        console.log("User added to company successfully");
-        
-        // 4. Update the invitation as accepted
-        const { error: invitationError } = await supabase
-          .from('company_invitations')
-          .update({
-            accepted_at: new Date().toISOString()
-          })
-          .eq('id', invitation.id);
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Registration function error response:", errorData);
+            throw new Error(errorData.message || 'Failed to complete registration process');
+          }
           
-        if (invitationError) {
-          console.error("Invitation update error:", invitationError);
-          throw invitationError;
+          toast({
+            title: t('auth.registrationSuccess'),
+            description: t('invitation.accountCreated'),
+          });
+        } catch (error: any) {
+          console.error("Error in secure registration process:", error);
+          toast({
+            title: t('invitation.registrationError'),
+            description: error.message || t('invitation.serverError'),
+            variant: "destructive"
+          });
+          // Continue with login attempt even if there was an issue with the company association
         }
-        console.log("Invitation marked as accepted");
-        
-        toast({
-          title: t('auth.registrationSuccess'),
-          description: t('invitation.accountCreated'),
-        });
         
         // 5. Log in the user automatically
         const { error: signInError } = await supabase.auth.signInWithPassword({
