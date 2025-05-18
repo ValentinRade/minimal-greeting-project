@@ -101,7 +101,9 @@ const RegisterInvited = () => {
         options: {
           data: {
             first_name: firstName,
-            last_name: lastName
+            last_name: lastName,
+            phone: phone,
+            language: language
           }
         }
       });
@@ -111,22 +113,8 @@ const RegisterInvited = () => {
       if (data.user) {
         console.log("User created successfully:", data.user.id);
         
-        // 2. Create profile entry manually since trigger might not work immediately
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .upsert({
-            id: data.user.id,
-            first_name: firstName,
-            last_name: lastName,
-            phone: phone,
-            language: language
-          });
-
-        if (profileError) {
-          console.error("Profile creation error:", profileError);
-          throw profileError;
-        }
-        console.log("Profile created successfully");
+        // Wait a moment for the trigger to create the profile
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         // 3. Create a company_users entry
         const { error: companyUserError } = await supabase
