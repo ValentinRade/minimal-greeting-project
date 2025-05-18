@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
@@ -83,17 +82,30 @@ const CompanyInvitations = () => {
   };
 
   const fetchInvitations = async () => {
+    if (!company || !company.id) {
+      console.error('No company found or company has no ID');
+      setLoading(false);
+      return;
+    }
+    
     try {
       setLoading(true);
+      
+      console.log('Fetching invitations for company:', company.id);
       
       // 1. Get the invitations data
       const { data: invitationsData, error } = await supabase
         .from('company_invitations')
         .select('*')
-        .eq('company_id', company?.id)
+        .eq('company_id', company.id)
         .order('invited_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching invitations:', error);
+        throw error;
+      }
+      
+      console.log('Raw invitations data:', invitationsData);
       
       if (!invitationsData || invitationsData.length === 0) {
         setInvitations([]);
@@ -105,6 +117,8 @@ const CompanyInvitations = () => {
       const invitedByUserIds = invitationsData
         .map(invitation => invitation.invited_by)
         .filter(Boolean);
+      
+      console.log('Invited by user IDs:', invitedByUserIds);
       
       // Only fetch emails if we have valid user IDs
       if (invitedByUserIds.length === 0) {
@@ -121,13 +135,17 @@ const CompanyInvitations = () => {
       
       // 3. Use our PostgreSQL function to fetch user emails for the inviter
       try {
+        console.log('Calling get_user_emails with user IDs:', invitedByUserIds);
+        
         const { data: emailData, error: emailError } = await supabase
           .rpc('get_user_emails', { 
             user_ids: invitedByUserIds 
           });
           
+        console.log('Email data:', emailData);
+          
         if (emailError) {
-          console.error('Error details:', emailError);
+          console.error('Error fetching emails:', emailError);
           // Continue without email data
           const formattedInvitations = invitationsData.map(invitation => ({
             ...invitation,
@@ -135,6 +153,7 @@ const CompanyInvitations = () => {
           } as CompanyInvitation));
           
           setInvitations(formattedInvitations);
+          setLoading(false);
           return;
         }
         
@@ -152,6 +171,8 @@ const CompanyInvitations = () => {
           invited_by_email: emailMap.get(invitation.invited_by) || ''
         } as CompanyInvitation));
         
+        console.log('Formatted invitations:', formattedInvitations);
+        
         setInvitations(formattedInvitations);
       } catch (innerError: any) {
         console.error('Unexpected error fetching emails:', innerError);
@@ -164,9 +185,10 @@ const CompanyInvitations = () => {
         setInvitations(formattedInvitations);
       }
     } catch (error: any) {
+      console.error('Error in fetchInvitations:', error);
       toast({
         title: t('settings.fetchError'),
-        description: error.message,
+        description: error.message || 'An error occurred while fetching invitations',
         variant: 'destructive'
       });
     } finally {
@@ -175,11 +197,20 @@ const CompanyInvitations = () => {
   };
 
   const onSubmit = async (values: InviteFormValues) => {
-    if (!company || !user) return;
+    if (!company || !user) {
+      toast({
+        title: t('settings.inviteError'),
+        description: 'Company or user information is missing',
+        variant: 'destructive'
+      });
+      return;
+    }
     
     setIsSubmitting(true);
     
     try {
+      console.log('Creating invitation with values:', values);
+      
       // Generate a random token
       const token = Math.random().toString(36).substring(2, 15) + 
                    Math.random().toString(36).substring(2, 15);
@@ -198,10 +229,14 @@ const CompanyInvitations = () => {
           role: role,
           invited_by: user.id,
           token,
-          expires_at: expiresAt
+          expires_at: expiresAt,
+          invited_at: new Date().toISOString() // Explicitly set invited_at to current time
         });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating invitation:', error);
+        throw error;
+      }
       
       toast({
         title: t('settings.invitationSent'),
@@ -212,9 +247,10 @@ const CompanyInvitations = () => {
       setInviteDialogOpen(false);
       fetchInvitations();
     } catch (error: any) {
+      console.error('Error in onSubmit:', error);
       toast({
         title: t('settings.inviteError'),
-        description: error.message,
+        description: error.message || 'An error occurred while sending the invitation',
         variant: 'destructive'
       });
     } finally {
@@ -224,12 +260,17 @@ const CompanyInvitations = () => {
 
   const handleDeleteInvitation = async (id: string) => {
     try {
+      console.log('Deleting invitation with ID:', id);
+      
       const { error } = await supabase
         .from('company_invitations')
         .delete()
         .eq('id', id);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error deleting invitation:', error);
+        throw error;
+      }
       
       toast({
         title: t('settings.invitationDeleted'),
@@ -238,9 +279,10 @@ const CompanyInvitations = () => {
       
       fetchInvitations();
     } catch (error: any) {
+      console.error('Error in handleDeleteInvitation:', error);
       toast({
         title: t('settings.deleteError'),
-        description: error.message,
+        description: error.message || 'An error occurred while deleting the invitation',
         variant: 'destructive'
       });
     }
@@ -248,6 +290,8 @@ const CompanyInvitations = () => {
 
   const handleResendInvitation = async (invitation: CompanyInvitation) => {
     try {
+      console.log('Resending invitation with ID:', invitation.id);
+      
       // Update the expiration date to 7 days from now
       const expiresAt = addDays(new Date(), 7).toISOString();
       
@@ -259,7 +303,10 @@ const CompanyInvitations = () => {
         })
         .eq('id', invitation.id);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error resending invitation:', error);
+        throw error;
+      }
       
       toast({
         title: t('settings.invitationResent'),
@@ -268,9 +315,10 @@ const CompanyInvitations = () => {
       
       fetchInvitations();
     } catch (error: any) {
+      console.error('Error in handleResendInvitation:', error);
       toast({
         title: t('settings.resendError'),
-        description: error.message,
+        description: error.message || 'An error occurred while resending the invitation',
         variant: 'destructive'
       });
     }
