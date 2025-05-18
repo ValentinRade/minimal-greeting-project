@@ -3,9 +3,28 @@
 const { createClient } = require('@supabase/supabase-js');
 
 exports.handler = async function(event, context) {
+  // Set CORS headers for cross-origin requests
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Content-Type': 'application/json'
+  };
+  
+  // Handle preflight OPTIONS request
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers
+    };
+  }
+  
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ message: 'Method not allowed' }) };
+    return { 
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ message: 'Method not allowed' }) 
+    };
   }
   
   try {
@@ -15,9 +34,12 @@ exports.handler = async function(event, context) {
     if (!userId || !invitationId || !companyId || !role) {
       return {
         statusCode: 400,
+        headers,
         body: JSON.stringify({ message: 'Missing required parameters' })
       };
     }
+    
+    console.log(`Processing invitation for user ${userId} to company ${companyId} with role ${role}`);
     
     // Initialize Supabase client with service role key for admin privileges
     // These environment variables must be set in your Netlify deployment settings
@@ -42,6 +64,7 @@ exports.handler = async function(event, context) {
       console.error("Company user creation error:", companyUserError);
       return {
         statusCode: 500,
+        headers,
         body: JSON.stringify({
           message: 'Failed to create company user association',
           error: companyUserError
@@ -61,6 +84,7 @@ exports.handler = async function(event, context) {
       console.error("Invitation update error:", invitationError);
       return {
         statusCode: 500,
+        headers,
         body: JSON.stringify({
           message: 'Failed to update invitation status',
           error: invitationError
@@ -70,12 +94,14 @@ exports.handler = async function(event, context) {
     
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify({ message: 'Registration completed successfully' })
     };
   } catch (error) {
     console.error("Function error:", error);
     return {
       statusCode: 500,
+      headers,
       body: JSON.stringify({ message: 'Server error during registration process', error: error.message })
     };
   }

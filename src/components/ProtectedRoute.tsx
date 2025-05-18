@@ -17,6 +17,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   
   // Exclude certain paths from protection
   const isRegisterInvitedRoute = location.pathname === '/register-invited';
+  const isAuthRoute = location.pathname === '/auth';
   
   // Wait for authentication and company data to be fully loaded
   useEffect(() => {
@@ -30,8 +31,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
     }
   }, [authLoading]);
   
-  // Skip checks for registration via invitation routes
-  if (isRegisterInvitedRoute) {
+  // Skip checks for registration via invitation routes and auth routes
+  if (isRegisterInvitedRoute || isAuthRoute) {
     return <>{children}</>;
   }
   
@@ -47,6 +48,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   
   // Only check company requirements when we're sure auth and company data are fully loaded
   if (isReady && requireCompany && !hasCompany && location.pathname !== '/create-company') {
+    console.log("No company found for user, redirecting to create company");
     return <Navigate to="/create-company" />;
   }
 

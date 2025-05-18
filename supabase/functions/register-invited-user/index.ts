@@ -11,12 +11,28 @@ interface RequestBody {
   invitedAt: string | null;
 }
 
+// Define CORS headers
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Max-Age': '86400',
+};
+
 serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { 
+      status: 204, 
+      headers: corsHeaders 
+    });
+  }
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return new Response(
       JSON.stringify({ message: 'Method not allowed' }),
-      { status: 405, headers: { 'Content-Type': 'application/json' } }
+      { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 
@@ -27,9 +43,11 @@ serve(async (req) => {
     if (!userId || !invitationId || !companyId || !role) {
       return new Response(
         JSON.stringify({ message: 'Missing required parameters' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    console.log(`Processing invitation for user ${userId} to company ${companyId} with role ${role}`);
 
     // Initialize Supabase client with service role key (from environment)
     const supabaseAdmin = createClient(
@@ -57,7 +75,7 @@ serve(async (req) => {
           message: 'Failed to create company user association',
           error: companyUserError
         }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -76,19 +94,19 @@ serve(async (req) => {
           message: 'Failed to update invitation status',
           error: invitationError
         }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     return new Response(
       JSON.stringify({ message: 'Registration completed successfully' }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error("Function error:", error);
     return new Response(
       JSON.stringify({ message: 'Server error during registration process', error: error.message }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
