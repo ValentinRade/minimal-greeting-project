@@ -51,7 +51,7 @@ const CompanyInvitationsContainer = () => {
       
       console.log('Fetching invitations for company:', company.id);
       
-      // Fetch the invitations data
+      // Fetch the invitations data with proper RLS policies in place
       const { data: invitationsData, error } = await supabase
         .from('company_invitations')
         .select('*')
@@ -71,12 +71,10 @@ const CompanyInvitationsContainer = () => {
         return;
       }
       
-      // Simply set the invitations without trying to fetch additional email data
-      // This avoids the permission issue with the auth.users table
+      // Format invitations for display - using the email field directly
       const formattedInvitations = invitationsData.map(invitation => ({
         ...invitation,
-        // We'll display the invitee's email instead of the inviter's email
-        // as we don't have permission to access the inviter's email
+        // We'll display the invitee's email as we don't have direct access to auth.users
         invited_by_email: invitation.email 
       } as CompanyInvitation));
       
