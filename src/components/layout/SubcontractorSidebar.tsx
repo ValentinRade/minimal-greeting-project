@@ -69,7 +69,7 @@ const SubcontractorSidebar: React.FC = () => {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
-                    isActive={location.pathname === item.path}
+                    isActive={location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)}
                     asChild
                     tooltip={item.label}
                   >

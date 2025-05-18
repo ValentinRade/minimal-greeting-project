@@ -14,6 +14,14 @@ import ShipperDashboard from "./pages/ShipperDashboard";
 import SubcontractorDashboard from "./pages/SubcontractorDashboard";
 import NotFound from "./pages/NotFound";
 
+// Settings pages
+import SettingsLayout from "./pages/settings/SettingsLayout";
+import ProfileSettings from "./pages/settings/ProfileSettings";
+import CompanySettings from "./pages/settings/CompanySettings";
+import CompanyUsers from "./pages/settings/CompanyUsers";
+import CompanyInvitations from "./pages/settings/CompanyInvitations";
+import RolesInfo from "./pages/settings/RolesInfo";
+
 // Import i18n for internationalization
 import '@/i18n';
 
@@ -34,16 +42,49 @@ const App = () => (
                   <CreateCompany />
                 </ProtectedRoute>
               } />
+              
+              {/* Shipper routes */}
               <Route path="/dashboard/shipper" element={
                 <ProtectedRoute>
                   <ShipperDashboard />
                 </ProtectedRoute>
               } />
+              
+              {/* Shipper Settings routes */}
+              <Route path="/dashboard/shipper/settings" element={
+                <ProtectedRoute>
+                  <SettingsLayout />
+                </ProtectedRoute>
+              }>
+                <Route path="profile" element={<ProfileSettings />} />
+                <Route path="company" element={<CompanySettings />} />
+                <Route path="users" element={<CompanyUsers />} />
+                <Route path="invitations" element={<CompanyInvitations />} />
+                <Route path="roles" element={<RolesInfo />} />
+                <Route index element={<ProfileSettings />} />
+              </Route>
+              
+              {/* Subcontractor routes */}
               <Route path="/dashboard/subcontractor" element={
                 <ProtectedRoute>
                   <SubcontractorDashboard />
                 </ProtectedRoute>
               } />
+              
+              {/* Subcontractor Settings routes */}
+              <Route path="/dashboard/subcontractor/settings" element={
+                <ProtectedRoute>
+                  <SettingsLayout />
+                </ProtectedRoute>
+              }>
+                <Route path="profile" element={<ProfileSettings />} />
+                <Route path="company" element={<CompanySettings />} />
+                <Route path="users" element={<CompanyUsers />} />
+                <Route path="invitations" element={<CompanyInvitations />} />
+                <Route path="roles" element={<RolesInfo />} />
+                <Route index element={<ProfileSettings />} />
+              </Route>
+              
               <Route path="/" element={
                 <ProtectedRoute>
                   <Index />

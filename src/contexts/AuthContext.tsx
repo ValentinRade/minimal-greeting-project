@@ -79,7 +79,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchCompany = async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      // First, get company information
+      const { data: companyData, error: companyError } = await supabase
         .from('companies')
         .select(`
           *,
@@ -89,16 +90,67 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         .eq('user_id', userId)
         .single();
         
-      if (error) {
-        if (error.code !== 'PGRST116') { // PGRST116 means no rows returned
-          console.error('Error fetching company:', error);
+      if (companyError) {
+        if (companyError.code !== 'PGRST116') { // PGRST116 means no rows returned
+          console.error('Error fetching company:', companyError);
         }
+        
+        // Check if user is part of a company but not the creator
+        const { data: companyUserData, error: companyUserError } = await supabase
+          .from('company_users')
+          .select(`
+            *,
+            company:company_id (
+              *,
+              company_types(name),
+              company_legal_forms(name)
+            )
+          `)
+          .eq('user_id', userId)
+          .single();
+        
+        if (companyUserError) {
+          if (companyUserError.code !== 'PGRST116') { // PGRST116 means no rows returned
+            console.error('Error fetching company user:', companyUserError);
+          }
+          setHasCompany(false);
+          return;
+        }
+        
+        if (companyUserData) {
+          // Merge role information with company data
+          const companyWithRole = {
+            ...companyUserData.company,
+            role: companyUserData.role
+          };
+          
+          setCompany(companyWithRole);
+          setHasCompany(true);
+          return;
+        }
+        
         setHasCompany(false);
         return;
       }
       
-      setCompany(data);
-      setHasCompany(true);
+      if (companyData) {
+        // For company creators, fetch their role
+        const { data: roleData } = await supabase
+          .from('company_users')
+          .select('role')
+          .eq('company_id', companyData.id)
+          .eq('user_id', userId)
+          .single();
+        
+        // Add role to company data
+        const companyWithRole = {
+          ...companyData,
+          role: roleData?.role || 'company_admin' // Default to company_admin for creator
+        };
+        
+        setCompany(companyWithRole);
+        setHasCompany(true);
+      }
     } catch (error) {
       console.error('Error fetching company:', error);
       setHasCompany(false);
