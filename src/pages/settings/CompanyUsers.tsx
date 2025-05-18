@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
@@ -52,7 +53,7 @@ const CompanyUsers = () => {
         // Get all user IDs from the results
         const userIds = data.map(user => user.user_id);
         
-        // Use the PostgreSQL function we've defined to fetch user emails
+        // Use our PostgreSQL function to fetch user emails
         const { data: emailData, error: emailError } = await supabase
           .rpc('get_user_emails', { user_ids: userIds });
           
@@ -66,7 +67,7 @@ const CompanyUsers = () => {
         // Map emails to users if we have them
         const emailMap = new Map();
         if (emailData && Array.isArray(emailData)) {
-          emailData.forEach((item) => {
+          emailData.forEach((item: { user_id: string, email: string }) => {
             emailMap.set(item.user_id, item.email);
           });
         }

@@ -216,6 +216,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_user_emails: {
+        Args: { user_ids: string[] }
+        Returns: {
+          user_id: string
+          email: string
+        }[]
+      }
       is_company_admin: {
         Args: { company_id: string }
         Returns: boolean
