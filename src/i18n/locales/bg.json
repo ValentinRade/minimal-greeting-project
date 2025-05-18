@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Добре дошли",
@@ -28,7 +29,8 @@
     "phone": "Телефон",
     "language": "Език",
     "logOut": "Изход",
-    "selectLanguage": "Изберете език"
+    "selectLanguage": "Изберете език",
+    "settings": "Настройки"
   },
   "dashboard": {
     "shipperWelcome": "Контролен Панел на Изпращача",
@@ -52,7 +54,24 @@
     "transportActivity": "Транспортна Активност",
     "recentTransports": "Последни транспортни задачи",
     "assigned": "Назначен",
-    "viewAllTransports": "Прегледайте всички транспорти"
+    "viewAllTransports": "Прегледайте всички транспорти",
+    "overview": "Преглед",
+    "navigation": "Навигация"
   },
-  "loading": "Зареждане..."
+  "loading": "Зареждане...",
+  "notFound": {
+    "title": "404",
+    "message": "Упс! Страницата не е намерена",
+    "returnHome": "Връщане към началната страница"
+  },
+  "companyInfo": {
+    "title": "Информация за компанията",
+    "description": "Детайли за вашата регистрирана компания",
+    "name": "Име на компанията:",
+    "type": "Тип компания:",
+    "legalForm": "Правна форма:",
+    "address": "Адрес:",
+    "vatId": "ДДС номер:",
+    "taxNumber": "Данъчен номер:"
+  }
 }

@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Willkommen",
@@ -28,7 +29,8 @@
     "phone": "Telefon",
     "language": "Sprache",
     "logOut": "Abmelden",
-    "selectLanguage": "Sprache wählen"
+    "selectLanguage": "Sprache wählen",
+    "settings": "Einstellungen"
   },
   "company": {
     "create": "Unternehmen erstellen",
@@ -75,7 +77,24 @@
     "transportActivity": "Transportaktivität",
     "recentTransports": "Aktuelle Transportaufträge",
     "assigned": "Zugewiesen",
-    "viewAllTransports": "Alle Transporte anzeigen"
+    "viewAllTransports": "Alle Transporte anzeigen",
+    "overview": "Übersicht",
+    "navigation": "Navigation"
   },
-  "loading": "Laden..."
+  "loading": "Laden...",
+  "notFound": {
+    "title": "404",
+    "message": "Ups! Seite nicht gefunden",
+    "returnHome": "Zurück zur Startseite"
+  },
+  "companyInfo": {
+    "title": "Unternehmensinformationen",
+    "description": "Details zu Ihrem registrierten Unternehmen",
+    "name": "Unternehmensname:",
+    "type": "Unternehmenstyp:",
+    "legalForm": "Rechtsform:",
+    "address": "Adresse:",
+    "vatId": "Umsatzsteuer-ID:",
+    "taxNumber": "Steuernummer:"
+  }
 }

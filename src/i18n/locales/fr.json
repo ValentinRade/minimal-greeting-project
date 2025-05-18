@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Bienvenue",
@@ -28,7 +29,8 @@
     "phone": "Téléphone",
     "language": "Langue",
     "logOut": "Déconnexion",
-    "selectLanguage": "Sélectionner la langue"
+    "selectLanguage": "Sélectionner la langue",
+    "settings": "Paramètres"
   },
   "dashboard": {
     "shipperWelcome": "Tableau de Bord Expéditeur",
@@ -52,7 +54,24 @@
     "transportActivity": "Activité de Transport",
     "recentTransports": "Affectations de transport récentes",
     "assigned": "Affecté",
-    "viewAllTransports": "Voir tous les transports"
+    "viewAllTransports": "Voir tous les transports",
+    "overview": "Aperçu",
+    "navigation": "Navigation"
   },
-  "loading": "Chargement..."
+  "loading": "Chargement...",
+  "notFound": {
+    "title": "404",
+    "message": "Oups! Page non trouvée",
+    "returnHome": "Retour à l'Accueil"
+  },
+  "companyInfo": {
+    "title": "Informations sur l'Entreprise",
+    "description": "Détails de votre entreprise enregistrée",
+    "name": "Nom de l'entreprise:",
+    "type": "Type d'entreprise:",
+    "legalForm": "Forme juridique:",
+    "address": "Adresse:",
+    "vatId": "Numéro de TVA:",
+    "taxNumber": "Numéro fiscal:"
+  }
 }

@@ -58,5 +58,20 @@
     "overview": "Panoramica",
     "navigation": "Navigazione"
   },
-  "loading": "Caricamento..."
+  "loading": "Caricamento...",
+  "notFound": {
+    "title": "404",
+    "message": "Ops! Pagina non trovata",
+    "returnHome": "Torna alla Home"
+  },
+  "companyInfo": {
+    "title": "Informazioni Aziendali",
+    "description": "Dettagli della tua azienda registrata",
+    "name": "Nome azienda:",
+    "type": "Tipo di azienda:",
+    "legalForm": "Forma legale:",
+    "address": "Indirizzo:",
+    "vatId": "Partita IVA:",
+    "taxNumber": "Codice fiscale:"
+  }
 }

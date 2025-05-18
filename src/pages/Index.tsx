@@ -33,7 +33,7 @@ const Index = () => {
                     onValueChange={(value) => changeLanguage(value)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select language" />
+                      <SelectValue placeholder={t('profile.selectLanguage')} />
                     </SelectTrigger>
                     <SelectContent>
                       {languages.map((lang) => (
@@ -52,36 +52,36 @@ const Index = () => {
         {company && (
           <Card className="w-full">
             <CardHeader>
-              <CardTitle>Unternehmensinformationen</CardTitle>
-              <CardDescription>Details zu Ihrem registrierten Unternehmen</CardDescription>
+              <CardTitle>{t('companyInfo.title')}</CardTitle>
+              <CardDescription>{t('companyInfo.description')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="font-semibold">Unternehmensname:</p>
+                  <p className="font-semibold">{t('companyInfo.name')}</p>
                   <p>{company.name}</p>
                 </div>
                 <div>
-                  <p className="font-semibold">Unternehmenstyp:</p>
+                  <p className="font-semibold">{t('companyInfo.type')}</p>
                   <p>{company.company_types?.name}</p>
                 </div>
                 <div>
-                  <p className="font-semibold">Rechtsform:</p>
+                  <p className="font-semibold">{t('companyInfo.legalForm')}</p>
                   <p>{company.company_legal_forms?.name}</p>
                 </div>
                 <div>
-                  <p className="font-semibold">Adresse:</p>
+                  <p className="font-semibold">{t('companyInfo.address')}</p>
                   <p>{company.street}, {company.postal_code} {company.city}, {company.country}</p>
                 </div>
                 {company.vat_id && (
                   <div>
-                    <p className="font-semibold">Umsatzsteuer-ID:</p>
+                    <p className="font-semibold">{t('companyInfo.vatId')}</p>
                     <p>{company.vat_id}</p>
                   </div>
                 )}
                 {company.tax_number && (
                   <div>
-                    <p className="font-semibold">Steuernummer:</p>
+                    <p className="font-semibold">{t('companyInfo.taxNumber')}</p>
                     <p>{company.tax_number}</p>
                   </div>
                 )}

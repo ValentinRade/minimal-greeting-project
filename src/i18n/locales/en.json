@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Welcome",
@@ -28,7 +29,8 @@
     "phone": "Phone",
     "language": "Language",
     "logOut": "Log out",
-    "selectLanguage": "Select language"
+    "selectLanguage": "Select language",
+    "settings": "Settings"
   },
   "company": {
     "create": "Create Company",
@@ -75,7 +77,24 @@
     "transportActivity": "Transport Activity",
     "recentTransports": "Recent transport assignments",
     "assigned": "Assigned",
-    "viewAllTransports": "View all transports"
+    "viewAllTransports": "View all transports",
+    "overview": "Overview",
+    "navigation": "Navigation"
   },
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "notFound": {
+    "title": "404",
+    "message": "Oops! Page not found",
+    "returnHome": "Return to Home"
+  },
+  "companyInfo": {
+    "title": "Company Information",
+    "description": "Details about your registered company",
+    "name": "Company Name:",
+    "type": "Company Type:",
+    "legalForm": "Legal Form:",
+    "address": "Address:",
+    "vatId": "VAT ID:",
+    "taxNumber": "Tax Number:"
+  }
 }

@@ -58,5 +58,20 @@
     "overview": "Przegląd",
     "navigation": "Nawigacja"
   },
-  "loading": "Ładowanie..."
+  "loading": "Ładowanie...",
+  "notFound": {
+    "title": "404",
+    "message": "Ups! Nie znaleziono strony",
+    "returnHome": "Powrót do strony głównej"
+  },
+  "companyInfo": {
+    "title": "Informacje o firmie",
+    "description": "Szczegóły dotyczące zarejestrowanej firmy",
+    "name": "Nazwa firmy:",
+    "type": "Typ firmy:",
+    "legalForm": "Forma prawna:",
+    "address": "Adres:",
+    "vatId": "NIP:",
+    "taxNumber": "Numer podatkowy:"
+  }
 }

@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Bun venit",
@@ -28,7 +29,8 @@
     "phone": "Telefon",
     "language": "Limbă",
     "logOut": "Deconectare",
-    "selectLanguage": "Selectează limba"
+    "selectLanguage": "Selectează limba",
+    "settings": "Setări"
   },
   "dashboard": {
     "shipperWelcome": "Tabloul de Bord al Expeditorului",
@@ -52,7 +54,24 @@
     "transportActivity": "Activitate de Transport",
     "recentTransports": "Sarcini de transport recente",
     "assigned": "Atribuit",
-    "viewAllTransports": "Vizualizați toate transporturile"
+    "viewAllTransports": "Vizualizați toate transporturile",
+    "overview": "Privire de ansamblu",
+    "navigation": "Navigare"
   },
-  "loading": "Se încarcă..."
+  "loading": "Se încarcă...",
+  "notFound": {
+    "title": "404",
+    "message": "Ups! Pagina nu a fost găsită",
+    "returnHome": "Înapoi la pagina principală"
+  },
+  "companyInfo": {
+    "title": "Informații despre companie",
+    "description": "Detalii despre compania dvs. înregistrată",
+    "name": "Numele companiei:",
+    "type": "Tipul companiei:",
+    "legalForm": "Forma juridică:",
+    "address": "Adresa:",
+    "vatId": "Cod TVA:",
+    "taxNumber": "Cod fiscal:"
+  }
 }

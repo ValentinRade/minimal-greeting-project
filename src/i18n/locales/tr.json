@@ -58,5 +58,20 @@
     "overview": "Genel Bakış",
     "navigation": "Navigasyon"
   },
-  "loading": "Yükleniyor..."
+  "loading": "Yükleniyor...",
+  "notFound": {
+    "title": "404",
+    "message": "Eyvah! Sayfa bulunamadı",
+    "returnHome": "Ana sayfaya dön"
+  },
+  "companyInfo": {
+    "title": "Şirket Bilgileri",
+    "description": "Kayıtlı şirketinizin detayları",
+    "name": "Şirket adı:",
+    "type": "Şirket türü:",
+    "legalForm": "Yasal form:",
+    "address": "Adres:",
+    "vatId": "KDV no:",
+    "taxNumber": "Vergi numarası:"
+  }
 }
