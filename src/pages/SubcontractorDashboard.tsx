@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +10,13 @@ import LanguageSelector from '@/components/LanguageSelector';
 const SubcontractorDashboard = () => {
   const { company, signOut, profile } = useAuth();
   const { t } = useTranslation();
+  const [language, setLanguage] = useState(profile?.language || 'Deutsch');
+  
+  useEffect(() => {
+    if (profile?.language) {
+      setLanguage(profile.language);
+    }
+  }, [profile]);
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -20,7 +27,7 @@ const SubcontractorDashboard = () => {
             <p className="text-slate-600">{company?.name}</p>
           </div>
           <div className="flex items-center gap-4">
-            <LanguageSelector currentLanguage={profile?.language || 'Deutsch'} />
+            <LanguageSelector currentLanguage={language} />
             <Button variant="outline" onClick={signOut}>{t('profile.logOut')}</Button>
           </div>
         </div>
