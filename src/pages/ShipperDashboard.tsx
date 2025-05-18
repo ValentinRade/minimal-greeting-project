@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { Package, Truck, Users } from 'lucide-react';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const ShipperDashboard = () => {
-  const { company, signOut } = useAuth();
+  const { company, signOut, profile } = useAuth();
   const { t } = useTranslation();
 
   return (
@@ -18,7 +19,10 @@ const ShipperDashboard = () => {
             <h1 className="text-3xl font-bold">{t('dashboard.shipperWelcome')}</h1>
             <p className="text-slate-600">{company?.name}</p>
           </div>
-          <Button variant="outline" onClick={signOut}>{t('profile.logOut')}</Button>
+          <div className="flex items-center gap-4">
+            <LanguageSelector currentLanguage={profile?.language || 'Deutsch'} />
+            <Button variant="outline" onClick={signOut}>{t('profile.logOut')}</Button>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
