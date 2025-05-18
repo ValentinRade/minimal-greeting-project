@@ -53,5 +53,29 @@
     "error": "Error",
     "errorMessage": "Error creating company: "
   },
+  "dashboard": {
+    "shipperWelcome": "Shipper Dashboard",
+    "subcontractorWelcome": "Subcontractor Dashboard",
+    "shipments": "Shipments",
+    "activeShipments": "Active shipments",
+    "contractors": "Contractors",
+    "activeContractors": "Active contractors",
+    "customers": "Customers",
+    "activeCustomers": "Active customers",
+    "shipmentActivity": "Shipment Activity",
+    "recentShipments": "Recent shipments and status updates",
+    "inTransit": "In Transit",
+    "viewAllShipments": "View all shipments",
+    "assignments": "Assignments",
+    "activeAssignments": "Active assignments",
+    "vehicles": "Vehicles",
+    "registeredVehicles": "Registered vehicles",
+    "drivers": "Drivers",
+    "activeDrivers": "Active drivers",
+    "transportActivity": "Transport Activity",
+    "recentTransports": "Recent transport assignments",
+    "assigned": "Assigned",
+    "viewAllTransports": "View all transports"
+  },
   "loading": "Loading..."
 }

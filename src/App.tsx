@@ -10,6 +10,8 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import CreateCompany from "./pages/CreateCompany";
+import ShipperDashboard from "./pages/ShipperDashboard";
+import SubcontractorDashboard from "./pages/SubcontractorDashboard";
 import NotFound from "./pages/NotFound";
 
 // Import i18n for internationalization
@@ -30,6 +32,16 @@ const App = () => (
               <Route path="/create-company" element={
                 <ProtectedRoute requireCompany={false}>
                   <CreateCompany />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/shipper" element={
+                <ProtectedRoute>
+                  <ShipperDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/subcontractor" element={
+                <ProtectedRoute>
+                  <SubcontractorDashboard />
                 </ProtectedRoute>
               } />
               <Route path="/" element={

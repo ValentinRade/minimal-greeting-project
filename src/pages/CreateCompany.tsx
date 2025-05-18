@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -130,7 +129,7 @@ const CreateCompany = () => {
         country: data.country || 'Deutschland'
       };
 
-      const { error } = await supabase.from('companies').insert([companyData]);
+      const { error } = await supabase.from('companies').insert(companyData);
 
       if (error) throw error;
 
@@ -139,7 +138,14 @@ const CreateCompany = () => {
         description: t('company.successMessage'),
       });
 
-      navigate('/');
+      // Redirect to the appropriate dashboard based on company type
+      if (companyData.company_type_id === 1) {
+        navigate('/dashboard/shipper');
+      } else if (companyData.company_type_id === 2) {
+        navigate('/dashboard/subcontractor');
+      } else {
+        navigate('/');
+      }
     } catch (error: any) {
       toast({
         title: t('company.error'),
