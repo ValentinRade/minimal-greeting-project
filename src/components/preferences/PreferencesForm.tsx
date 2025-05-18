@@ -59,7 +59,7 @@ const languagesOptions = [
   { id: 'english', label: 'Englisch' },
   { id: 'french', label: 'Französisch' },
   { id: 'spanish', label: 'Spanisch' },
-  { id: 'polish', label: 'Polnisch' },
+  { id: 'polish', label: 'Polisch' },
 ];
 
 // Form schema with validation
@@ -88,6 +88,24 @@ const formSchema = z.object({
 });
 
 type PreferencesFormValues = z.infer<typeof formSchema>;
+
+// Helper type for Supabase JSON format
+type JsonFormData = {
+  start_date_transport: {
+    month: string;
+    year: string;
+  };
+  team_size: {
+    drivers: number;
+    dispatchers: number;
+    others: number;
+  };
+  communication: {
+    response_time: 'less_1h' | '1_4h' | '4_24h' | 'more_24h';
+    languages: string[];
+  };
+  [key: string]: any;
+}
 
 const PreferencesForm: React.FC = () => {
   const { t } = useTranslation();
@@ -166,7 +184,7 @@ const PreferencesForm: React.FC = () => {
           throw error;
         }
         
-        return data;
+        return data as JsonFormData;
       } catch (error) {
         console.error('Error in preferences query:', error);
         return null;
@@ -228,22 +246,36 @@ const PreferencesForm: React.FC = () => {
   // Load existing preferences into form when data is fetched
   useEffect(() => {
     if (userPreferences) {
+      // Parse the JSON data safely from Supabase
+      const startDateTransport = userPreferences.start_date_transport && typeof userPreferences.start_date_transport === 'object'
+        ? userPreferences.start_date_transport
+        : { month: monthOptions[0], year: yearOptions[0] };
+      
+      const teamSize = userPreferences.team_size && typeof userPreferences.team_size === 'object'
+        ? userPreferences.team_size
+        : { drivers: 0, dispatchers: 0, others: 0 };
+      
+      const communication = userPreferences.communication && typeof userPreferences.communication === 'object'
+        ? userPreferences.communication
+        : { response_time: '1_4h', languages: ['german'] };
+      
+      // Reset the form with the parsed values
       form.reset({
-        start_date_transport: userPreferences.start_date_transport,
-        team_size: userPreferences.team_size,
-        preferred_tour_types: userPreferences.preferred_tour_types,
-        flexibility: userPreferences.flexibility as any,
+        start_date_transport: startDateTransport as { month: string; year: string },
+        team_size: teamSize as { drivers: number; dispatchers: number; others: number },
+        preferred_tour_types: userPreferences.preferred_tour_types || [],
+        flexibility: userPreferences.flexibility as any || 'both',
         specialization: userPreferences.specialization || '',
-        frequent_routes: userPreferences.frequent_routes,
-        client_types: userPreferences.client_types,
-        communication: userPreferences.communication as any,
+        frequent_routes: userPreferences.frequent_routes || [],
+        client_types: userPreferences.client_types || [],
+        communication: communication as { response_time: 'less_1h' | '1_4h' | '4_24h' | 'more_24h'; languages: string[] },
         problem_handling: userPreferences.problem_handling || '',
         expectations_from_shipper: userPreferences.expectations_from_shipper || '',
-        order_preference: userPreferences.order_preference as any,
+        order_preference: userPreferences.order_preference as any || 'regular',
       });
       
       // Update routes state to match the loaded preferences
-      setRoutes(userPreferences.frequent_routes);
+      setRoutes(userPreferences.frequent_routes || []);
     }
   }, [userPreferences, form]);
 
