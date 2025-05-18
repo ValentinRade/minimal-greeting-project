@@ -1,22 +1,19 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { format } from 'date-fns';
-
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Form, 
-  FormControl, 
-  FormDescription, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
+import { Input } from '@/components/ui/input';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import {
   Select,
@@ -25,12 +22,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
+import { CalendarIcon, ArrowLeft } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -41,41 +43,38 @@ const INDUSTRY_OPTIONS = [
   { value: 'food', labelKey: 'Lebensmittel' },
   { value: 'beverages', labelKey: 'Getränke & Tabakwaren' },
   { value: 'wholesale', labelKey: 'Großhandel' },
-  { value: 'logistics', labelKey: 'Spedition' },
+  { value: 'forwarding', labelKey: 'Spedition' }
 ];
 
 const CATEGORY_OPTIONS = [
-  "Süßwarenindustrie", "Lebensmittel", "Fleischwaren", "Landhandel", "Sanitärgrosshandel", 
-  "Autoservice", "Logistik", "Speditionen", "Kurierdienste", "Reedereien", "Busunternehmen", 
-  "Abfallentsorgung", "Recycling", "Versorger", "Hygieneservice", "Discounter", "Cash-and-Carry", 
-  "Kliniken", "Pflegeheime", "Brotfabriken", "Brauereien", "Getränkeindustrie", "Molkereien", 
-  "Großhandel-Technik", "Stahlgroßhändler", "Großverbraucher", "Hafenbetriebe", "Möbelfracht", 
-  "Bäckereien", "Getränkemärkte", "Optiker", "Labore", "Pflegedienste", "Obst & Gemüse", 
-  "Mühlenbetriebe", "TK-Hersteller", "Fischfabriken", "Feinkosthersteller", "Gewürzhersteller", 
-  "Geflügelbetriebe", "Tierfutter", "Weinkellereien", "Elektrogroßhandel", "Baustoffhändler", 
-  "Papiergroßhändler", "Autoteile-Handel", "Pharmagroßhändler", "Chemiegroßhandel", "GFGH", 
-  "Großhandel-Medizintechnik", "Großhandel-Sonstige", "LKW-Service", "Abbruchunternehmen", 
-  "Regenerative-Energien", "Reha-Kliniken", "Dentallabore", "Sanitärhäuser", "Spirituosen", 
-  "Agrarbetriebe", "Friseurgroßhandel", "Gastroausstatter", "Mineraloelhändler", "Blumengroßhandel", 
-  "Taxiunternehmen", "Reformhäuser", "Feinkost", "Großhandel Reinigung", "Landtechnik"
+  'Süßwarenindustrie', 'Lebensmittel', 'Fleischwaren', 'Landhandel', 'Sanitärgrosshandel', 
+  'Autoservice', 'Logistik', 'Speditionen', 'Kurierdienste', 'Reedereien', 
+  'Busunternehmen', 'Abfallentsorgung', 'Recycling', 'Versorger', 'Hygieneservice', 
+  'Discounter', 'Cash-and-Carry', 'Kliniken', 'Pflegeheime', 'Brotfabriken', 
+  'Brauereien', 'Getränkeindustrie', 'Molkereien', 'Großhandel-Technik', 'Stahlgroßhändler', 
+  'Großverbraucher', 'Hafenbetriebe', 'Möbelfracht', 'Bäckereien', 'Getränkemärkte', 
+  'Optiker', 'Labore', 'Pflegedienste', 'Obst & Gemüse', 'Mühlenbetriebe', 
+  'TK-Hersteller', 'Fischfabriken', 'Feinkosthersteller', 'Gewürzhersteller', 'Geflügelbetriebe', 
+  'Tierfutter', 'Weinkellereien', 'Elektrogroßhandel', 'Baustoffhändler', 'Papiergroßhändler', 
+  'Autoteile-Handel', 'Pharmagroßhändler', 'Chemiegroßhandel', 'GFGH', 'Großhandel-Medizintechnik', 
+  'Großhandel-Sonstige', 'LKW-Service', 'Abbruchunternehmen', 'Regenerative-Energien', 'Reha-Kliniken', 
+  'Dentallabore', 'Sanitärhäuser', 'Spirituosen', 'Agrarbetriebe', 'Friseurgroßhandel', 
+  'Gastroausstatter', 'Mineraloelhändler', 'Blumengroßhandel', 'Taxiunternehmen', 'Reformhäuser', 
+  'Feinkost', 'Großhandel Reinigung', 'Landtechnik'
 ];
 
-const formSchema = z.object({
-  allowPublication: z.boolean().default(false),
-  customerName: z.string().optional(),
-  industry: z.string().min(1, { message: "Industry is required" }),
-  category: z.string().min(1, { message: "Category is required" }),
-  startDate: z.date({ required_error: "Start date is required" }),
-  endDate: z.date().optional(),
-  untilToday: z.boolean().default(false),
-  customerFeedback: z.instanceof(FileList).optional(),
-  consent: z.boolean().refine(val => val, {
-    message: "You must agree to the terms",
-  }),
-  anonymize: z.boolean().default(false),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+interface FormValues {
+  customerName: string;
+  industry: string;
+  category: string;
+  startDate: Date;
+  endDate?: Date;
+  untilToday: boolean;
+  customerFeedbackFile?: FileList;
+  consent: boolean;
+  allowPublication: boolean;
+  anonymize: boolean;
+}
 
 const ReferencesForm: React.FC = () => {
   const { t } = useTranslation();
@@ -85,25 +84,25 @@ const ReferencesForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(!!id);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-
+  
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
-      allowPublication: false,
-      customerName: "",
-      industry: "",
-      category: "",
+      customerName: '',
+      industry: '',
+      category: '',
+      startDate: new Date(),
       untilToday: false,
       consent: false,
-      anonymize: false,
+      allowPublication: false,
+      anonymize: false
     },
   });
 
+  // Get the current values for conditionally showing fields
   const allowPublication = form.watch('allowPublication');
   const untilToday = form.watch('untilToday');
 
   useEffect(() => {
-    // If editing an existing reference, fetch the data
     async function fetchReference() {
       if (!id) return;
 
@@ -113,36 +112,37 @@ const ReferencesForm: React.FC = () => {
           .select('*')
           .eq('id', id)
           .single();
-
+          
         if (error) throw error;
-
+        
         if (data) {
-          // Parse dates from string to Date objects
-          const startDate = data.start_date ? new Date(data.start_date) : undefined;
-          const endDate = data.end_date ? new Date(data.end_date) : undefined;
-          
           form.reset({
-            allowPublication: data.allow_publication,
-            customerName: data.customer_name || "",
-            industry: data.industry || "",
-            category: data.category || "",
-            startDate: startDate,
-            endDate: endDate,
-            untilToday: data.until_today,
-            consent: true, // We assume consent was given when creating
-            anonymize: data.anonymize,
+            customerName: data.customer_name || '',
+            industry: data.industry || '',
+            category: data.category || '',
+            startDate: data.start_date ? new Date(data.start_date) : new Date(),
+            endDate: data.end_date ? new Date(data.end_date) : undefined,
+            untilToday: data.until_today || false,
+            consent: true, // If we're editing, we can assume consent was given before
+            allowPublication: data.allow_publication || false,
+            anonymize: data.anonymize || false
           });
-          
-          setFileUrl(data.customer_feedback_url || null);
+
+          if (data.customer_feedback_url) {
+            setFileUrl(data.customer_feedback_url);
+          }
         }
+        
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching reference:', error);
-        toast.error(t('references.fetchError'));
-      } finally {
+        toast.error(t('references.saveError'), { 
+          description: t('references.saveErrorMessage')
+        });
         setIsLoading(false);
       }
     }
-
+    
     fetchReference();
   }, [id, form, t]);
 
@@ -165,29 +165,31 @@ const ReferencesForm: React.FC = () => {
         industry: values.industry,
         category: values.category,
         start_date: values.startDate.toISOString(),
-        end_date: values.untilToday ? null : values.endDate?.toISOString(),
+        end_date: (!values.untilToday && values.endDate) ? values.endDate.toISOString() : null,
         until_today: values.untilToday,
-        anonymize: values.anonymize,
+        anonymize: values.anonymize && values.allowPublication
       };
 
       let result;
       
-      // Update or create reference
       if (id) {
+        // Update existing reference
         result = await supabase
           .from('subcontractor_references')
           .update(referenceData)
           .eq('id', id);
       } else {
+        // Create new reference
         result = await supabase
           .from('subcontractor_references')
-          .insert([referenceData]);
+          .insert(referenceData)
+          .select();
       }
 
       if (result.error) throw result.error;
-      
-      // Handle file upload if provided
-      const fileList = values.customerFeedback;
+
+      // Handle file upload if there's a new file
+      const fileList = values.customerFeedbackFile;
       if (fileList && fileList.length > 0) {
         const file = fileList[0];
         const fileExt = file.name.split('.').pop();
@@ -195,11 +197,13 @@ const ReferencesForm: React.FC = () => {
         
         const { error: uploadError } = await supabase.storage
           .from('reference_documents')
-          .upload(fileName, file, { upsert: true });
+          .upload(fileName, file, {
+            upsert: true
+          });
           
         if (uploadError) throw uploadError;
         
-        // Update reference with file URL
+        // Update reference with the file URL
         const { error: updateError } = await supabase
           .from('subcontractor_references')
           .update({ customer_feedback_url: fileName })
@@ -208,20 +212,14 @@ const ReferencesForm: React.FC = () => {
         if (updateError) throw updateError;
       }
       
-      toast.success(
-        id ? t('references.updateSuccess') : t('references.saveSuccess'),
-        {
-          description: id 
-            ? t('references.updateSuccessMessage') 
-            : t('references.saveSuccessMessage'),
-        }
-      );
-      
+      toast.success(t('references.saveSuccess'), {
+        description: t('references.saveSuccessMessage')
+      });
       navigate('/dashboard/subcontractor/selection/references');
     } catch (error) {
       console.error('Error saving reference:', error);
       toast.error(t('references.saveError'), {
-        description: t('references.saveErrorMessage'),
+        description: t('references.saveErrorMessage')
       });
     } finally {
       setIsSubmitting(false);
@@ -229,52 +227,61 @@ const ReferencesForm: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <Card className="max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle>{t('references.loading')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-40 flex items-center justify-center">
-            <p>{t('common.loading')}</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <div>{t('loading')}</div>;
   }
 
   return (
-    <Card className="max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle>{id ? t('references.editReference') : t('references.formTitle')}</CardTitle>
-        <CardDescription>{t('references.formDescription')}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-4">
-              {/* Publication Toggle */}
-              <FormField
-                control={form.control}
-                name="allowPublication"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">{t('references.publication')}</FormLabel>
-                      <FormDescription>
-                        {t('references.allowPublication')}
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/dashboard/subcontractor/selection/references')}
+          className="flex items-center gap-1 mb-4"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {t('common.back')}
+        </Button>
+        <h1 className="text-2xl font-bold">{id ? t('references.edit') : t('references.formTitle')}</h1>
+      </div>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('references.formTitle')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Publication settings */}
+              <div className="border p-4 rounded-md space-y-4 bg-gray-50">
+                <h3 className="font-medium text-lg">{t('references.publication')}</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="allowPublication">{t('references.allowPublication')}</Label>
+                    <p className="text-sm text-gray-500">
+                      {t('references.privacyText')}
+                    </p>
+                  </div>
+                  <Switch 
+                    id="allowPublication"
+                    checked={form.watch('allowPublication')} 
+                    onCheckedChange={(value) => form.setValue('allowPublication', value)}
+                  />
+                </div>
 
+                {allowPublication && (
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="anonymize" 
+                      checked={form.watch('anonymize')}
+                      onCheckedChange={(checked) => 
+                        form.setValue('anonymize', checked as boolean)
+                      }
+                    />
+                    <Label htmlFor="anonymize">{t('references.anonymizeOption')}</Label>
+                  </div>
+                )}
+              </div>
+              
               {/* Customer Name */}
               <FormField
                 control={form.control}
@@ -284,9 +291,9 @@ const ReferencesForm: React.FC = () => {
                     <FormLabel>{t('references.customerName')}</FormLabel>
                     <FormControl>
                       <Input 
+                        placeholder={t('references.customerName')} 
                         {...field} 
-                        disabled={!allowPublication}
-                        value={field.value || ""}
+                        disabled={!allowPublication || form.watch('anonymize')}
                       />
                     </FormControl>
                     <FormMessage />
@@ -301,19 +308,16 @@ const ReferencesForm: React.FC = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('references.industry')}</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder={t('references.selectIndustry')} />
+                          <SelectValue placeholder={t('references.industry')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {INDUSTRY_OPTIONS.map((industry) => (
-                          <SelectItem key={industry.value} value={industry.value}>
-                            {industry.labelKey}
+                        {INDUSTRY_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.labelKey}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -330,13 +334,10 @@ const ReferencesForm: React.FC = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('references.category')}</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder={t('references.selectCategory')} />
+                          <SelectValue placeholder={t('references.category')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -353,8 +354,8 @@ const ReferencesForm: React.FC = () => {
               />
 
               {/* Order Period */}
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium">{t('references.orderPeriod')}</h3>
+              <div className="space-y-4">
+                <h3 className="font-medium">{t('references.orderPeriod')}</h3>
                 
                 {/* Start Date */}
                 <FormField
@@ -369,14 +370,14 @@ const ReferencesForm: React.FC = () => {
                             <Button
                               variant={"outline"}
                               className={cn(
-                                "pl-3 text-left font-normal",
+                                "w-full pl-3 text-left font-normal",
                                 !field.value && "text-muted-foreground"
                               )}
                             >
                               {field.value ? (
                                 format(field.value, "PPP")
                               ) : (
-                                <span>{t('references.pickDate')}</span>
+                                <span>Pick a date</span>
                               )}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
@@ -386,9 +387,11 @@ const ReferencesForm: React.FC = () => {
                           <Calendar
                             mode="single"
                             selected={field.value}
-                            onSelect={field.onChange}
+                            onSelect={(date) => date && field.onChange(date)}
+                            disabled={(date) =>
+                              date > new Date() || date < new Date("1900-01-01")
+                            }
                             initialFocus
-                            className={cn("p-3 pointer-events-auto")}
                           />
                         </PopoverContent>
                       </Popover>
@@ -396,14 +399,26 @@ const ReferencesForm: React.FC = () => {
                     </FormItem>
                   )}
                 />
-
-                <div className="flex items-end gap-4">
-                  {/* End Date */}
+                
+                {/* Until Today Checkbox */}
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="untilToday" 
+                    checked={form.watch('untilToday')}
+                    onCheckedChange={(checked) => 
+                      form.setValue('untilToday', checked as boolean)
+                    }
+                  />
+                  <Label htmlFor="untilToday">{t('references.untilToday')}</Label>
+                </div>
+                
+                {/* End Date (only show if "Until Today" is not checked) */}
+                {!untilToday && (
                   <FormField
                     control={form.control}
                     name="endDate"
                     render={({ field }) => (
-                      <FormItem className="flex-1">
+                      <FormItem className="flex flex-col">
                         <FormLabel>{t('references.endDate')}</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
@@ -411,15 +426,14 @@ const ReferencesForm: React.FC = () => {
                               <Button
                                 variant={"outline"}
                                 className={cn(
-                                  "pl-3 text-left font-normal w-full",
+                                  "w-full pl-3 text-left font-normal",
                                   !field.value && "text-muted-foreground"
                                 )}
-                                disabled={untilToday}
                               >
                                 {field.value ? (
                                   format(field.value, "PPP")
                                 ) : (
-                                  <span>{t('references.pickDate')}</span>
+                                  <span>Pick a date</span>
                                 )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
@@ -428,11 +442,14 @@ const ReferencesForm: React.FC = () => {
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
                               mode="single"
-                              selected={field.value || undefined}
-                              onSelect={field.onChange}
+                              selected={field.value}
+                              onSelect={(date) => date && field.onChange(date)}
+                              disabled={(date) =>
+                                date > new Date() || 
+                                date < new Date("1900-01-01") ||
+                                (form.getValues('startDate') && date < form.getValues('startDate'))
+                              }
                               initialFocus
-                              disabled={untilToday}
-                              className={cn("p-3 pointer-events-auto")}
                             />
                           </PopoverContent>
                         </Popover>
@@ -440,58 +457,34 @@ const ReferencesForm: React.FC = () => {
                       </FormItem>
                     )}
                   />
-
-                  {/* Until Today Checkbox */}
-                  <FormField
-                    control={form.control}
-                    name="untilToday"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 py-3">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>
-                            {t('references.untilToday')}
-                          </FormLabel>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                )}
               </div>
 
-              {/* Customer Feedback */}
+              {/* Customer Feedback File */}
               <FormField
                 control={form.control}
-                name="customerFeedback"
-                render={({ field: { value, onChange, ...fieldProps } }) => (
+                name="customerFeedbackFile"
+                render={({ field: { value, onChange, ...field } }) => (
                   <FormItem>
                     <FormLabel>{t('references.customerFeedback')}</FormLabel>
-                    {fileUrl && (
-                      <div className="mb-2 text-sm">
-                        <a 
-                          href={`https://ryshjxguqwhlqhqievgx.supabase.co/storage/v1/object/public/reference_documents/${fileUrl}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          {t('references.currentFile')}
-                        </a>
-                      </div>
-                    )}
                     <FormControl>
-                      <Input
-                        {...fieldProps}
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => {
-                          onChange(e.target.files || null);
-                        }}
-                      />
+                      <div className="flex flex-col space-y-2">
+                        <Input 
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          onChange={(e) => {
+                            if (e.target.files?.length) {
+                              onChange(e.target.files);
+                            }
+                          }}
+                          {...field}
+                        />
+                        {fileUrl && (
+                          <p className="text-sm text-gray-500">
+                            {t('references.uploadDocument')}: {fileUrl}
+                          </p>
+                        )}
+                      </div>
                     </FormControl>
                     <FormDescription>
                       {t('references.uploadDocument')}
@@ -501,72 +494,39 @@ const ReferencesForm: React.FC = () => {
                 )}
               />
 
-              {/* Privacy and Consent */}
-              <div className="space-y-3 rounded-lg border p-4">
-                <h3 className="font-medium">{t('references.privacyNotice')}</h3>
-                <p className="text-sm text-muted-foreground">{t('references.privacyText')}</p>
-                
-                <FormField
-                  control={form.control}
-                  name="consent"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 py-2">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          {t('references.consentLabel')}
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="anonymize"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 py-1">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          {t('references.anonymizeOption')}
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
+              {/* Consent Checkbox */}
+              <FormField
+                control={form.control}
+                name="consent"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 border p-4 rounded-md bg-gray-50">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={(checked) => field.onChange(checked)}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        {t('references.consentLabel')}
+                      </FormLabel>
+                      <FormDescription>
+                        {t('references.privacyNotice')}
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex gap-4 justify-end">
-              <Button 
-                type="button" 
-                variant="outline"
-                onClick={() => navigate('/dashboard/subcontractor/selection/references')}
-              >
-                {t('common.cancel')}
+              {/* Submit Button */}
+              <Button type="submit" disabled={isSubmitting || !form.watch('consent')}>
+                {isSubmitting ? t('settings.updating') : t('common.save')}
               </Button>
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? t('common.saving') : t('common.save')}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

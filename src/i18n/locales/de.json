@@ -282,7 +282,9 @@
     "saveSuccess": "Erfolgreich gespeichert",
     "saveSuccessMessage": "Ihre Referenz wurde erfolgreich hinzugefügt.",
     "saveError": "Fehler beim Speichern",
-    "saveErrorMessage": "Ihre Referenz konnte nicht gespeichert werden."
+    "saveErrorMessage": "Ihre Referenz konnte nicht gespeichert werden.",
+    "anonymized": "Anonymisiert",
+    "showCount": "{{count}} Referenzen werden angezeigt"
   },
   "ranking": {
     "title": "Ranking",
@@ -300,6 +302,11 @@
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "confirm": "Bestätigen",
-    "back": "Zurück"
+    "back": "Zurück",
+    "yes": "Ja",
+    "no": "Nein",
+    "actions": "Aktionen",
+    "error": "Fehler",
+    "noCompanyId": "Keine Firmen-ID gefunden"
   }
 }

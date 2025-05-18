@@ -206,6 +206,7 @@
     "prequalifications": "Precalificaciones",
     "preferences": "Preferencias",
     "ranking": "Clasificación",
+    "references": "Referencias",
     "overview": "Resumen",
     "edit": "Editar",
     "editButton": "Editar",
@@ -235,6 +236,33 @@
     "overview": "Resumen de Preferencias",
     "edit": "Editar Preferencias"
   },
+  "references": {
+    "title": "Referencias",
+    "overview": "Resumen de Referencias",
+    "edit": "Editar Referencias",
+    "formTitle": "Introducir Referencia",
+    "customerName": "Nombre del Cliente",
+    "industry": "Industria",
+    "category": "Categoría",
+    "orderPeriod": "Período de Pedido",
+    "startDate": "Fecha de Inicio",
+    "endDate": "Fecha de Fin",
+    "untilToday": "Hasta Hoy",
+    "customerFeedback": "Comentarios del Cliente",
+    "uploadDocument": "Subir Documento (PDF o Word)",
+    "privacyNotice": "Aviso de Privacidad",
+    "privacyText": "Sus datos serán procesados de acuerdo con el RGPD.",
+    "consentLabel": "Doy mi consentimiento para el uso y la publicación de esta referencia",
+    "anonymizeOption": "Anonimizar nombre del cliente",
+    "publication": "Publicación",
+    "allowPublication": "Permitir Publicación",
+    "saveSuccess": "Guardado con Éxito",
+    "saveSuccessMessage": "Su referencia ha sido añadida con éxito.",
+    "saveError": "Error al Guardar",
+    "saveErrorMessage": "Su referencia no pudo ser guardada.",
+    "anonymized": "Anonimizado",
+    "showCount": "Mostrando {{count}} referencias"
+  },
   "ranking": {
     "title": "Clasificación",
     "overview": "Resumen de Clasificación",
@@ -251,6 +279,11 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "confirm": "Confirmar",
-    "back": "Atrás"
+    "back": "Atrás",
+    "yes": "Sí",
+    "no": "No",
+    "actions": "Acciones",
+    "error": "Error",
+    "noCompanyId": "No se encontró el ID de la empresa"
   }
 }

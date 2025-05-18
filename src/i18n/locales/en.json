@@ -285,7 +285,9 @@
     "saveSuccess": "Successfully Saved",
     "saveSuccessMessage": "Your reference has been successfully added.",
     "saveError": "Error Saving",
-    "saveErrorMessage": "Your reference could not be saved."
+    "saveErrorMessage": "Your reference could not be saved.",
+    "anonymized": "Anonymized",
+    "showCount": "Showing {{count}} references"
   },
   "ranking": {
     "title": "Ranking",
@@ -303,6 +305,11 @@
     "edit": "Edit",
     "delete": "Delete",
     "confirm": "Confirm",
-    "back": "Back"
+    "back": "Back",
+    "yes": "Yes",
+    "no": "No",
+    "actions": "Actions",
+    "error": "Error",
+    "noCompanyId": "No company ID found"
   }
 }

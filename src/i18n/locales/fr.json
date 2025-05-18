@@ -206,6 +206,7 @@
     "prequalifications": "Préqualifications",
     "preferences": "Préférences",
     "ranking": "Classement",
+    "references": "Références",
     "overview": "Aperçu",
     "edit": "Modifier",
     "editButton": "Modifier",
@@ -235,6 +236,33 @@
     "overview": "Aperçu des Préférences",
     "edit": "Modifier les Préférences"
   },
+  "references": {
+    "title": "Références",
+    "overview": "Aperçu des Références",
+    "edit": "Modifier les Références",
+    "formTitle": "Saisir une Référence",
+    "customerName": "Nom du Client",
+    "industry": "Industrie",
+    "category": "Catégorie",
+    "orderPeriod": "Période de Commande",
+    "startDate": "Date de Début",
+    "endDate": "Date de Fin",
+    "untilToday": "Jusqu'à Aujourd'hui",
+    "customerFeedback": "Retour Client",
+    "uploadDocument": "Télécharger un Document (PDF ou Word)",
+    "privacyNotice": "Avis de Confidentialité",
+    "privacyText": "Vos données seront traitées conformément au RGPD.",
+    "consentLabel": "Je consens à l'utilisation et à la publication de cette référence",
+    "anonymizeOption": "Anonymiser le nom du client",
+    "publication": "Publication",
+    "allowPublication": "Autoriser la Publication",
+    "saveSuccess": "Enregistré avec Succès",
+    "saveSuccessMessage": "Votre référence a été ajoutée avec succès.",
+    "saveError": "Erreur lors de l'Enregistrement",
+    "saveErrorMessage": "Votre référence n'a pas pu être enregistrée.",
+    "anonymized": "Anonymisé",
+    "showCount": "Affichage de {{count}} références"
+  },
   "ranking": {
     "title": "Classement",
     "overview": "Aperçu du Classement",
@@ -251,6 +279,11 @@
     "edit": "Modifier",
     "delete": "Supprimer",
     "confirm": "Confirmer",
-    "back": "Retour"
+    "back": "Retour",
+    "yes": "Oui",
+    "no": "Non",
+    "actions": "Actions",
+    "error": "Erreur",
+    "noCompanyId": "Aucun ID d'entreprise trouvé"
   }
 }

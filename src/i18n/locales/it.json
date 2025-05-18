@@ -206,6 +206,7 @@
     "prequalifications": "Prequalificazioni",
     "preferences": "Preferenze",
     "ranking": "Classifica",
+    "references": "Referenze",
     "overview": "Panoramica",
     "edit": "Modifica",
     "editButton": "Modifica",
@@ -235,6 +236,33 @@
     "overview": "Panoramica Preferenze",
     "edit": "Modifica Preferenze"
   },
+  "references": {
+    "title": "Referenze",
+    "overview": "Panoramica Referenze",
+    "edit": "Modifica Referenze",
+    "formTitle": "Inserisci Referenza",
+    "customerName": "Nome Cliente",
+    "industry": "Settore",
+    "category": "Categoria",
+    "orderPeriod": "Periodo dell'Ordine",
+    "startDate": "Data di Inizio",
+    "endDate": "Data di Fine",
+    "untilToday": "Fino ad Oggi",
+    "customerFeedback": "Feedback Cliente",
+    "uploadDocument": "Carica Documento (PDF o Word)",
+    "privacyNotice": "Informativa sulla Privacy",
+    "privacyText": "I tuoi dati saranno trattati in conformità con il GDPR.",
+    "consentLabel": "Acconsento all'uso e alla pubblicazione di questa referenza",
+    "anonymizeOption": "Anonimizza nome cliente",
+    "publication": "Pubblicazione",
+    "allowPublication": "Consenti Pubblicazione",
+    "saveSuccess": "Salvato con Successo",
+    "saveSuccessMessage": "La tua referenza è stata aggiunta con successo.",
+    "saveError": "Errore di Salvataggio",
+    "saveErrorMessage": "La tua referenza non può essere salvata.",
+    "anonymized": "Anonimizzato",
+    "showCount": "Visualizzazione di {{count}} referenze"
+  },
   "ranking": {
     "title": "Classifica",
     "overview": "Panoramica Classifica",
@@ -251,6 +279,11 @@
     "edit": "Modifica",
     "delete": "Elimina",
     "confirm": "Conferma",
-    "back": "Indietro"
+    "back": "Indietro",
+    "yes": "Sì",
+    "no": "No",
+    "actions": "Azioni",
+    "error": "Errore",
+    "noCompanyId": "Nessun ID azienda trovato"
   }
 }

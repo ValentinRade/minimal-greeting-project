@@ -1,33 +1,46 @@
 
-export interface LanguageOption {
-  code: string;
-  name: string;
-  nativeName: string;
-}
-
-export const languages: LanguageOption[] = [
-  { code: "de", name: "Deutsch", nativeName: "Deutsch" },
-  { code: "en", name: "Englisch", nativeName: "English" },
-  { code: "es", name: "Spanisch", nativeName: "Español" },
-  { code: "fr", name: "Französisch", nativeName: "Français" },
-  { code: "it", name: "Italienisch", nativeName: "Italiano" },
-  { code: "pl", name: "Polnisch", nativeName: "Polski" },
-  { code: "ro", name: "Rumänisch", nativeName: "Română" },
-  { code: "bg", name: "Bulgarisch", nativeName: "Български" },
-  { code: "tr", name: "Türkisch", nativeName: "Türkçe" },
-  { code: "ar", name: "Arabisch", nativeName: "العربية" }
-];
-
-export const getLanguageByCode = (code: string): LanguageOption => {
-  return languages.find(lang => lang.code === code) || languages[0];
+// Map language codes to user-friendly names
+export const languagesToUserFriendly: Record<string, string> = {
+  de: 'Deutsch',
+  en: 'English',
+  es: 'Español',
+  fr: 'Français',
+  it: 'Italiano',
+  pl: 'Polski',
+  ro: 'Română',
+  bg: 'Български',
+  tr: 'Türkçe',
+  ar: 'العربية'
 };
 
-export const languageCodeToName = (code: string): string => {
-  const language = getLanguageByCode(code);
-  return language ? language.name : "Deutsch";
+// Map user-friendly names to language codes
+export const userFriendlyToLanguages: Record<string, string> = {
+  Deutsch: 'de',
+  English: 'en',
+  Español: 'es',
+  Français: 'fr',
+  Italiano: 'it',
+  Polski: 'pl',
+  Română: 'ro',
+  Български: 'bg',
+  Türkçe: 'tr',
+  العربية: 'ar'
 };
 
-export const languageToLocaleCode = (languageName: string): string => {
-  const language = languages.find(lang => lang.name === languageName);
-  return language ? language.code : "de";
+// Convert from language name to locale code
+export const languageToLocaleCode = (language: string): string => {
+  return userFriendlyToLanguages[language] || 'de';
+};
+
+// Convert from locale code to language name
+export const localeCodeToLanguage = (code: string): string => {
+  return languagesToUserFriendly[code] || 'Deutsch';
+};
+
+// Get all available languages as options
+export const getAllLanguages = () => {
+  return Object.keys(languagesToUserFriendly).map(code => ({
+    value: code,
+    label: languagesToUserFriendly[code]
+  }));
 };

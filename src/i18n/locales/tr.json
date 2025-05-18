@@ -230,6 +230,7 @@
     "prequalifications": "Ön Yeterlilikler",
     "preferences": "Tercihler",
     "ranking": "Sıralama",
+    "references": "Referanslar",
     "overview": "Genel Bakış",
     "edit": "Düzenle",
     "editButton": "Düzenle",
@@ -259,6 +260,33 @@
     "overview": "Tercihler Genel Bakış",
     "edit": "Tercihleri Düzenle"
   },
+  "references": {
+    "title": "Referanslar",
+    "overview": "Referanslar Genel Bakış",
+    "edit": "Referansları Düzenle",
+    "formTitle": "Referans Girin",
+    "customerName": "Müşteri Adı",
+    "industry": "Endüstri",
+    "category": "Kategori",
+    "orderPeriod": "Sipariş Dönemi",
+    "startDate": "Başlangıç Tarihi",
+    "endDate": "Bitiş Tarihi",
+    "untilToday": "Bugüne Kadar",
+    "customerFeedback": "Müşteri Geri Bildirimi",
+    "uploadDocument": "Belge Yükle (PDF veya Word)",
+    "privacyNotice": "Gizlilik Bildirimi",
+    "privacyText": "Verileriniz GDPR uyarınca işlenecektir.",
+    "consentLabel": "Bu referansın kullanımına ve yayınlanmasına izin veriyorum",
+    "anonymizeOption": "Müşteri adını anonimleştir",
+    "publication": "Yayın",
+    "allowPublication": "Yayına İzin Ver",
+    "saveSuccess": "Başarıyla Kaydedildi",
+    "saveSuccessMessage": "Referansınız başarıyla eklendi.",
+    "saveError": "Kaydetme Hatası",
+    "saveErrorMessage": "Referansınız kaydedilemedi.",
+    "anonymized": "Anonimleştirilmiş",
+    "showCount": "{{count}} referans gösteriliyor"
+  },
   "ranking": {
     "title": "Sıralama",
     "overview": "Sıralama Genel Bakış",
@@ -275,6 +303,11 @@
     "edit": "Düzenle",
     "delete": "Sil",
     "confirm": "Onayla",
-    "back": "Geri"
+    "back": "Geri",
+    "yes": "Evet",
+    "no": "Hayır",
+    "actions": "İşlemler",
+    "error": "Hata",
+    "noCompanyId": "Şirket ID'si bulunamadı"
   }
 }

@@ -269,7 +269,9 @@
     "saveSuccess": "Zapisano Pomyślnie",
     "saveSuccessMessage": "Twoja referencja została pomyślnie dodana.",
     "saveError": "Błąd Zapisywania",
-    "saveErrorMessage": "Nie można było zapisać Twojej referencji."
+    "saveErrorMessage": "Nie można było zapisać Twojej referencji.",
+    "anonymized": "Zanonimizowano",
+    "showCount": "Wyświetlanie {{count}} referencji"
   },
   "common": {
     "save": "Zapisz",
@@ -277,6 +279,11 @@
     "edit": "Edytuj",
     "delete": "Usuń",
     "confirm": "Potwierdź",
-    "back": "Wróć"
+    "back": "Wróć",
+    "yes": "Tak",
+    "no": "Nie",
+    "actions": "Akcje",
+    "error": "Błąd",
+    "noCompanyId": "Nie znaleziono ID firmy"
   }
 }

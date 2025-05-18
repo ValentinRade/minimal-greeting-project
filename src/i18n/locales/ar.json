@@ -206,44 +206,38 @@
     "prequalifications": "التأهيلات المسبقة",
     "preferences": "التفضيلات",
     "ranking": "التصنيف",
+    "references": "المراجع",
     "overview": "نظرة عامة",
     "edit": "تعديل",
     "editButton": "تعديل",
     "noData": "لا توجد بيانات متاحة. انقر على 'تعديل' لإضافة معايير الاختيار الخاصة بك."
   },
-  "prequalifications": {
-    "title": "التأهيلات المسبقة",
-    "overview": "نظرة عامة على التأهيلات المسبقة",
-    "edit": "تعديل التأهيلات المسبقة",
-    "formTitle": "أدخل التأهيلات المسبقة",
-    "pqKepDescription": "التأهيل المسبق لخدمات البريد السريع والطرود",
-    "bnaRegistration": "التسجيل لدى وكالة الشبكة الاتحادية (KEP)",
-    "adrCertificate": "شهادة ADR",
-    "adr1000": "ADR حتى 1000 نقطة",
-    "euLicense": "ترخيص الاتحاد الأوروبي",
-    "other": "تأهيل مسبق آخر",
-    "otherName": "اسم التأهيل المسبق الآخر",
-    "uploadDocument": "تحميل المستند",
-    "submit": "إرسال",
+  "references": {
+    "title": "المراجع",
+    "overview": "نظرة عامة على المراجع",
+    "edit": "تعديل المراجع",
+    "formTitle": "إدخال مرجع",
+    "customerName": "اسم العميل",
+    "industry": "الصناعة",
+    "category": "الفئة",
+    "orderPeriod": "فترة الطلب",
+    "startDate": "تاريخ البداية",
+    "endDate": "تاريخ النهاية",
+    "untilToday": "حتى اليوم",
+    "customerFeedback": "ملاحظات العميل",
+    "uploadDocument": "تحميل مستند (PDF أو Word)",
+    "privacyNotice": "إشعار الخصوصية",
+    "privacyText": "ستتم معالجة بياناتك وفقًا للائحة العامة لحماية البيانات (GDPR).",
+    "consentLabel": "أوافق على استخدام ونشر هذا المرجع",
+    "anonymizeOption": "إخفاء هوية اسم العميل",
+    "publication": "النشر",
+    "allowPublication": "السماح بالنشر",
     "saveSuccess": "تم الحفظ بنجاح",
-    "saveSuccessMessage": "تم تحديث التأهيلات المسبقة الخاصة بك بنجاح.",
+    "saveSuccessMessage": "تمت إضافة المرجع الخاص بك بنجاح.",
     "saveError": "خطأ في الحفظ",
-    "saveErrorMessage": "تعذر حفظ التأهيلات المسبقة الخاصة بك."
-  },
-  "preferences": {
-    "title": "التفضيلات",
-    "overview": "نظرة عامة على التفضيلات",
-    "edit": "تعديل التفضيلات"
-  },
-  "ranking": {
-    "title": "التصنيف",
-    "overview": "نظرة عامة على التصنيف",
-    "description": "هنا يمكنك رؤية تصنيفك الحالي وكيفية تحسينه.",
-    "yourRank": "تصنيفك",
-    "outOf": "من",
-    "improve": "تحسين التصنيف",
-    "factors": "العوامل المؤثرة على تصنيفك",
-    "noData": "لا توجد بيانات تصنيف متاحة"
+    "saveErrorMessage": "تعذر حفظ المرجع الخاص بك.",
+    "anonymized": "تم إخفاء الهوية",
+    "showCount": "عرض {{count}} مراجع"
   },
   "common": {
     "save": "حفظ",
@@ -251,6 +245,11 @@
     "edit": "تعديل",
     "delete": "حذف",
     "confirm": "تأكيد",
-    "back": "رجوع"
+    "back": "رجوع",
+    "yes": "نعم",
+    "no": "لا",
+    "actions": "إجراءات",
+    "error": "خطأ",
+    "noCompanyId": "لم يتم العثور على معرف الشركة"
   }
 }

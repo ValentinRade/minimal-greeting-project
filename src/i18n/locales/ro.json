@@ -206,6 +206,7 @@
     "prequalifications": "Precalificări",
     "preferences": "Preferințe",
     "ranking": "Clasament",
+    "references": "Referințe",
     "overview": "Prezentare generală",
     "edit": "Editare",
     "editButton": "Editare",
@@ -235,6 +236,33 @@
     "overview": "Prezentare generală a Preferințelor",
     "edit": "Editare Preferințe"
   },
+  "references": {
+    "title": "Referințe",
+    "overview": "Prezentare generală a Referințelor",
+    "edit": "Editare Referințe",
+    "formTitle": "Introduceți Referința",
+    "customerName": "Nume Client",
+    "industry": "Industrie",
+    "category": "Categorie",
+    "orderPeriod": "Perioada Comenzii",
+    "startDate": "Data de Început",
+    "endDate": "Data de Sfârșit",
+    "untilToday": "Până Astăzi",
+    "customerFeedback": "Feedback Client",
+    "uploadDocument": "Încărcați Document (PDF sau Word)",
+    "privacyNotice": "Notificare de Confidențialitate",
+    "privacyText": "Datele dvs. vor fi procesate în conformitate cu GDPR.",
+    "consentLabel": "Sunt de acord cu utilizarea și publicarea acestei referințe",
+    "anonymizeOption": "Anonimizați numele clientului",
+    "publication": "Publicare",
+    "allowPublication": "Permiteți Publicarea",
+    "saveSuccess": "Salvat cu Succes",
+    "saveSuccessMessage": "Referința dvs. a fost adăugată cu succes.",
+    "saveError": "Eroare la Salvare",
+    "saveErrorMessage": "Referința dvs. nu a putut fi salvată.",
+    "anonymized": "Anonimizat",
+    "showCount": "Se afișează {{count}} referințe"
+  },
   "ranking": {
     "title": "Clasament",
     "overview": "Prezentare generală a Clasamentului",
@@ -251,6 +279,11 @@
     "edit": "Editare",
     "delete": "Ștergeți",
     "confirm": "Confirmați",
-    "back": "Înapoi"
+    "back": "Înapoi",
+    "yes": "Da",
+    "no": "Nu",
+    "actions": "Acțiuni",
+    "error": "Eroare",
+    "noCompanyId": "Nu s-a găsit ID-ul companiei"
   }
 }
