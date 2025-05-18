@@ -46,7 +46,16 @@
     "route": "Route",
     "metrics": "Metrics",
     "value": "Value",
-    "percentage": "Percentage"
+    "percentage": "Percentage",
+    "todayIsDate": "Today is {{date}}",
+    "transportActivityTitle": "Transport Activity",
+    "recentTransportUpdates": "Recent transport updates",
+    "vehicleStatusTitle": "Vehicle Status",
+    "fleetOverviewDescription": "Fleet overview",
+    "zugewiesen": "Assigned",
+    "allTransports": "All Transports",
+    "viewAllTransportsButton": "View all transports",
+    "actualTransportJobs": "Recent transport jobs"
   },
   "profile": {
     "settings": "Settings",

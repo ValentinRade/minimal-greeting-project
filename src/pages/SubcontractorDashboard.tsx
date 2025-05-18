@@ -14,7 +14,7 @@ const SubcontractorDashboard = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-bold">{t('dashboard.subcontractorWelcome')}</h1>
-          <p className="text-gray-500 mt-1">{t('dashboard.todayDate', { date: new Date().toLocaleDateString() })}</p>
+          <p className="text-gray-500 mt-1">{t('dashboard.todayIsDate', { date: new Date().toLocaleDateString() })}</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -57,8 +57,8 @@ const SubcontractorDashboard = () => {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-xl font-semibold">{t('dashboard.transportActivity')}</CardTitle>
-                  <CardDescription>{t('dashboard.recentTransports')}</CardDescription>
+                  <CardTitle className="text-xl font-semibold">{t('dashboard.transportActivityTitle')}</CardTitle>
+                  <CardDescription>{t('dashboard.recentTransportUpdates')}</CardDescription>
                 </div>
                 <Clock className="h-5 w-5 text-gray-500" />
               </div>
@@ -72,7 +72,7 @@ const SubcontractorDashboard = () => {
                       <p className="text-sm text-gray-500">{t('dashboard.route')}: München → Stuttgart</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-blue-600">{t('dashboard.assigned')}</p>
+                      <p className="font-medium text-blue-600">{t('dashboard.zugewiesen')}</p>
                       <p className="text-sm text-gray-500">{new Date().toLocaleDateString()}</p>
                     </div>
                   </div>
@@ -81,7 +81,7 @@ const SubcontractorDashboard = () => {
             </CardContent>
             <CardFooter>
               <Button variant="outline" className="w-full btn-modern flex items-center justify-center gap-2">
-                {t('dashboard.viewAllTransports')}
+                {t('dashboard.viewAllTransportsButton')}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </CardFooter>
@@ -91,8 +91,8 @@ const SubcontractorDashboard = () => {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-xl font-semibold">{t('dashboard.vehicleStatus')}</CardTitle>
-                  <CardDescription>{t('dashboard.fleetOverview')}</CardDescription>
+                  <CardTitle className="text-xl font-semibold">{t('dashboard.vehicleStatusTitle')}</CardTitle>
+                  <CardDescription>{t('dashboard.fleetOverviewDescription')}</CardDescription>
                 </div>
               </div>
             </CardHeader>
