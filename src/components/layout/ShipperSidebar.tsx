@@ -43,7 +43,7 @@ const ShipperSidebar: React.FC = () => {
     { 
       icon: Settings, 
       label: t('profile.settings'), 
-      path: '/dashboard/shipper/settings/profile' // Updated path to directly go to profile settings
+      path: '/dashboard/shipper/settings' // Updated to point to the main settings page
     }
   ];
 

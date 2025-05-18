@@ -43,7 +43,7 @@ const SubcontractorSidebar: React.FC = () => {
     { 
       icon: Settings, 
       label: t('profile.settings'), 
-      path: '/dashboard/subcontractor/settings/profile' // Updated path to directly go to profile settings
+      path: '/dashboard/subcontractor/settings' // Updated to point to the main settings page
     }
   ];
 

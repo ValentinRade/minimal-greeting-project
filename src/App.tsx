@@ -61,7 +61,7 @@ const App = () => (
                 <Route path="users" element={<CompanyUsers />} />
                 <Route path="invitations" element={<CompanyInvitations />} />
                 <Route path="roles" element={<RolesInfo />} />
-                <Route index element={<ProfileSettings />} />
+                {/* The index route now handled by SettingsLayout component directly */}
               </Route>
               
               {/* Subcontractor routes */}
@@ -82,7 +82,7 @@ const App = () => (
                 <Route path="users" element={<CompanyUsers />} />
                 <Route path="invitations" element={<CompanyInvitations />} />
                 <Route path="roles" element={<RolesInfo />} />
-                <Route index element={<ProfileSettings />} />
+                {/* The index route now handled by SettingsLayout component directly */}
               </Route>
               
               <Route path="/" element={
