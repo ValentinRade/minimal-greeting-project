@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { toast } from '@/components/ui/use-toast';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +16,7 @@ const Auth = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
+  const [language, setLanguage] = useState('Deutsch');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -55,7 +57,8 @@ const Auth = () => {
           .update({
             first_name: firstName,
             last_name: lastName,
-            phone: phone
+            phone: phone,
+            language: language
           })
           .eq('id', data.user.id);
 
@@ -107,6 +110,19 @@ const Auth = () => {
       setLoading(false);
     }
   };
+
+  const languages = [
+    "Deutsch",
+    "Englisch",
+    "Spanisch",
+    "Französisch",
+    "Italienisch",
+    "Polnisch",
+    "Rumänisch",
+    "Bulgarisch",
+    "Türkisch",
+    "Arabisch"
+  ];
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
@@ -210,6 +226,24 @@ const Auth = () => {
                     onChange={(e) => setPhone(e.target.value)}
                     required 
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="language">Language</Label>
+                  <Select
+                    value={language}
+                    onValueChange={setLanguage}
+                  >
+                    <SelectTrigger id="language">
+                      <SelectValue placeholder="Select your language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {languages.map((lang) => (
+                        <SelectItem key={lang} value={lang}>
+                          {lang}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </CardContent>
               <CardFooter>

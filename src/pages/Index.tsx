@@ -19,6 +19,7 @@ const Index = () => {
               <p><strong>Name:</strong> {profile.first_name} {profile.last_name}</p>
               <p><strong>Email:</strong> {user?.email}</p>
               <p><strong>Phone:</strong> {profile.phone}</p>
+              <p><strong>Language:</strong> {profile.language}</p>
             </div>
           )}
           <Button 
