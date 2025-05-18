@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
@@ -53,12 +52,9 @@ const CompanyUsers = () => {
         // Get all user IDs from the results
         const userIds = data.map(user => user.user_id);
         
-        // Query emails for these users
-        // Use ANY() style query instead of RPC to avoid type issues
+        // Use the PostgreSQL function we've defined to fetch user emails
         const { data: emailData, error: emailError } = await supabase
-          .from('auth.users')
-          .select('id, email')
-          .in('id', userIds);
+          .rpc('get_user_emails', { user_ids: userIds });
           
         if (emailError) {
           console.error('Error fetching user emails:', emailError);
@@ -71,7 +67,7 @@ const CompanyUsers = () => {
         const emailMap = new Map();
         if (emailData && Array.isArray(emailData)) {
           emailData.forEach((item) => {
-            emailMap.set(item.id, item.email);
+            emailMap.set(item.user_id, item.email);
           });
         }
         
