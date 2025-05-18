@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -33,6 +33,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const INDUSTRY_OPTIONS = [
   { value: 'healthcare', labelKey: 'Gesundheit' },
@@ -78,7 +79,10 @@ type FormValues = z.infer<typeof formSchema>;
 const ReferencesForm: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(!!id);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -96,19 +100,112 @@ const ReferencesForm: React.FC = () => {
   const allowPublication = form.watch('allowPublication');
   const untilToday = form.watch('untilToday');
 
+  useEffect(() => {
+    // If editing an existing reference, fetch the data
+    async function fetchReference() {
+      if (!id) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('subcontractor_references')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) throw error;
+
+        if (data) {
+          // Parse dates from string to Date objects
+          const startDate = data.start_date ? new Date(data.start_date) : undefined;
+          const endDate = data.end_date ? new Date(data.end_date) : undefined;
+          
+          form.reset({
+            allowPublication: data.allow_publication,
+            customerName: data.customer_name || "",
+            industry: data.industry || "",
+            category: data.category || "",
+            startDate: startDate,
+            endDate: endDate,
+            untilToday: data.until_today,
+            consent: true, // We assume consent was given when creating
+            anonymize: data.anonymize,
+          });
+          
+          setFileUrl(data.customer_feedback_url || null);
+        }
+      } catch (error) {
+        console.error('Error fetching reference:', error);
+        toast.error(t('references.fetchError'));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchReference();
+  }, [id, form, t]);
+
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     
     try {
-      // Here you would submit the data to your backend
-      console.log('Submitting reference:', values);
+      // Prepare data for saving
+      const referenceData = {
+        allow_publication: values.allowPublication,
+        customer_name: values.allowPublication ? values.customerName : null,
+        industry: values.industry,
+        category: values.category,
+        start_date: values.startDate.toISOString(),
+        end_date: values.untilToday ? null : values.endDate?.toISOString(),
+        until_today: values.untilToday,
+        anonymize: values.anonymize,
+      };
+
+      let result;
       
-      // Simulate API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Update or create reference
+      if (id) {
+        result = await supabase
+          .from('subcontractor_references')
+          .update(referenceData)
+          .eq('id', id);
+      } else {
+        result = await supabase
+          .from('subcontractor_references')
+          .insert([referenceData]);
+      }
+
+      if (result.error) throw result.error;
       
-      toast.success(t('references.saveSuccess'), {
-        description: t('references.saveSuccessMessage'),
-      });
+      // Handle file upload if provided
+      const fileList = values.customerFeedback;
+      if (fileList && fileList.length > 0) {
+        const file = fileList[0];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${id || result.data[0].id}-feedback.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('reference_documents')
+          .upload(fileName, file, { upsert: true });
+          
+        if (uploadError) throw uploadError;
+        
+        // Update reference with file URL
+        const { error: updateError } = await supabase
+          .from('subcontractor_references')
+          .update({ customer_feedback_url: fileName })
+          .eq('id', id || result.data[0].id);
+          
+        if (updateError) throw updateError;
+      }
+      
+      toast.success(
+        id ? t('references.updateSuccess') : t('references.saveSuccess'),
+        {
+          description: id 
+            ? t('references.updateSuccessMessage') 
+            : t('references.saveSuccessMessage'),
+        }
+      );
       
       navigate('/dashboard/subcontractor/selection/references');
     } catch (error) {
@@ -121,11 +218,26 @@ const ReferencesForm: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <Card className="max-w-4xl mx-auto">
+        <CardHeader>
+          <CardTitle>{t('references.loading')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-40 flex items-center justify-center">
+            <p>{t('common.loading')}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle>{t('references.formTitle')}</CardTitle>
-        <CardDescription>{t('references.formTitle')}</CardDescription>
+        <CardTitle>{id ? t('references.editReference') : t('references.formTitle')}</CardTitle>
+        <CardDescription>{t('references.formDescription')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -181,11 +293,11 @@ const ReferencesForm: React.FC = () => {
                     <FormLabel>{t('references.industry')}</FormLabel>
                     <Select 
                       onValueChange={field.onChange} 
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select an industry" />
+                          <SelectValue placeholder={t('references.selectIndustry')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -210,11 +322,11 @@ const ReferencesForm: React.FC = () => {
                     <FormLabel>{t('references.category')}</FormLabel>
                     <Select 
                       onValueChange={field.onChange} 
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a category" />
+                          <SelectValue placeholder={t('references.selectCategory')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -254,7 +366,7 @@ const ReferencesForm: React.FC = () => {
                               {field.value ? (
                                 format(field.value, "PPP")
                               ) : (
-                                <span>Pick a date</span>
+                                <span>{t('references.pickDate')}</span>
                               )}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
@@ -297,7 +409,7 @@ const ReferencesForm: React.FC = () => {
                                 {field.value ? (
                                   format(field.value, "PPP")
                                 ) : (
-                                  <span>Pick a date</span>
+                                  <span>{t('references.pickDate')}</span>
                                 )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
@@ -349,6 +461,18 @@ const ReferencesForm: React.FC = () => {
                 render={({ field: { value, onChange, ...fieldProps } }) => (
                   <FormItem>
                     <FormLabel>{t('references.customerFeedback')}</FormLabel>
+                    {fileUrl && (
+                      <div className="mb-2 text-sm">
+                        <a 
+                          href={`https://ryshjxguqwhlqhqievgx.supabase.co/storage/v1/object/public/reference_documents/${fileUrl}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          {t('references.currentFile')}
+                        </a>
+                      </div>
+                    )}
                     <FormControl>
                       <Input
                         {...fieldProps}

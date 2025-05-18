@@ -18,6 +18,7 @@ const SubcontractorSelectionRoutes: React.FC = () => {
         <Route path="prequalifications/edit" element={<PrequalificationsForm />} />
         <Route path="references" element={<ReferencesOverview />} />
         <Route path="references/edit" element={<ReferencesForm />} />
+        <Route path="references/edit/:id" element={<ReferencesForm />} />
         <Route path="ranking" element={<RankingOverview />} />
         <Route index element={<PreferencesOverview />} />
       </Route>
