@@ -1,4 +1,5 @@
 
+
 {
   "auth": {
     "welcome": "Hoş geldiniz",
@@ -175,7 +176,8 @@
     "invitationResentDesc": "Davetiye tekrar gönderildi.",
     "resendError": "Tekrar Gönderme Hatası",
     "rolesInfo": "Rol Bilgileri",
-    "rolesInfoDesc": "Şirketinizdeki rol ve izinlere genel bakış"
+    "rolesInfoDesc": "Şirketinizdeki rol ve izinlere genel bakış",
+    "refresh": "Yenile"
   },
   "roles": {
     "companyAdmin": "Şirket Yöneticisi",
@@ -199,5 +201,29 @@
       "basicAccess": "Temel sistem erişimi",
       "accessDriverFeatures": "Sürücü özelliklerine eriş"
     }
+  },
+  "company": {
+    "create": "Şirket Oluştur",
+    "companyData": "Şirket Bilgileri",
+    "pleaseProvide": "Lütfen şirket bilgilerinizi giriniz",
+    "companyType": "Şirket Türü",
+    "selectType": "Şirket türü seçin",
+    "companyName": "Şirket Adı",
+    "legalForm": "Yasal Form",
+    "selectLegalForm": "Yasal form seçin",
+    "address": "Adres",
+    "street": "Cadde ve Bina Numarası",
+    "postalCode": "Posta Kodu",
+    "city": "Şehir",
+    "country": "Ülke",
+    "vatId": "KDV No (isteğe bağlı)",
+    "taxNumber": "Vergi Numarası (isteğe bağlı)",
+    "creating": "Şirket oluşturuluyor...",
+    "create": "Şirket Oluştur",
+    "success": "Şirket Oluşturuldu",
+    "successMessage": "Şirketiniz başarıyla oluşturuldu.",
+    "error": "Hata",
+    "errorMessage": "Şirket oluşturulurken hata oluştu: "
   }
 }
+

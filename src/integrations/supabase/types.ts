@@ -216,6 +216,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      is_company_admin: {
+        Args: { company_id: string }
+        Returns: boolean
+      }
       user_has_role: {
         Args: {
           _company_id: string
