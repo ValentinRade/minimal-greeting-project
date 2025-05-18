@@ -27,6 +27,27 @@ export const userFriendlyToLanguages: Record<string, string> = {
   العربية: 'ar'
 };
 
+// Define the language structure for components to use
+export interface Language {
+  code: string;
+  name: string;
+  nativeName: string;
+}
+
+// Create the languages array that multiple components are trying to import
+export const languages: Language[] = [
+  { code: 'de', name: 'Deutsch', nativeName: 'Deutsch' },
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'es', name: 'Español', nativeName: 'Español' },
+  { code: 'fr', name: 'Français', nativeName: 'Français' },
+  { code: 'it', name: 'Italiano', nativeName: 'Italiano' },
+  { code: 'pl', name: 'Polski', nativeName: 'Polski' },
+  { code: 'ro', name: 'Română', nativeName: 'Română' },
+  { code: 'bg', name: 'Български', nativeName: 'Български' },
+  { code: 'tr', name: 'Türkçe', nativeName: 'Türkçe' },
+  { code: 'ar', name: 'العربية', nativeName: 'العربية' }
+];
+
 // Convert from language name to locale code
 export const languageToLocaleCode = (language: string): string => {
   return userFriendlyToLanguages[language] || 'de';
