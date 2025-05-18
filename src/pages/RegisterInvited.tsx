@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,6 +8,18 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { 
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage 
+} from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 interface InvitationData {
   id: string;
@@ -20,18 +33,34 @@ interface InvitationData {
   token: string;
 }
 
+const formSchema = z.object({
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
+  phone: z.string().optional(),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
+
 const RegisterInvited = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { user, refreshCompanyData } = useAuth();
   const { toast } = useToast();
-  const [password, setPassword] = useState('');
   const [invitation, setInvitation] = useState<InvitationData | null>(null);
   const [registerSuccess, setRegisterSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [registerLoading, setRegisterLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      phone: '',
+      password: '',
+    },
+  });
   
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -71,8 +100,8 @@ const RegisterInvited = () => {
     fetchInvitation(token);
   }, [location.search]);
   
-  const handleRegister = async () => {
-    if (!invitation || !password) {
+  const handleRegister = async (values: z.infer<typeof formSchema>) => {
+    if (!invitation) {
       setError('Please provide all required information.');
       return;
     }
@@ -80,18 +109,33 @@ const RegisterInvited = () => {
     setRegisterLoading(true);
     setError(null);
     
-    const registerEndpoint = '/api/register-invited-user';
-    
-    const registerData = {
-      userId: user?.id,
-      invitationId: invitation.id,
-      companyId: invitation.company.id,
-      role: invitation.role,
-      invitedBy: invitation.company.id, // Assuming company ID as inviter
-      invitedAt: new Date().toISOString()
-    };
-
     try {
+      // First update the user's profile with the new information
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          first_name: values.firstName,
+          last_name: values.lastName,
+          phone: values.phone || '',
+        })
+        .eq('id', user?.id);
+
+      if (profileError) {
+        throw new Error(profileError.message || 'Failed to update profile');
+      }
+      
+      // Then register the user with the company
+      const registerEndpoint = '/api/register-invited-user';
+      
+      const registerData = {
+        userId: user?.id,
+        invitationId: invitation.id,
+        companyId: invitation.company.id,
+        role: invitation.role,
+        invitedBy: invitation.company.id, // Assuming company ID as inviter
+        invitedAt: new Date().toISOString()
+      };
+
       const response = await fetch(registerEndpoint, {
         method: 'POST',
         headers: {
@@ -107,11 +151,15 @@ const RegisterInvited = () => {
       }
       
       setRegisterSuccess(true);
+      toast({
+        title: t('auth.success'),
+        description: t('auth.registerSuccess'),
+      });
       
-      // Aktualisieren Sie die Company-Daten nach erfolgreicher Registrierung
+      // Refresh the company data after successful registration
       await refreshCompanyData();
       
-      // Weiterleitung zum Dashboard nach kurzer Verzögerung
+      // Redirect to the dashboard after short delay
       setTimeout(() => {
         if (invitation.company.company_type_id === 2) {
           navigate('/dashboard/shipper');
@@ -153,7 +201,7 @@ const RegisterInvited = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           {invitation && (
-            <div className="space-y-2">
+            <div className="space-y-4">
               <p>{t('auth.youAreInvited')}</p>
               <p>
                 {t('auth.toCompany')}: <strong>{invitation.company.name}</strong>
@@ -162,24 +210,73 @@ const RegisterInvited = () => {
                 {t('auth.asRole')}: <strong>{invitation.role}</strong>
               </p>
               
-              <div className="space-y-2">
-                <Label htmlFor="password">{t('auth.password')}</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="********"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              
-              <Button 
-                className="w-full" 
-                onClick={handleRegister} 
-                disabled={registerLoading}
-              >
-                {registerLoading ? t('loading') : t('auth.register')}
-              </Button>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleRegister)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('auth.firstName')}</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('auth.lastName')}</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('auth.phone')}</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('auth.password')}</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={registerLoading}
+                  >
+                    {registerLoading ? t('loading') : t('auth.register')}
+                  </Button>
+                </form>
+              </Form>
             </div>
           )}
         </CardContent>
