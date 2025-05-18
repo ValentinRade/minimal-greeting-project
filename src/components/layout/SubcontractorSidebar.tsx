@@ -53,7 +53,7 @@ const SubcontractorSidebar: React.FC = () => {
         <div className="flex items-center px-2">
           <div className="text-xl font-bold text-blue-600">
             <img 
-              src="/lovable-uploads/06b4ddc9-cf35-4d98-bf2f-1c90619ef8a7.png" 
+              src="/lovable-uploads/7523fd93-eece-4989-b121-d87078bc1a6f.png" 
               alt="CARRINEX" 
               className="h-8 w-auto" 
             />
