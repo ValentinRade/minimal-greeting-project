@@ -4,7 +4,7 @@ import { Outlet, useLocation, NavLink } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Heart, FileCheck, TrendingUp } from 'lucide-react';
+import { Heart, FileCheck, TrendingUp, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const SelectionCriteriaLayout: React.FC = () => {
@@ -45,6 +45,13 @@ const SelectionCriteriaLayout: React.FC = () => {
               >
                 <FileCheck className="h-4 w-4" />
                 <span>{t('selection.prequalifications')}</span>
+              </NavLink>
+              <NavLink 
+                to="/dashboard/subcontractor/selection/references"
+                className={navLinkClass}
+              >
+                <FileText className="h-4 w-4" />
+                <span>{t('selection.references')}</span>
               </NavLink>
               <NavLink 
                 to="/dashboard/subcontractor/selection/ranking"
