@@ -43,7 +43,7 @@ const SubcontractorSidebar: React.FC = () => {
     { 
       icon: Settings, 
       label: t('profile.settings'), 
-      path: '/dashboard/subcontractor/settings' 
+      path: '/dashboard/subcontractor/settings/profile' // Updated path to directly go to profile settings
     }
   ];
 
@@ -69,7 +69,7 @@ const SubcontractorSidebar: React.FC = () => {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
-                    isActive={location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)}
+                    isActive={location.pathname.startsWith(item.path)}
                     asChild
                     tooltip={item.label}
                   >
