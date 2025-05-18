@@ -2,6 +2,8 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
 
 const NotFound = () => {
   const location = useLocation();
@@ -15,13 +17,18 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">{t('notFound.title')}</h1>
-        <p className="text-xl text-gray-600 mb-4">{t('notFound.message')}</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          {t('notFound.returnHome')}
-        </a>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="card-modern p-8 max-w-md w-full">
+        <div className="text-center">
+          <h1 className="text-6xl font-bold mb-4 text-primary">{t('notFound.title')}</h1>
+          <p className="text-xl text-gray-600 mb-8">{t('notFound.message')}</p>
+          <Button asChild className="btn-modern bg-gradient-primary">
+            <a href="/" className="inline-flex items-center gap-2">
+              <ChevronLeft size={16} />
+              {t('notFound.returnHome')}
+            </a>
+          </Button>
+        </div>
       </div>
     </div>
   );
