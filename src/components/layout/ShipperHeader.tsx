@@ -14,7 +14,6 @@ const ShipperHeader: React.FC = () => {
     <header className="flex items-center justify-between border-b bg-white px-6 py-3 shadow-sm">
       <div className="flex items-center gap-3">
         <SidebarTrigger />
-        <h1 className="text-xl font-bold">{t('dashboard.shipperWelcome')}</h1>
       </div>
       
       <div className="flex items-center gap-4">
