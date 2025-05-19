@@ -30,6 +30,9 @@ import CompanyInvitations from './pages/settings/CompanyInvitations';
 import CompanyUsers from './pages/settings/CompanyUsers';
 import RolesInfo from './pages/settings/RolesInfo';
 
+// Ensure i18n is initialized
+import '@/i18n';
+
 function App() {
   return (
     <>
