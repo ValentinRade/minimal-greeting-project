@@ -164,8 +164,17 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     try {
       setIsSubmitting(true);
 
-      const vehicleData = {
+      // Filtern Sie leere UUID-Felder heraus, um "invalid input syntax for type uuid" zu vermeiden
+      const cleanedData = {
         ...data,
+        vehicle_type_id: data.vehicle_type_id || null,
+        body_type_id: data.body_type_id || null,
+        driver_id: data.driver_id || null,
+        financing_type_id: data.financing_type_id || null
+      };
+
+      const vehicleData = {
+        ...cleanedData,
         company_id: company.id,
         user_id: user.id,
       };
