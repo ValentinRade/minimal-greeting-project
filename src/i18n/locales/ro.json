@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "Bun venit",
@@ -291,7 +290,7 @@
     "no": "Nu",
     "actions": "Acțiuni",
     "error": "Eroare",
-    "noCompanyId": "Nu s-a găsit ID-ul companiei",
+    "noCompanyId": "Nessun ID azienda trovato",
     "appName": "CARRINEX",
     "loading": "Se încarcă...",
     "submit": "Trimiteți",

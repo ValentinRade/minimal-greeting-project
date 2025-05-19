@@ -35,10 +35,10 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
           <SheetTitle className="text-xl flex items-center">
             <img
               src="/lovable-uploads/e1e17d41-ee90-43a7-9385-0f9c70f85639.png"
-              alt="Logo"
+              alt={t('common.appName')}
               className="h-8 w-8 mr-2"
             />
-            {t('common.appName', 'Transportflow')}
+            {t('common.appName')}
           </SheetTitle>
         </SheetHeader>
         <div className="px-3 py-4">
@@ -55,21 +55,21 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
                 <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
-                <span>{t('dashboard.overview', 'Dashboard')}</span>
+                <span>{t('dashboard.overview')}</span>
               </NavLink>
               <NavLink
                 to="/dashboard/subcontractor/selection"
                 className={navLinkClass}
               >
                 <FileText className="h-5 w-5" />
-                <span>{t('selection.title', 'Selection Criteria')}</span>
+                <span>{t('selection.title')}</span>
               </NavLink>
               <NavLink
                 to="/dashboard/subcontractor/vehicles"
                 className={navLinkClass}
               >
                 <Truck className="h-5 w-5" />
-                <span>{t('vehicles.title', 'Vehicles')}</span>
+                <span>{t('vehicles.title')}</span>
               </NavLink>
             </nav>
           </div>
@@ -84,7 +84,7 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
                 className={navLinkClass}
               >
                 <Settings className="h-5 w-5" />
-                <span>{t('profile.settings', 'Settings')}</span>
+                <span>{t('profile.settings')}</span>
               </NavLink>
             </nav>
           </div>
