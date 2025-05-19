@@ -1,14 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Calendar, ArrowRight, Edit, Trash2 } from 'lucide-react';
+import { Plus, X, Calendar, ArrowRight, Edit, Trash2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CreateTenderForm from '@/components/tenders/CreateTenderForm';
-import { getTenders, deleteTender } from '@/services/tenderService';
+import { getTenders } from '@/services/tenderService';
 import { TenderDetails } from '@/types/tender';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
@@ -16,30 +16,17 @@ import { de } from 'date-fns/locale';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { toast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
 
 const TendersPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { user, loading } = useAuth();
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState<string | null>(null);
-  
-  // Check if we should open the create form based on navigation state
-  useEffect(() => {
-    if (location.state && location.state.openCreateForm) {
-      setIsCreateFormOpen(true);
-      // Clear the state to prevent reopening on page refresh
-      navigate(location.pathname, { replace: true });
-    }
-  }, [location, navigate]);
   
   // Handle resize to determine if mobile view should be used
-  useEffect(() => {
+  React.useEffect(() => {
     const handleResize = () => {
       setIsMobileView(window.innerWidth < 768);
     };
@@ -48,16 +35,12 @@ const TendersPage: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  // Load tenders when user is authenticated
+  // Load tenders on mount
   useEffect(() => {
-    if (!loading && user) {
-      loadTenders();
-    }
-  }, [user, loading]);
+    loadTenders();
+  }, []);
   
   const loadTenders = async () => {
-    if (!user) return;
-    
     setIsLoading(true);
     try {
       const loadedTenders = await getTenders();
@@ -77,32 +60,6 @@ const TendersPage: React.FC = () => {
   const handleTenderCreated = () => {
     setIsCreateFormOpen(false);
     loadTenders();
-    toast({
-      title: "Ausschreibung erstellt",
-      description: "Ihre Ausschreibung wurde erfolgreich erstellt",
-      variant: "default"
-    });
-  };
-
-  const handleDeleteTender = async (id: string) => {
-    setIsDeleting(id);
-    try {
-      await deleteTender(id);
-      setTenders(tenders.filter(tender => tender.id !== id));
-      toast({
-        title: "Ausschreibung gelöscht",
-        description: "Die Ausschreibung wurde erfolgreich gelöscht",
-        variant: "default"
-      });
-    } catch (error) {
-      toast({
-        title: "Fehler beim Löschen",
-        description: error instanceof Error ? error.message : "Unbekannter Fehler",
-        variant: "destructive"
-      });
-    } finally {
-      setIsDeleting(null);
-    }
   };
   
   const getStatusBadge = (status: string) => {
@@ -132,14 +89,6 @@ const TendersPage: React.FC = () => {
     navigate('/dashboard/shipper/tours');
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -151,7 +100,7 @@ const TendersPage: React.FC = () => {
         </div>
         
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => navigate('/dashboard/shipper/tours')} className="gap-2">
+          <Button variant="outline" onClick={handleToursClick} className="gap-2">
             <Calendar className="h-4 w-4" />
             Touren verwalten
           </Button>
@@ -261,12 +210,8 @@ const TendersPage: React.FC = () => {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleDeleteTender(tender.id)}
-                                  className="bg-red-500 hover:bg-red-600"
-                                  disabled={isDeleting === tender.id}
-                                >
-                                  {isDeleting === tender.id ? 'Wird gelöscht...' : 'Löschen'}
+                                <AlertDialogAction className="bg-red-500 hover:bg-red-600">
+                                  Löschen
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>

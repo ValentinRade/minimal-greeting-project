@@ -1,9 +1,8 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
-import { toast } from '@/hooks/use-toast';
+import { toast } from '@/components/ui/use-toast';
 
 type AuthContextType = {
   session: Session | null;
@@ -34,9 +33,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchCompanyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const companyDataCache = useRef<Map<string, { data: any, timestamp: number }>>(new Map());
   
-  // Cache duration in milliseconds - increased to 30 seconds to prevent repeated queries
+  // Cache duration in milliseconds - erhöht auf 30 Sekunden, um wiederholte Abfragen zu verhindern
   const CACHE_DURATION = 30000;
-  // Minimum time between company queries in milliseconds
+  // Minimale Zeit zwischen Unternehmensabfragen in Millisekunden
   const MIN_FETCH_INTERVAL = 10000;
   const lastFetchTime = useRef<number>(0);
 
@@ -67,10 +66,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchCompany = useCallback(async (userId: string) => {
     if (companyLoading) return;
     
-    // Check if enough time has passed since the last query
+    // Überprüfen, ob genug Zeit seit der letzten Abfrage vergangen ist
     const now = Date.now();
     if (now - lastFetchTime.current < MIN_FETCH_INTERVAL) {
-      return; // Prevent too frequent queries
+      return; // Zu häufige Abfragen verhindern
     }
     
     // Check cache first
@@ -192,7 +191,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setCompanyLoading(false);
     }
-  }, [companyLoading, t]);
+  }, [companyLoading, t, CACHE_DURATION, MIN_FETCH_INTERVAL]);
 
   useEffect(() => {
     let isMounted = true;
@@ -222,7 +221,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               fetchProfile(currentSession.user.id);
               fetchCompany(currentSession.user.id);
             }
-          }, 100); // Small delay to complete initialization
+          }, 100); // Kleiner Delay, um die Initialisierung abzuschließen
         }
       }
     );
