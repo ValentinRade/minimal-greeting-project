@@ -202,6 +202,182 @@ export type Database = {
           },
         ]
       }
+      employee_availability: {
+        Row: {
+          created_at: string
+          day_of_week: number
+          employee_id: string
+          end_time: string | null
+          id: string
+          is_available: boolean
+          notes: string | null
+          start_time: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: number
+          employee_id: string
+          end_time?: string | null
+          id?: string
+          is_available?: boolean
+          notes?: string | null
+          start_time?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: number
+          employee_id?: string
+          end_time?: string | null
+          id?: string
+          is_available?: boolean
+          notes?: string | null
+          start_time?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_availability_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employee_licenses: {
+        Row: {
+          created_at: string
+          description: string | null
+          employee_id: string
+          id: string
+          license_type: Database["public"]["Enums"]["license_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          employee_id: string
+          id?: string
+          license_type: Database["public"]["Enums"]["license_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          employee_id?: string
+          id?: string
+          license_type?: Database["public"]["Enums"]["license_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_licenses_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employee_regions: {
+        Row: {
+          country: string
+          created_at: string
+          employee_id: string
+          id: string
+        }
+        Insert: {
+          country: string
+          created_at?: string
+          employee_id: string
+          id?: string
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          employee_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_regions_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employees: {
+        Row: {
+          company_id: string
+          created_at: string
+          email: string | null
+          employee_type: Database["public"]["Enums"]["employee_type"]
+          first_name: string
+          gross_salary: number | null
+          hourly_rate: number | null
+          id: string
+          last_name: string
+          location: string | null
+          net_salary: number | null
+          notes: string | null
+          payment_type: Database["public"]["Enums"]["payment_type"]
+          phone: string | null
+          position: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          email?: string | null
+          employee_type?: Database["public"]["Enums"]["employee_type"]
+          first_name: string
+          gross_salary?: number | null
+          hourly_rate?: number | null
+          id?: string
+          last_name: string
+          location?: string | null
+          net_salary?: number | null
+          notes?: string | null
+          payment_type?: Database["public"]["Enums"]["payment_type"]
+          phone?: string | null
+          position: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          email?: string | null
+          employee_type?: Database["public"]["Enums"]["employee_type"]
+          first_name?: string
+          gross_salary?: number | null
+          hourly_rate?: number | null
+          id?: string
+          last_name?: string
+          location?: string | null
+          net_salary?: number | null
+          notes?: string | null
+          payment_type?: Database["public"]["Enums"]["payment_type"]
+          phone?: string | null
+          position?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employees_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financing_types: {
         Row: {
           created_at: string | null
@@ -590,6 +766,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_employee_tour_count: {
+        Args: { employee_id: string }
+        Returns: number
+      }
+      get_employee_vehicle_count: {
+        Args: { employee_id: string }
+        Returns: number
+      }
       get_user_emails: {
         Args: { user_ids: string[] }
         Returns: {
@@ -616,6 +800,9 @@ export type Database = {
         | "finance_manager"
         | "employee"
         | "driver"
+      employee_type: "employed" | "contractor"
+      license_type: "B" | "BE" | "C1" | "C1E" | "C" | "CE"
+      payment_type: "salary" | "invoice" | "credit"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -738,6 +925,9 @@ export const Constants = {
         "employee",
         "driver",
       ],
+      employee_type: ["employed", "contractor"],
+      license_type: ["B", "BE", "C1", "C1E", "C", "CE"],
+      payment_type: ["salary", "invoice", "credit"],
     },
   },
 } as const

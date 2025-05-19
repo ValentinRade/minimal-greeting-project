@@ -27,6 +27,7 @@ import RolesInfo from "./pages/settings/RolesInfo";
 import SubcontractorPreferencesRoutes from "./routes/SubcontractorPreferencesRoutes";
 import SubcontractorSelectionRoutes from './routes/SubcontractorSelectionRoutes';
 import SubcontractorVehiclesRoutes from './routes/SubcontractorVehiclesRoutes';
+import SubcontractorEmployeesRoutes from './routes/SubcontractorEmployeesRoutes';
 
 // Import i18n for internationalization
 import '@/i18n';
@@ -108,6 +109,13 @@ const App = () => (
               <Route path="/dashboard/subcontractor/vehicles/*" element={
                 <ProtectedRoute>
                   <SubcontractorVehiclesRoutes />
+                </ProtectedRoute>
+              } />
+              
+              {/* Add the employees routes */}
+              <Route path="/dashboard/subcontractor/employees/*" element={
+                <ProtectedRoute>
+                  <SubcontractorEmployeesRoutes />
                 </ProtectedRoute>
               } />
               

@@ -37,6 +37,11 @@ const SubcontractorSidebar: React.FC = () => {
     },
     { 
       icon: Users, 
+      label: t('dashboard.employees'), 
+      path: '/dashboard/subcontractor/employees' 
+    },
+    { 
+      icon: Users, 
       label: t('dashboard.drivers'), 
       path: '/dashboard/subcontractor/drivers' 
     },

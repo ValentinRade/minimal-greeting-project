@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Truck, Settings, FileText } from 'lucide-react';
+import { Truck, Settings, FileText, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
@@ -70,6 +70,13 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
               >
                 <Truck className="h-5 w-5" />
                 <span>{t('vehicles.title')}</span>
+              </NavLink>
+              <NavLink
+                to="/dashboard/subcontractor/employees"
+                className={navLinkClass}
+              >
+                <Users className="h-5 w-5" />
+                <span>{t('employees.title')}</span>
               </NavLink>
             </nav>
           </div>
