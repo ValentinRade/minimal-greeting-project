@@ -20,9 +20,10 @@ import { Input } from '@/components/ui/input';
 import { Filter, SortAsc, SortDesc, Calendar, MapPin, Truck, User } from 'lucide-react';
 
 interface TourFilterBarProps {
-  filterOptions: TourFilterOptions;
+  // Allow for filterOptions as primary prop name
+  filterOptions?: TourFilterOptions;
   onFilterChange: (key: keyof TourFilterOptions, value: any) => void;
-  // Allow for alternative prop name for backward compatibility
+  // Allow for filters as alternative prop name for backward compatibility
   filters?: TourFilterOptions;
 }
 
@@ -33,7 +34,7 @@ const TourFilterBar: React.FC<TourFilterBarProps> = ({
 }) => {
   const { t } = useTranslation();
   
-  // Use filters prop as fallback if filterOptions is not provided
+  // Use filterOptions prop as primary, fallback to filters prop
   const actualFilters = filterOptions || filters;
   
   if (!actualFilters) {
