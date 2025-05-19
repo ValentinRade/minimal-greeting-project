@@ -21,7 +21,7 @@ import { useAuth } from '@/contexts/AuthContext';
 const TendersPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user, loading: isAuthLoading } = useAuth();
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
