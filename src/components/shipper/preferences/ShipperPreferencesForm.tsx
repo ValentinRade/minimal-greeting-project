@@ -12,9 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { createShipperPreferences, updateShipperPreferences } from '@/services/shipperPreferencesService';
 import { useToast } from '@/hooks/use-toast';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useNavigate } from 'react-router-dom';
 
 interface ShipperPreferencesFormProps {
   initialData?: ShipperPreferences;
@@ -24,7 +23,6 @@ interface ShipperPreferencesFormProps {
 const ShipperPreferencesForm: React.FC<ShipperPreferencesFormProps> = ({ initialData, onSuccess }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,25 +78,12 @@ const ShipperPreferencesForm: React.FC<ShipperPreferencesFormProps> = ({ initial
         });
       }
       onSuccess(result);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error saving preferences:", error);
-      
-      // Check for specific error messages
-      if (error.message?.includes("nicht angemeldet")) {
-        setError("Sie sind nicht angemeldet. Bitte melden Sie sich an und versuchen Sie es erneut.");
-        // Redirect to login after a short delay
-        setTimeout(() => {
-          navigate('/auth');
-        }, 3000);
-      } else if (error.message?.includes("Unternehmen")) {
-        setError("Sie müssen ein Unternehmen erstellen, bevor Sie Präferenzen festlegen können.");
-      } else {
-        setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
-      }
-      
+      setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
       toast({
         title: "Fehler",
-        description: error.message || "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+        description: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
         variant: "destructive",
       });
     } finally {
@@ -486,14 +471,7 @@ const ShipperPreferencesForm: React.FC<ShipperPreferencesFormProps> = ({ initial
 
         <div className="flex justify-end gap-4">
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Wird gespeichert...
-              </>
-            ) : (
-              initialData ? 'Aktualisieren' : 'Speichern'
-            )}
+            {isSubmitting ? 'Wird gespeichert...' : initialData ? 'Aktualisieren' : 'Speichern'}
           </Button>
         </div>
       </form>
