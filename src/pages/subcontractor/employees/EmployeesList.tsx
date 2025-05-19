@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -186,15 +185,15 @@ const EmployeesList: React.FC = () => {
         </div>
         
         <Select
-          value={employeeTypeFilter}
-          onValueChange={(value) => setEmployeeTypeFilter(value as any)}
+          value={employeeTypeFilter || "all"}
+          onValueChange={(value) => setEmployeeTypeFilter(value === "all" ? "" : value as any)}
         >
           <SelectTrigger>
             <SelectValue placeholder={t('employees.typeFilterPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="">{t('general.all')}</SelectItem>
+              <SelectItem value="all">{t('general.all')}</SelectItem>
               <SelectItem value="employed">{t('employees.typeEmployed')}</SelectItem>
               <SelectItem value="contractor">{t('employees.typeContractor')}</SelectItem>
             </SelectGroup>
@@ -202,15 +201,15 @@ const EmployeesList: React.FC = () => {
         </Select>
         
         <Select
-          value={positionFilter}
-          onValueChange={setPositionFilter}
+          value={positionFilter || "all"}
+          onValueChange={(value) => setPositionFilter(value === "all" ? "" : value)}
         >
           <SelectTrigger>
             <SelectValue placeholder={t('employees.positionFilterPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="">{t('general.all')}</SelectItem>
+              <SelectItem value="all">{t('general.all')}</SelectItem>
               {positions.map((position, index) => (
                 <SelectItem key={index} value={position}>{position}</SelectItem>
               ))}
@@ -219,15 +218,15 @@ const EmployeesList: React.FC = () => {
         </Select>
         
         <Select
-          value={availabilityFilter?.toString() || ''}
-          onValueChange={value => setAvailabilityFilter(value ? parseInt(value) : null)}
+          value={availabilityFilter !== null ? availabilityFilter.toString() : "all"}
+          onValueChange={value => setAvailabilityFilter(value === "all" ? null : parseInt(value))}
         >
           <SelectTrigger>
             <SelectValue placeholder={t('employees.availabilityFilterPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="">{t('general.all')}</SelectItem>
+              <SelectItem value="all">{t('general.all')}</SelectItem>
               <SelectItem value="1">{t('days.monday')}</SelectItem>
               <SelectItem value="2">{t('days.tuesday')}</SelectItem>
               <SelectItem value="3">{t('days.wednesday')}</SelectItem>
