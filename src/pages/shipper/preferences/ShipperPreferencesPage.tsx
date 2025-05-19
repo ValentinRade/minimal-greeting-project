@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,18 +8,28 @@ import { ShipperPreferences } from '@/types/shipperPreference';
 import { useToast } from '@/hooks/use-toast';
 import { Edit, AlertCircle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useAuth } from '@/contexts/AuthContext';
 
 const ShipperPreferencesPage: React.FC = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { user, company, hasCompany } = useAuth();
   const [preferences, setPreferences] = useState<ShipperPreferences | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadPreferences();
-  }, []);
+    if (user && hasCompany) {
+      loadPreferences();
+    } else if (user && !hasCompany) {
+      setIsLoading(false);
+      setError("Sie müssen ein Unternehmen erstellen, bevor Sie Präferenzen festlegen können.");
+    } else if (!user) {
+      setIsLoading(false);
+      setError("Sie müssen angemeldet sein, um Präferenzen festlegen zu können.");
+    }
+  }, [user, hasCompany]);
 
   const loadPreferences = async () => {
     setIsLoading(true);
@@ -29,12 +38,12 @@ const ShipperPreferencesPage: React.FC = () => {
       const data = await getShipperPreferences();
       setPreferences(data);
       setIsEditMode(!data); // Enter edit mode if no preferences exist
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading shipper preferences:', error);
-      setError('Fehler beim Laden der Präferenzen');
+      setError(error.message || "Fehler beim Laden der Präferenzen");
       toast({
         title: "Fehler",
-        description: "Präferenzen konnten nicht geladen werden.",
+        description: error.message || "Präferenzen konnten nicht geladen werden.",
         variant: "destructive",
       });
     } finally {
@@ -76,7 +85,13 @@ const ShipperPreferencesPage: React.FC = () => {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
             <div className="flex justify-center">
-              <Button onClick={loadPreferences}>Erneut versuchen</Button>
+              {user && hasCompany ? (
+                <Button onClick={loadPreferences}>Erneut versuchen</Button>
+              ) : hasCompany === false ? (
+                <Button onClick={() => window.location.href = "/create-company"}>Unternehmen erstellen</Button>
+              ) : (
+                <Button onClick={() => window.location.href = "/auth"}>Anmelden</Button>
+              )}
             </div>
           </CardContent>
         </Card>

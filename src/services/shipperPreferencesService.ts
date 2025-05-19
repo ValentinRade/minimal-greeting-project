@@ -3,15 +3,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { ShipperPreferences, ShipperPreferencesFormData } from "@/types/shipperPreference";
 
 export const getShipperPreferences = async (): Promise<ShipperPreferences | null> => {
-  const user = await supabase.auth.getUser();
-  if (!user.data.user) {
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) {
     throw new Error("User not authenticated");
   }
 
   const { data, error } = await supabase
     .from('shipper_preferences')
     .select('*')
-    .eq('user_id', user.data.user.id)
+    .eq('user_id', user.id)
     .single();
 
   if (error) {
@@ -26,22 +26,21 @@ export const getShipperPreferences = async (): Promise<ShipperPreferences | null
 };
 
 export const createShipperPreferences = async (preferences: ShipperPreferencesFormData): Promise<ShipperPreferences> => {
-  const user = await supabase.auth.getUser();
-  if (!user.data.user) {
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) {
     throw new Error("User not authenticated");
   }
 
-  const { data: userData } = user;
-  
   // Get company_id from user metadata
-  const company_id = userData.user.user_metadata?.company_id;
+  const company_id = user.user_metadata?.company_id;
   
   if (!company_id) {
-    throw new Error("Company information missing");
+    console.error("Company information missing", user);
+    throw new Error("Company information missing. Bitte stellen Sie sicher, dass Sie ein Unternehmen erstellt haben und angemeldet sind.");
   }
 
   const preferenceData = {
-    user_id: userData.user.id,
+    user_id: user.id,
     company_id,
     ...preferences,
   };
@@ -61,6 +60,12 @@ export const createShipperPreferences = async (preferences: ShipperPreferencesFo
 };
 
 export const updateShipperPreferences = async (id: string, preferences: ShipperPreferencesFormData): Promise<ShipperPreferences> => {
+  // Überprüfen, ob der Benutzer angemeldet ist
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
   const { data, error } = await supabase
     .from('shipper_preferences')
     .update(preferences)
