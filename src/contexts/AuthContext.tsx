@@ -39,9 +39,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const MIN_FETCH_INTERVAL = 10000;
   const lastFetchTime = useRef<number>(0);
 
+  // Ref, um den Status der Ladeprozesse zu verfolgen
+  const dataLoadingRef = useRef({
+    profileRequested: false,
+    companyRequested: false,
+    profileLoaded: false,
+    companyLoaded: false
+  });
+
+  // Funktion, um zu prüfen ob alle Daten geladen sind und den Ladezustand zu aktualisieren
+  const checkDataLoaded = useCallback(() => {
+    const { profileRequested, companyRequested, profileLoaded, companyLoaded } = dataLoadingRef.current;
+    
+    // Wenn beide Datensätze angefragt und geladen wurden, setze loading auf false
+    if (profileRequested && companyRequested && profileLoaded && companyLoaded) {
+      setLoading(false);
+    }
+  }, []);
+
   // Fetch profile data with debounce protection
   const fetchProfile = useCallback(async (userId: string) => {
     if (profileLoading) return;
+    
+    // Markiere Profil als angefragt
+    dataLoadingRef.current.profileRequested = true;
     
     // Clear any pending timeouts
     if (fetchProfileTimeoutRef.current) {
@@ -60,20 +81,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           
         if (error) throw error;
         setProfile(data);
+        
+        // Markiere Profil als geladen
+        dataLoadingRef.current.profileLoaded = true;
+        checkDataLoaded();
       } catch (error) {
         if (process.env.NODE_ENV === 'development') {
           console.error(t('profile.errorFetchingProfile'), error);
         }
+        // Auch bei Fehler als geladen markieren, um den Ladezustand zu beenden
+        dataLoadingRef.current.profileLoaded = true;
+        checkDataLoaded();
       } finally {
         setProfileLoading(false);
         fetchProfileTimeoutRef.current = null;
       }
     }, 100);
-  }, [profileLoading, t]);
+  }, [profileLoading, t, checkDataLoaded]);
 
   // Fetch company data with debounce and caching
   const fetchCompany = useCallback(async (userId: string) => {
     if (companyLoading) return;
+    
+    // Markiere Unternehmen als angefragt
+    dataLoadingRef.current.companyRequested = true;
     
     // Überprüfen, ob genug Zeit seit der letzten Abfrage vergangen ist
     const now = Date.now();
@@ -93,6 +124,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setCompany(null);
         setHasCompany(false);
       }
+      
+      // Markiere Unternehmensdaten als geladen (aus Cache)
+      dataLoadingRef.current.companyLoaded = true;
+      checkDataLoaded();
       return;
     }
     
@@ -149,6 +184,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           
           setCompany(companyWithRole);
           setHasCompany(true);
+          
+          // Markiere Unternehmensdaten als geladen
+          dataLoadingRef.current.companyLoaded = true;
+          checkDataLoaded();
           return;
         }
         
@@ -187,6 +226,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           
           setCompany(companyWithRole);
           setHasCompany(true);
+          
+          // Markiere Unternehmensdaten als geladen
+          dataLoadingRef.current.companyLoaded = true;
+          checkDataLoaded();
           return;
         }
         
@@ -198,21 +241,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         setCompany(null);
         setHasCompany(false);
+        
+        // Auch bei fehlendem Unternehmen als geladen markieren
+        dataLoadingRef.current.companyLoaded = true;
+        checkDataLoaded();
       } catch (error) {
         if (process.env.NODE_ENV === 'development') {
           console.error(t('company.errorFetchingCompany'), error);
         }
         setCompany(null);
         setHasCompany(false);
+        
+        // Auch bei Fehler als geladen markieren
+        dataLoadingRef.current.companyLoaded = true;
+        checkDataLoaded();
       } finally {
         setCompanyLoading(false);
         fetchCompanyTimeoutRef.current = null;
       }
     }, 100);
-  }, [companyLoading, t, CACHE_DURATION, MIN_FETCH_INTERVAL]);
+  }, [companyLoading, t, CACHE_DURATION, MIN_FETCH_INTERVAL, checkDataLoaded]);
 
   useEffect(() => {
     let isMounted = true;
+    
+    // Zurücksetzen des Ladezustands bei Montage
+    dataLoadingRef.current = {
+      profileRequested: false,
+      companyRequested: false,
+      profileLoaded: false,
+      companyLoaded: false
+    };
     
     // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -229,8 +288,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setHasCompany(false);
           // Clear caches on signout
           companyDataCache.current.clear();
+          
+          // Zurücksetzen des Ladezustands
+          dataLoadingRef.current = {
+            profileRequested: false,
+            companyRequested: false,
+            profileLoaded: false,
+            companyLoaded: false
+          };
+          
+          setLoading(false);
           return;
         }
+        
+        // Bei Anmeldung/Sitzungsänderung als noch nicht geladen markieren
+        setLoading(true);
         
         // Fetch profile data if user is signed in
         // Use setTimeout to avoid blocking the auth state change handler
@@ -257,9 +329,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (currentSession?.user) {
             await fetchProfile(currentSession.user.id);
             await fetchCompany(currentSession.user.id);
+          } else {
+            // Wenn kein Benutzer vorhanden ist, können wir den Ladezustand beenden
+            setLoading(false);
           }
-          
-          setLoading(false);
         }
       } catch (error) {
         if (process.env.NODE_ENV === 'development') {
