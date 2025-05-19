@@ -70,7 +70,13 @@ export const useEmployees = (filters?: EmployeeFilter) => {
       query = query.eq('status', filters.status);
     }
 
-    const { data, error } = await query;
+    // Use explicit typing for the query response to avoid TypeScript's deep inference issues
+    interface EmployeeQueryResponse {
+      data: RawEmployeeFromDb[] | null;
+      error: any;
+    }
+
+    const { data, error }: EmployeeQueryResponse = await query;
     
     console.log('Employees query response: ', { data, error });
     
@@ -85,9 +91,8 @@ export const useEmployees = (filters?: EmployeeFilter) => {
     }
     
     // Transform the data to match the Employee interface
-    // We need to explicitly type 'data' to avoid deep type instantiation issues
-    const rawData = data as RawEmployeeFromDb[] | null;
-    const employees: Employee[] = rawData ? rawData.map(mapDbEmployeeToEmployee) : [];
+    // We need to explicitly type to avoid deep type instantiation issues
+    const employees: Employee[] = data ? data.map(mapDbEmployeeToEmployee) : [];
 
     return employees;
   };
@@ -393,7 +398,13 @@ export const useEmployeeById = (employeeId?: string): EmployeeQueryResult => {
   const fetchEmployee = async () => {
     if (!employeeId || !company) return null;
     
-    const { data, error } = await supabase
+    // Use explicit typing for the query response to avoid TypeScript's deep inference issues
+    interface SingleEmployeeQueryResponse {
+      data: RawEmployeeFromDb | null;
+      error: any;
+    }
+    
+    const { data, error }: SingleEmployeeQueryResponse = await supabase
       .from('employees')
       .select(`
         *,
@@ -416,8 +427,8 @@ export const useEmployeeById = (employeeId?: string): EmployeeQueryResult => {
     }
     
     // Transform to match Employee interface
-    const rawData = data as RawEmployeeFromDb;
-    const employee = mapDbEmployeeToEmployee(rawData);
+    if (!data) return null;
+    const employee = mapDbEmployeeToEmployee(data);
     
     return employee;
   };
