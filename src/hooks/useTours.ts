@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,7 +13,8 @@ import {
   DbTourStatus, 
   DbVehicleBodyType,
   TourStopDB,
-  TourScheduleDB
+  TourScheduleDB,
+  TourStop
 } from '@/types/tour';
 import { toast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +37,14 @@ export function useTours(filterOptions: TourFilterOptions) {
       'other': 'other'
     };
     return typeMap[dbType] || 'other';
+  };
+
+  // Helper function to map client status to DB status
+  const mapClientStatusToDbStatus = (clientStatus: TourStatus): DbTourStatus | null => {
+    if (clientStatus === 'pending' || clientStatus === 'active') return 'pending';
+    if (clientStatus === 'in_progress') return 'in_progress';
+    if (clientStatus === 'completed') return 'completed';
+    return null; // For other statuses like 'cancelled', 'paused', 'awarded', 'draft'
   };
 
   // Helper function to map tour status
@@ -60,9 +70,10 @@ export function useTours(filterOptions: TourFilterOptions) {
     // Apply filters
     if (filterOptions.status !== 'all') {
       // Convert client status to DB status if needed
-      if (['pending', 'in_progress', 'completed'].includes(filterOptions.status)) {
+      const dbStatus = mapClientStatusToDbStatus(filterOptions.status);
+      if (dbStatus) {
         // Only use status filter for DB statuses that actually exist
-        query = query.eq('status', filterOptions.status);
+        query = query.eq('status', dbStatus);
       }
     }
 
@@ -111,14 +122,24 @@ export function useTours(filterOptions: TourFilterOptions) {
         location_lng: stop.location_lng,
         description: stop.description,
         order: stop.stop_number, // Map stop_number to order for client interface
+        stop_number: stop.stop_number, // Keep stop_number for compatibility
         created_at: stop.created_at,
         updated_at: stop.updated_at
       })) || [];
 
+      // Map DB status to client status
+      let clientStatus: TourStatus = mapDbStatusToClientStatus(tour.status as DbTourStatus);
+
+      // Apply additional mapping for specific statuses if needed
+      // For example, if we want to show 'pending' tours as 'active' in the UI:
+      if (tour.status === 'pending') {
+        clientStatus = 'active';
+      }
+
       return {
         id: tour.id,
         title: tour.title,
-        status: mapDbStatusToClientStatus(tour.status as DbTourStatus),
+        status: clientStatus,
         createdAt: tour.created_at,
         vehicle_type: tour.vehicle_type,
         body_type: mapDbBodyTypesToClientTypes(tour.body_type as DbVehicleBodyType),
@@ -212,8 +233,8 @@ export function useTours(filterOptions: TourFilterOptions) {
       completed = statusData.filter(tour => tour.status === 'completed').length;
       
       // Handle client-side statuses that might not be in DB
-      // Map database states to client-side states as needed
-      active = statusData.filter(tour => tour.status === 'pending').length; // Consider pending tours as active for client UI
+      // For this application, we're considering 'pending' tours as 'active' for the UI
+      active = pending; // Consider pending tours as active for client UI
       cancelled = 0; // Since cancelled might not be a DB state, default to 0 or compute differently
     }
 
