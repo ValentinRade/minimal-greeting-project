@@ -44,8 +44,9 @@ import '@/i18n';
 // Add these routes
 import PublicProfileRoutes from './routes/PublicProfileRoutes';
 
-// Shipper Tours Routes
+// Shipper routes
 import ShipperToursRoutes from './routes/ShipperToursRoutes';
+import ShipperPreferencesRoutes from './routes/ShipperPreferencesRoutes';
 
 const queryClient = new QueryClient();
 
@@ -101,6 +102,13 @@ function App() {
                 <Route path="/dashboard/shipper/tours/*" element={
                   <ProtectedRoute>
                     <ShipperToursRoutes />
+                  </ProtectedRoute>
+                } />
+
+                {/* Shipper Preferences routes */}
+                <Route path="/dashboard/shipper/preferences/*" element={
+                  <ProtectedRoute>
+                    <ShipperPreferencesRoutes />
                   </ProtectedRoute>
                 } />
                 
