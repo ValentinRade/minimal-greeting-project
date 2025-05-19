@@ -21,6 +21,7 @@ import SubcontractorPreferencesRoutes from './routes/SubcontractorPreferencesRou
 import SubcontractorPublicProfileRoutes from './routes/SubcontractorPublicProfileRoutes';
 import ShipperSubcontractorDatabaseRoutes from './routes/ShipperSubcontractorDatabaseRoutes';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { LanguageProvider } from '@/contexts/LanguageContext';
 
 // Settings routes
 import SettingsLayout from './pages/settings/SettingsLayout';
@@ -37,54 +38,56 @@ import '@/i18n';
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/register/invited" element={<RegisterInvited />} />
-          <Route path="/create-company" element={<CreateCompany />} />
-          <Route path="/public/profile/:companyId" element={<PublicProfile />} />
+      <LanguageProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/register/invited" element={<RegisterInvited />} />
+            <Route path="/create-company" element={<CreateCompany />} />
+            <Route path="/public/profile/:companyId" element={<PublicProfile />} />
 
-          {/* Protected dashboard routes with AppLayout */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            {/* Dashboard index route */}
-            <Route index element={<Navigate to="shipper" replace />} />
-            
-            {/* Shipper routes */}
-            <Route path="shipper" element={<ShipperDashboard />} />
-            <Route path="shipper/subcontractors/*" element={<ShipperSubcontractorDatabaseRoutes />} />
+            {/* Protected dashboard routes with AppLayout */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              {/* Dashboard index route */}
+              <Route index element={<Navigate to="shipper" replace />} />
+              
+              {/* Shipper routes */}
+              <Route path="shipper" element={<ShipperDashboard />} />
+              <Route path="shipper/subcontractors/*" element={<ShipperSubcontractorDatabaseRoutes />} />
 
-            {/* Subcontractor routes */}
-            <Route path="subcontractor" element={<SubcontractorDashboard />} />
-            <Route path="subcontractor/vehicles/*" element={<SubcontractorVehiclesRoutes />} />
-            <Route path="subcontractor/employees/*" element={<SubcontractorEmployeesRoutes />} />
-            <Route path="subcontractor/tours/*" element={<SubcontractorToursRoutes />} />
-            <Route path="subcontractor/selection/*" element={<SubcontractorSelectionRoutes />} />
-            <Route path="subcontractor/preferences/*" element={<SubcontractorPreferencesRoutes />} />
-            <Route path="subcontractor/profile/*" element={<SubcontractorPublicProfileRoutes />} />
+              {/* Subcontractor routes */}
+              <Route path="subcontractor" element={<SubcontractorDashboard />} />
+              <Route path="subcontractor/vehicles/*" element={<SubcontractorVehiclesRoutes />} />
+              <Route path="subcontractor/employees/*" element={<SubcontractorEmployeesRoutes />} />
+              <Route path="subcontractor/tours/*" element={<SubcontractorToursRoutes />} />
+              <Route path="subcontractor/selection/*" element={<SubcontractorSelectionRoutes />} />
+              <Route path="subcontractor/preferences/*" element={<SubcontractorPreferencesRoutes />} />
+              <Route path="subcontractor/profile/*" element={<SubcontractorPublicProfileRoutes />} />
 
-            {/* Settings routes */}
-            <Route path="settings" element={<SettingsLayout />}>
-              <Route index element={<SettingsIndex />} />
-              <Route path="profile" element={<ProfileSettings />} />
-              <Route path="company" element={<CompanySettings />} />
-              <Route path="invitations" element={<CompanyInvitations />} />
-              <Route path="users" element={<CompanyUsers />} />
-              <Route path="roles" element={<RolesInfo />} />
+              {/* Settings routes */}
+              <Route path="settings" element={<SettingsLayout />}>
+                <Route index element={<SettingsIndex />} />
+                <Route path="profile" element={<ProfileSettings />} />
+                <Route path="company" element={<CompanySettings />} />
+                <Route path="invitations" element={<CompanyInvitations />} />
+                <Route path="users" element={<CompanyUsers />} />
+                <Route path="roles" element={<RolesInfo />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-      <Toaster />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+        <Toaster />
+      </LanguageProvider>
     </AuthProvider>
   );
 }
