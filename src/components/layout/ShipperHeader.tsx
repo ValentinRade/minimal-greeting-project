@@ -3,34 +3,31 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/LanguageSelector';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { User } from 'lucide-react';
+import { Menu } from 'lucide-react';
+import { useSidebar } from '@/components/ui/sidebar';
+import UserNav from './UserNav';
 
 const ShipperHeader: React.FC = () => {
-  const { company, signOut, profile } = useAuth();
   const { t } = useTranslation();
+  const { toggleSidebar } = useSidebar();
   
   return (
-    <header className="flex items-center justify-between border-b bg-white px-6 py-3 shadow-sm">
-      <div className="flex items-center gap-3">
-        <SidebarTrigger />
-      </div>
-      
-      <div className="flex items-center gap-4">
-        <LanguageSelector currentLanguage={profile?.language || 'Deutsch'} />
-        
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-purple-700">
-            <User size={16} />
-          </div>
-          <span className="hidden text-sm font-medium md:block">
-            {company?.name}
-          </span>
+    <header className="sticky top-0 z-40 w-full bg-white border-b">
+      <div className="flex h-16 items-center justify-between px-4 sm:px-6">
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
         </div>
         
-        <Button variant="outline" size="sm" onClick={signOut}>
-          {t('profile.logOut')}
-        </Button>
+        <div className="flex items-center space-x-2">
+          <LanguageSelector />
+          <UserNav />
+        </div>
       </div>
     </header>
   );
