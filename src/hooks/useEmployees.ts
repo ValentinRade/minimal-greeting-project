@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,7 +19,6 @@ export const useEmployees = () => {
   const { data: employees = [], isLoading, refetch } = useQuery({
     queryKey: ['employees', company?.id, filter, employeeTypeFilter, positionFilter, availabilityFilter],
     queryFn: async () => {
-      console.log("Fetching employees for company:", company?.id);
       if (!company?.id) return [];
 
       let query = supabase
@@ -47,8 +45,6 @@ export const useEmployees = () => {
       }
 
       const { data, error } = await query;
-      
-      console.log("Employees query response:", { data, error });
 
       if (error) {
         console.error('Error fetching employees:', error);
@@ -83,6 +79,9 @@ export const useEmployees = () => {
       }));
     },
     enabled: !!company?.id,
+    // Füge staleTime und cacheTime hinzu, um unnötige Refetches zu vermeiden
+    staleTime: 30000, // 30 Sekunden
+    cacheTime: 300000, // 5 Minuten
   });
 
   // Get single employee
@@ -122,6 +121,7 @@ export const useEmployees = () => {
       };
     },
     enabled: !!id,
+    staleTime: 30000, // 30 Sekunden
   });
 
   // Create employee

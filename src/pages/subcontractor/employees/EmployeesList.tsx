@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useEmployees } from '@/hooks/useEmployees';
@@ -33,7 +32,6 @@ import { Loader2, Plus, Search, Users } from 'lucide-react';
 import { Employee } from '@/types/employee';
 
 const EmployeesList: React.FC = () => {
-  console.log("EmployeesList component rendering");
   const { t } = useTranslation();
   const navigate = useNavigate();
   const {
@@ -48,11 +46,6 @@ const EmployeesList: React.FC = () => {
     availabilityFilter,
     setAvailabilityFilter,
   } = useEmployees();
-
-  useEffect(() => {
-    console.log("EmployeesList mounted, isLoading:", isLoading);
-    console.log("Employees data:", employees);
-  }, [isLoading, employees]);
 
   // Collect unique positions for filter
   const positions = useMemo(() => {
@@ -116,8 +109,6 @@ const EmployeesList: React.FC = () => {
     const availableDays = employee.availability.filter(avail => avail.is_available).length;
     return t('employees.availableDays', { count: availableDays });
   };
-
-  console.log("EmployeesList rendering with employees:", employees);
 
   return (
     <div className="space-y-6">
