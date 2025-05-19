@@ -15,6 +15,7 @@ import CreateCompany from "./pages/CreateCompany";
 import ShipperDashboard from "./pages/ShipperDashboard";
 import SubcontractorDashboard from "./pages/SubcontractorDashboard";
 import NotFound from "./pages/NotFound";
+import CrmPage from "./pages/shipper/CrmPage";
 
 // Settings pages
 import SettingsLayout from "./pages/settings/SettingsLayout";
@@ -61,6 +62,13 @@ function App() {
                 <Route path="/dashboard/shipper" element={
                   <ProtectedRoute>
                     <ShipperDashboard />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Shipper CRM route */}
+                <Route path="/dashboard/shipper/crm" element={
+                  <ProtectedRoute>
+                    <CrmPage />
                   </ProtectedRoute>
                 } />
                 

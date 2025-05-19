@@ -1,7 +1,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useLocation, Link } from 'react-router-dom';
-import { Package, Truck, Users, Settings, Home } from 'lucide-react';
+import { Package, Truck, Users, Settings, Home, Contact } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -36,6 +36,11 @@ const ShipperSidebar: React.FC = () => {
       path: '/dashboard/shipper/contractors' 
     },
     { 
+      icon: Contact, 
+      label: 'CRM', 
+      path: '/dashboard/shipper/crm' 
+    },
+    { 
       icon: Users, 
       label: t('dashboard.customers'), 
       path: '/dashboard/shipper/customers' 
@@ -43,7 +48,7 @@ const ShipperSidebar: React.FC = () => {
     { 
       icon: Settings, 
       label: t('profile.settings'), 
-      path: '/dashboard/shipper/settings' // Updated to point to the main settings page
+      path: '/dashboard/shipper/settings' 
     }
   ];
 
