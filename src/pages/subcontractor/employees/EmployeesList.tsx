@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -173,7 +174,6 @@ const EmployeesList: React.FC = () => {
             value={filter}
             onChange={e => setFilter(e.target.value)}
             className="w-full pl-9"
-            icon={Search}
           />
         </div>
         

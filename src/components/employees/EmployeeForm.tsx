@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm, SubmitHandler, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -54,7 +53,7 @@ import {
   Trash2, 
   X 
 } from 'lucide-react';
-import { Employee, CreateEmployeeData } from '@/types/employee';
+import { Employee, CreateEmployeeData, LicenseType } from '@/types/employee';
 
 // Create zod schema for validation
 const employeeSchema = z.object({
@@ -72,7 +71,7 @@ const employeeSchema = z.object({
   notes: z.string().optional().or(z.literal('')),
   licenses: z.array(
     z.object({
-      license_type: z.enum(['B', 'BE', 'C1', 'C1E', 'C', 'CE']),
+      license_type: z.enum(['B', 'BE', 'C1', 'C1E', 'C', 'CE']) as z.ZodType<LicenseType>,
       description: z.string().optional().or(z.literal(''))
     })
   ),
@@ -209,24 +208,38 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
     const netSalary = data.net_salary ? Number(data.net_salary) : null;
     const grossSalary = data.gross_salary ? Number(data.gross_salary) : null;
 
-    onSubmit({
-      ...data,
+    // Ensure all required fields have values
+    const submissionData: CreateEmployeeData = {
       first_name: data.first_name,
       last_name: data.last_name,
-      email: data.email,
-      phone: data.phone,
+      email: data.email || undefined,
+      phone: data.phone || undefined,
       position: data.position,
       employee_type: data.employee_type,
       payment_type: data.payment_type,
       hourly_rate: hourlyRate,
       net_salary: netSalary,
       gross_salary: grossSalary,
-      location: data.location,
-      notes: data.notes,
-      licenses: data.licenses,
-      availability: data.availability,
-      regions: data.regions
-    });
+      location: data.location || undefined,
+      notes: data.notes || undefined,
+      // Ensure all required properties are present
+      licenses: data.licenses.map(license => ({
+        license_type: license.license_type,
+        description: license.description
+      })),
+      availability: data.availability.map(avail => ({
+        day_of_week: avail.day_of_week,
+        is_available: avail.is_available,
+        start_time: avail.start_time || undefined,
+        end_time: avail.end_time || undefined,
+        notes: avail.notes || undefined
+      })),
+      regions: data.regions.map(region => ({
+        country: region.country
+      }))
+    };
+
+    onSubmit(submissionData);
   };
 
   const handleCancel = () => {
