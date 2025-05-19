@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
@@ -18,6 +17,18 @@ import { usePublicProfile } from '@/hooks/usePublicProfile';
 import { Badge } from '@/components/ui/badge';
 import { EyeIcon, EyeOffIcon, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+// Define allowed visibility section keys for type safety
+type VisibilitySectionKey = 'show_fleet' | 'show_references' | 'show_qualifications' | 'show_tours' | 'show_ratings';
+
+// Map for UI-friendly section names
+const sectionNameMap: Record<string, VisibilitySectionKey> = {
+  'fleet': 'show_fleet',
+  'references': 'show_references',
+  'qualifications': 'show_qualifications',
+  'tours': 'show_tours',
+  'ratings': 'show_ratings'
+};
 
 const PublicProfileSettings: React.FC = () => {
   const { t } = useTranslation();
@@ -53,16 +64,16 @@ const PublicProfileSettings: React.FC = () => {
     updateProfile({ short_description: description });
   };
   
-  // Update the toggle section handler to use the correct property names
+  // Updated section toggle handler to use the correct property names
   const handleToggleSection = (section: string) => {
     if (!profile) return;
     
-    // Map the section name to the corresponding property in the PublicProfile interface
-    const updateKey = `show_${section}` as keyof typeof profile;
+    // Map the UI section name to the property name in PublicProfile
+    const propertyKey = sectionNameMap[section];
     
-    if (updateKey in profile) {
-      const currentValue = profile[updateKey] as boolean;
-      updateProfile({ [updateKey]: !currentValue } as any);
+    if (propertyKey && propertyKey in profile) {
+      const currentValue = profile[propertyKey];
+      updateProfile({ [propertyKey]: !currentValue });
     }
   };
   
@@ -128,6 +139,7 @@ const PublicProfileSettings: React.FC = () => {
   
   return (
     <div className="space-y-6">
+      {/* Profile visibility card */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -149,6 +161,7 @@ const PublicProfileSettings: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent>
+          {/* Status indicator */}
           {profile.enabled ? (
             <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-md mb-6">
               <div className="flex items-center gap-2 mb-2">
@@ -188,6 +201,7 @@ const PublicProfileSettings: React.FC = () => {
             </div>
           )}
           
+          {/* Description field */}
           <div className="mb-6">
             <Label htmlFor="profile-description" className="mb-2 block">
               {t('publicProfile.companyDescription')}
@@ -209,6 +223,7 @@ const PublicProfileSettings: React.FC = () => {
             </Button>
           </div>
           
+          {/* Visibility section toggles */}
           <div>
             <h3 className="text-lg font-medium mb-3">{t('publicProfile.visibleSections')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
@@ -265,6 +280,7 @@ const PublicProfileSettings: React.FC = () => {
         </CardContent>
       </Card>
       
+      {/* Profile URL card */}
       <Card>
         <CardHeader>
           <CardTitle>{t('publicProfile.profileUrlTitle')}</CardTitle>

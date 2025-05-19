@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { useEmployeeMutations } from './useEmployeeMutations';
 import { mapDbEmployeeToEmployee } from '@/utils/employeeUtils';
 
-// Import useEmployeeById separately to break circular reference
-import { useEmployeeById as importedUseEmployeeById } from './useEmployeeById';
+// Import the hook implementation without using the exported hook to break circular reference
+import { useEmployeeByIdImpl } from './useEmployeeById';
 
 export const useEmployees = (filters?: EmployeeFilter) => {
   const { t } = useTranslation();
@@ -110,10 +109,10 @@ export const useEmployees = (filters?: EmployeeFilter) => {
     setPositionFilter,
     availabilityFilter,
     setAvailabilityFilter,
-    // Breaking circular reference by renaming the property
-    useEmployeeById: importedUseEmployeeById,
+    // Use the implementation directly to avoid circular reference
+    useEmployeeById: useEmployeeByIdImpl,
   };
 };
 
-// Export the hook separately to avoid circular reference
+// Export the hook separately 
 export { useEmployeeById } from './useEmployeeById';

@@ -1,81 +1,130 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useEmployees } from '@/hooks/useEmployees';
-import EmployeeForm from '@/components/employees/EmployeeForm';
-import { CreateEmployeeData } from '@/types/employee';
+import { useEmployeeById } from '@/hooks/useEmployeeById';
+import { useEmployeeMutations } from '@/hooks/useEmployeeMutations';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { Form, FormField, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Employee } from '@/types/employee';
 
-const EditEmployee = () => {
+const EditEmployee: React.FC = () => {
+  const { employeeId } = useParams<{ employeeId: string }>();
   const { t } = useTranslation();
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { useEmployee, updateEmployee } = useEmployees();
+  const { employee, isLoading: isEmployeeLoading } = useEmployeeById(employeeId);
+  const { updateEmployee } = useEmployeeMutations();
   
-  const { employee, isLoading, isError } = useEmployee(id);
-
-  const handleSubmit = (data: CreateEmployeeData) => {
-    if (!id) return;
-    
-    updateEmployee.mutate({
-      id,
-      ...data
-    }, {
-      onSuccess: () => {
-        navigate(`/dashboard/subcontractor/employees/${id}`);
-      },
-      onError: (error: any) => {
+  const [formData, setFormData] = useState<Employee | null>(null);
+  
+  useEffect(() => {
+    if (employee) {
+      setFormData(employee);
+    }
+  }, [employee]);
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (formData) {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData) {
+      try {
+        await updateEmployee(formData);
         toast({
-          title: t('errors.updateFailed'),
-          description: error.message,
+          title: t('employees.updateSuccess'),
+          description: t('employees.employeeUpdated'),
+        });
+        navigate(`/subcontractor/employees/${formData.id}`);
+      } catch (error) {
+        toast({
+          title: t('employees.updateError'),
+          description: (error as Error).message,
           variant: 'destructive',
         });
       }
-    });
-  };
-
-  const handleCancel = () => {
-    if (id) {
-      navigate(`/dashboard/subcontractor/employees/${id}`);
-    } else {
-      navigate('/dashboard/subcontractor/employees');
     }
   };
-
-  if (isLoading) {
+  
+  if (isEmployeeLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-center h-40">
+            <p>{t('common.loading')}</p>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
-
-  if (isError || !employee) {
+  
+  if (!formData) {
     return (
-      <div className="text-center py-10">
-        <h2 className="text-xl font-semibold text-destructive">{t('errors.loadFailed')}</h2>
-        <p className="text-muted-foreground">{t('errors.employeeNotFound')}</p>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('employees.notFound')}</CardTitle>
+          <CardDescription>{t('employees.employeeNotFound')}</CardDescription>
+        </CardHeader>
+      </Card>
     );
   }
-
+  
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">{t('employees.edit')}</h1>
-        <p className="text-muted-foreground">{t('employees.editDescription')}</p>
-      </div>
-
-      <EmployeeForm 
-        defaultValues={employee}
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-        isLoading={updateEmployee.isPending}
-        isEdit={true}
-      />
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>{t('employees.editEmployee')}</CardTitle>
+        <CardDescription>{t('employees.editEmployeeDescription')}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form onSubmit={handleSubmit}>
+          <FormField name="first_name" control={formData.first_name}>
+            <FormLabel>{t('employees.firstName')}</FormLabel>
+            <FormControl>
+              <Input
+                name="first_name"
+                value={formData.first_name}
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+            <FormMessage />
+          </FormField>
+          <FormField name="last_name" control={formData.last_name}>
+            <FormLabel>{t('employees.lastName')}</FormLabel>
+            <FormControl>
+              <Input
+                name="last_name"
+                value={formData.last_name}
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+            <FormMessage />
+          </FormField>
+          <FormField name="email" control={formData.email}>
+            <FormLabel>{t('employees.email')}</FormLabel>
+            <FormControl>
+              <Input
+                name="email"
+                type="email"
+                value={formData.email || ''}
+                onChange={handleChange}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormField>
+          <Button type="submit">{t('common.save')}</Button>
+        </Form>
+      </CardContent>
+    </Card>
   );
 };
 

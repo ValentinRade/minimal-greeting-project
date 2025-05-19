@@ -1,26 +1,22 @@
 
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { Employee } from '@/types/employee';
 import { toast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
-import { EmployeeQueryResult, RawEmployeeFromDb } from '@/types/employee';
 import { mapDbEmployeeToEmployee } from '@/utils/employeeUtils';
 
-export const useEmployeeById = (employeeId?: string): EmployeeQueryResult => {
-  const { company } = useAuth();
+// Export implementation to avoid circular reference 
+export const useEmployeeByIdImpl = (employeeId?: string) => {
   const { t } = useTranslation();
+  const { company } = useAuth();
   
-  const fetchEmployee = async () => {
+  const fetchEmployee = async (): Promise<Employee | null> => {
     if (!employeeId || !company) return null;
     
-    // Use explicit typing for the query response
-    interface SingleEmployeeQueryResponse {
-      data: RawEmployeeFromDb | null;
-      error: any;
-    }
-    
-    const { data, error }: SingleEmployeeQueryResponse = await supabase
+    const { data, error } = await supabase
       .from('employees')
       .select(`
         *,
@@ -31,7 +27,7 @@ export const useEmployeeById = (employeeId?: string): EmployeeQueryResult => {
       .eq('id', employeeId)
       .eq('company_id', company.id)
       .single();
-      
+    
     if (error) {
       console.error('Error fetching employee:', error);
       toast({
@@ -42,20 +38,22 @@ export const useEmployeeById = (employeeId?: string): EmployeeQueryResult => {
       return null;
     }
     
-    // Transform to match Employee interface
-    if (!data) return null;
     return mapDbEmployeeToEmployee(data);
   };
   
-  const employeeQuery = useQuery({
-    queryKey: ['employee', employeeId],
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['employee', employeeId, company?.id],
     queryFn: fetchEmployee,
     enabled: !!employeeId && !!company,
   });
   
   return {
-    employee: employeeQuery.data || null,
-    isLoading: employeeQuery.isLoading,
-    isError: employeeQuery.isError,
+    employee: data,
+    isLoading,
+    isError,
+    refetch
   };
 };
+
+// Export the hook that uses the implementation
+export const useEmployeeById = useEmployeeByIdImpl;

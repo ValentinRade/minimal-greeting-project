@@ -2,7 +2,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { usePublicProfileByPath, usePublicCompanyInfo, useCompanyAwards, useCompanyRatings } from '@/hooks/usePublicProfile';
+import { 
+  usePublicProfileByPath, 
+  usePublicCompanyInfo, 
+  useCompanyAwards, 
+  useCompanyRatings 
+} from '@/hooks/usePublicProfile';
+import { useCompanyPublicData } from '@/hooks/useCompanyPublicData';
 import { 
   Card, 
   CardContent, 
@@ -12,7 +18,21 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Star, StarHalf, Shield, Award, Calendar, MapPin, Truck, GraduationCap, Route, Users } from 'lucide-react';
+import { 
+  Star, 
+  StarHalf, 
+  Shield, 
+  Award, 
+  Calendar, 
+  MapPin, 
+  Truck, 
+  GraduationCap, 
+  Route, 
+  Users,
+  FileText,
+  FileCheck,
+  User
+} from 'lucide-react';
 
 const CompanyNotFound = () => {
   const { t } = useTranslation();
@@ -79,7 +99,17 @@ const PublicProfile: React.FC = () => {
   const { data: awards } = useCompanyAwards(profile?.company_id);
   const { data: ratings } = useCompanyRatings(profile?.company_id);
   
-  if (isProfileLoading || isCompanyLoading) {
+  const { 
+    employees, 
+    vehicles, 
+    tours, 
+    vehicleTypes, 
+    totalVehicles,
+    totalVehicleTypes,
+    isLoading: isDataLoading 
+  } = useCompanyPublicData(profile?.company_id);
+  
+  if (isProfileLoading || isCompanyLoading || isDataLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p>{t('common.loading')}</p>
@@ -98,6 +128,32 @@ const PublicProfile: React.FC = () => {
     
   // Get founding year from company creation date
   const foundingYear = new Date(company.created_at).getFullYear();
+
+  // Get active tours (status = 'in_progress')
+  const activeTours = tours.filter(tour => tour.status === 'in_progress');
+  
+  // Get completed tours (status = 'completed')
+  const completedTours = tours.filter(tour => tour.status === 'completed');
+
+  // Count employees by position
+  const driverCount = employees.filter(employee => 
+    employee.position.toLowerCase().includes('fahrer') || 
+    employee.position.toLowerCase().includes('driver')
+  ).length;
+  
+  // Get common routes from tours
+  const routeFrequency: Record<string, number> = {};
+  tours.forEach(tour => {
+    const routeName = `${tour.start_location} - ${tour.end_location || ''}`;
+    routeFrequency[routeName] = (routeFrequency[routeName] || 0) + 1;
+  });
+
+  // Get top routes
+  const topRoutes = Object.entries(routeFrequency)
+    .filter(([route]) => route.includes(' - ') && !route.endsWith(' - ')) // Filter valid routes
+    .sort(([, countA], [, countB]) => countB - countA)
+    .slice(0, 3)
+    .map(([route]) => route);
   
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
@@ -167,7 +223,7 @@ const PublicProfile: React.FC = () => {
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            {/* Fleet Overview */}
+            {/* Fleet Overview - Real Data */}
             {profile.show_fleet && (
               <ProfileSection 
                 title={t('publicProfile.fleetOverview')} 
@@ -175,27 +231,59 @@ const PublicProfile: React.FC = () => {
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="border rounded-md p-4">
-                    <p className="text-2xl font-bold">8</p>
+                    <p className="text-2xl font-bold">{totalVehicles}</p>
                     <p className="text-muted-foreground">{t('publicProfile.vehicles')}</p>
                   </div>
                   <div className="border rounded-md p-4">
-                    <p className="text-2xl font-bold">4</p>
+                    <p className="text-2xl font-bold">{totalVehicleTypes}</p>
                     <p className="text-muted-foreground">{t('publicProfile.vehicleTypes')}</p>
                   </div>
                 </div>
-                <div className="mt-4">
-                  <h4 className="font-medium mb-2">{t('publicProfile.vehicleCategories')}</h4>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">LKW 7.5t</Badge>
-                    <Badge variant="outline">LKW 12t</Badge>
-                    <Badge variant="outline">Sattelzug</Badge>
-                    <Badge variant="outline">Kleintransporter</Badge>
+                {vehicleTypes.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="font-medium mb-2">{t('publicProfile.vehicleCategories')}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {vehicleTypes.slice(0, 6).map(type => (
+                        <Badge key={type.id} variant="outline">{type.name}</Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </ProfileSection>
             )}
             
-            {/* Tours */}
+            {/* Staff Overview - New Section with Real Data */}
+            {profile.show_fleet && employees.length > 0 && (
+              <ProfileSection 
+                title={t('publicProfile.staffOverview')} 
+                icon={<User className="text-primary w-5 h-5" />}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="border rounded-md p-4">
+                    <p className="text-2xl font-bold">{employees.length}</p>
+                    <p className="text-muted-foreground">{t('publicProfile.totalEmployees')}</p>
+                  </div>
+                  <div className="border rounded-md p-4">
+                    <p className="text-2xl font-bold">{driverCount}</p>
+                    <p className="text-muted-foreground">{t('publicProfile.drivers')}</p>
+                  </div>
+                </div>
+                {employees.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="font-medium mb-2">{t('publicProfile.positions')}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {Array.from(new Set(employees.map(e => e.position)))
+                        .slice(0, 6)
+                        .map((position, idx) => (
+                          <Badge key={idx} variant="outline">{position}</Badge>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </ProfileSection>
+            )}
+            
+            {/* Tours - Real Data */}
             {profile.show_tours && (
               <ProfileSection 
                 title={t('publicProfile.toursOverview')} 
@@ -203,22 +291,24 @@ const PublicProfile: React.FC = () => {
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="border rounded-md p-4">
-                    <p className="text-2xl font-bold">35</p>
+                    <p className="text-2xl font-bold">{completedTours.length}</p>
                     <p className="text-muted-foreground">{t('publicProfile.completedTours')}</p>
                   </div>
                   <div className="border rounded-md p-4">
-                    <p className="text-2xl font-bold">4</p>
+                    <p className="text-2xl font-bold">{activeTours.length}</p>
                     <p className="text-muted-foreground">{t('publicProfile.activeTours')}</p>
                   </div>
                 </div>
-                <div className="mt-4">
-                  <h4 className="font-medium mb-2">{t('publicProfile.frequentRoutes')}</h4>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">München - Berlin</Badge>
-                    <Badge variant="outline">Frankfurt - Hamburg</Badge>
-                    <Badge variant="outline">Köln - Dresden</Badge>
+                {topRoutes.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="font-medium mb-2">{t('publicProfile.frequentRoutes')}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {topRoutes.map((route, index) => (
+                        <Badge key={index} variant="outline">{route}</Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </ProfileSection>
             )}
             
@@ -228,6 +318,7 @@ const PublicProfile: React.FC = () => {
                 title={t('publicProfile.references')} 
                 icon={<Users className="text-primary w-5 h-5" />}
               >
+                {/* We'll use the actual references data once it's loaded */}
                 <div className="space-y-4">
                   <div className="p-4 border rounded-md">
                     <div className="flex justify-between mb-2">
@@ -283,7 +374,47 @@ const PublicProfile: React.FC = () => {
               </ProfileSection>
             )}
             
-            {/* Ratings */}
+            {/* Documents - New Section */}
+            {profile.show_qualifications && (
+              <ProfileSection 
+                title={t('publicProfile.documents')} 
+                icon={<FileCheck className="text-primary w-5 h-5" />}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 border rounded-md">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <span>Handelsregisterauszug</span>
+                    </div>
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      {t('publicProfile.verified')}
+                    </Badge>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 border rounded-md">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <span>Versicherungsbescheinigung</span>
+                    </div>
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      {t('publicProfile.verified')}
+                    </Badge>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 border rounded-md">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <span>Steuerbescheinigung</span>
+                    </div>
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      {t('publicProfile.verified')}
+                    </Badge>
+                  </div>
+                </div>
+              </ProfileSection>
+            )}
+            
+            {/* Ratings - Real Data */}
             {profile.show_ratings && ratings && ratings.length > 0 && (
               <ProfileSection 
                 title={t('publicProfile.ratings')} 
@@ -319,7 +450,7 @@ const PublicProfile: React.FC = () => {
               </ProfileSection>
             )}
             
-            {/* Awards */}
+            {/* Awards - Real Data */}
             {awards && awards.length > 0 && (
               <ProfileSection 
                 title={t('publicProfile.awards')} 
