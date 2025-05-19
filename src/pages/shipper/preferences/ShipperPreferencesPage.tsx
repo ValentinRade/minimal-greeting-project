@@ -21,8 +21,14 @@ const ShipperPreferencesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
   useEffect(() => {
+    // Only run this effect once during component mount
+    if (!isInitialLoad) return;
+    
+    setIsInitialLoad(false);
+    
     // If we're on this page but not logged in, redirect to auth
     if (!user) {
       navigate('/auth', { replace: true });
@@ -40,7 +46,7 @@ const ShipperPreferencesPage: React.FC = () => {
     if (user && hasCompany) {
       loadPreferences();
     }
-  }, [user, hasCompany, navigate]);
+  }, [user, hasCompany, navigate, isInitialLoad]);
 
   const loadPreferences = async () => {
     setIsLoading(true);
