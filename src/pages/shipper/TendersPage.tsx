@@ -49,12 +49,18 @@ const TendersPage: React.FC = () => {
   
   // Load tenders on mount and when user changes
   useEffect(() => {
-    if (!loading && user && hasCompany) {
+    if (!loading) {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+      
+      if (!hasCompany) {
+        navigate('/create-company');
+        return;
+      }
+      
       loadTenders();
-    } else if (!loading && !user) {
-      navigate('/auth');
-    } else if (!loading && user && !hasCompany) {
-      navigate('/create-company');
     }
   }, [user, loading, hasCompany, navigate]);
   
@@ -139,16 +145,6 @@ const TendersPage: React.FC = () => {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
-  }
-
-  if (!user) {
-    navigate('/auth');
-    return null;
-  }
-
-  if (!hasCompany) {
-    navigate('/create-company');
-    return null;
   }
 
   return (

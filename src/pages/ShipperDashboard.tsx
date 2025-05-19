@@ -21,12 +21,18 @@ const ShipperDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && user && hasCompany) {
+    if (!loading) {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+      
+      if (!hasCompany) {
+        navigate('/create-company');
+        return;
+      }
+      
       loadDashboardData();
-    } else if (!loading && !user) {
-      navigate('/auth');
-    } else if (!loading && user && !hasCompany) {
-      navigate('/create-company');
     }
   }, [user, loading, hasCompany, navigate]);
 
@@ -75,18 +81,9 @@ const ShipperDashboard = () => {
     );
   }
 
-  // If user is not authenticated, redirect to auth page
-  if (!user) {
-    navigate('/auth');
-    return null;
-  }
-
-  // If user doesn't have a company, redirect to create company page
-  if (!hasCompany) {
-    navigate('/create-company');
-    return null;
-  }
-
+  // Simplify the rendering - we don't need additional redirect logic here
+  // since the useEffect hook handles that already
+  
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto">
