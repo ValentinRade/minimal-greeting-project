@@ -38,6 +38,17 @@ const TourFormStep3: React.FC<TourFormStep3Props> = ({ form }) => {
     { value: 6, label: t('common.saturday') },
   ];
 
+  // Helper function to format dates safely
+  const formatDate = (dateString: string | null | undefined): string => {
+    if (!dateString) return '';
+    try {
+      return format(new Date(dateString), 'PPP');
+    } catch (error) {
+      console.error("Invalid date format:", dateString, error);
+      return '';
+    }
+  };
+
   return (
     <div className="space-y-6">
       <FormField
@@ -57,7 +68,7 @@ const TourFormStep3: React.FC<TourFormStep3Props> = ({ form }) => {
                     )}
                   >
                     {field.value ? (
-                      format(new Date(field.value), 'PPP')
+                      formatDate(field.value)
                     ) : (
                       <span>{t('tours.formPlaceholders.selectDate')}</span>
                     )}
@@ -100,7 +111,7 @@ const TourFormStep3: React.FC<TourFormStep3Props> = ({ form }) => {
                     )}
                   >
                     {field.value ? (
-                      format(new Date(field.value), 'PPP')
+                      formatDate(field.value)
                     ) : (
                       <span>{t('tours.formPlaceholders.selectDate')}</span>
                     )}

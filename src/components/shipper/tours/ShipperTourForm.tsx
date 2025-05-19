@@ -209,9 +209,16 @@ const ShipperTourForm: React.FC<ShipperTourFormProps> = ({ initialData, onSubmit
   };
 
   const handleFormSubmit = (values: FormValues) => {
+    // Ensure dates are properly formatted or set to null
+    const formattedValues = {
+      ...values,
+      start_date: values.start_date || null,
+      end_date: values.end_date || null
+    };
+    
     // Map form values to tour data structure
     const tourData = {
-      ...values,
+      ...formattedValues,
       user_id: user?.id,
     };
     

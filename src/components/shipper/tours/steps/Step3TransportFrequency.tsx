@@ -37,6 +37,17 @@ const Step3TransportFrequency: React.FC<Step3TransportFrequencyProps> = ({ form 
     { value: 6, label: 'Saturday' },
   ];
 
+  // Format date or return empty string
+  const formatDate = (date: string | null | undefined): string => {
+    if (!date) return '';
+    try {
+      return format(new Date(date), "PPP");
+    } catch (error) {
+      console.error("Invalid date format:", date, error);
+      return '';
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
@@ -57,7 +68,7 @@ const Step3TransportFrequency: React.FC<Step3TransportFrequencyProps> = ({ form 
                       )}
                     >
                       {field.value ? (
-                        format(new Date(field.value), "PPP")
+                        formatDate(field.value)
                       ) : (
                         <span>{t('tours.form.selectDate')}</span>
                       )}
@@ -100,7 +111,7 @@ const Step3TransportFrequency: React.FC<Step3TransportFrequencyProps> = ({ form 
                       )}
                     >
                       {field.value ? (
-                        format(new Date(field.value), "PPP")
+                        formatDate(field.value)
                       ) : (
                         <span>{t('tours.form.selectDate')}</span>
                       )}
@@ -112,7 +123,7 @@ const Step3TransportFrequency: React.FC<Step3TransportFrequencyProps> = ({ form 
                   <Calendar
                     mode="single"
                     selected={field.value ? new Date(field.value) : undefined}
-                    onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : '')}
+                    onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : null)}
                     initialFocus
                     className={cn("p-3 pointer-events-auto")}
                   />
@@ -165,6 +176,7 @@ const Step3TransportFrequency: React.FC<Step3TransportFrequencyProps> = ({ form 
                             <Input
                               type="time"
                               {...field}
+                              value={field.value || ''}
                             />
                           </FormControl>
                           <FormMessage />
@@ -183,7 +195,8 @@ const Step3TransportFrequency: React.FC<Step3TransportFrequencyProps> = ({ form 
                               type="number"
                               placeholder="0"
                               {...field}
-                              onChange={(e) => field.onChange(Number(e.target.value))}
+                              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                              value={field.value || ''}
                             />
                           </FormControl>
                           <FormDescription>
@@ -205,7 +218,8 @@ const Step3TransportFrequency: React.FC<Step3TransportFrequencyProps> = ({ form 
                               type="number"
                               placeholder="0"
                               {...field}
-                              onChange={(e) => field.onChange(Number(e.target.value))}
+                              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                              value={field.value || ''}
                             />
                           </FormControl>
                           <FormDescription>

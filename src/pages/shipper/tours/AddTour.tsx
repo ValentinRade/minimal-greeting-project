@@ -7,6 +7,7 @@ import { useTours } from '@/hooks/useTours';
 import { useAuth } from '@/contexts/AuthContext';
 import ShipperTourForm from '@/components/shipper/tours/ShipperTourForm';
 import { TourWithRelations } from '@/types/tour';
+import { toast } from '@/hooks/use-toast';
 
 const AddTour: React.FC = () => {
   const { t } = useTranslation();
@@ -24,14 +25,29 @@ const AddTour: React.FC = () => {
 
   const handleSubmit = (data: Partial<TourWithRelations>) => {
     if (user) {
-      const tourData = {
+      // Ensure date fields are properly formatted
+      const processedData = {
         ...data,
+        start_date: data.start_date || null,
+        end_date: data.end_date || null,
         user_id: user.id,
       } as TourWithRelations;
       
-      createTour(tourData, {
+      createTour(processedData, {
         onSuccess: () => {
+          toast({
+            title: t('tours.tourCreated'),
+            description: t('tours.tourCreatedDescription'),
+          });
           navigate('/dashboard/shipper/tours');
+        },
+        onError: (error) => {
+          console.error('Error creating tour:', error);
+          toast({
+            title: t('tours.errorCreatingTour'),
+            description: error.message || t('tours.tryAgain'),
+            variant: 'destructive'
+          });
         }
       });
     }
