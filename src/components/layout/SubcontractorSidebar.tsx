@@ -1,12 +1,11 @@
-
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Package, Truck, Users, Settings, Home, FileCheck, Heart } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
-  SidebarHeader,
   SidebarFooter,
+  SidebarHeader,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
@@ -43,12 +42,12 @@ const SubcontractorSidebar: React.FC = () => {
     },
     {
       icon: Heart,
-      label: t('dashboard.preferences', 'Präferenzen'),
+      label: t('dashboard.preferences'),
       path: '/dashboard/subcontractor/preferences'
     },
     {
       icon: FileCheck,
-      label: t('dashboard.selectionCriteria', 'Auswahlkriterien'),
+      label: t('dashboard.selectionCriteria'),
       path: '/dashboard/subcontractor/selection'
     },
     { 
@@ -91,7 +90,7 @@ const SubcontractorSidebar: React.FC = () => {
           <div className="text-xl font-bold text-blue-600">
             <img 
               src="/lovable-uploads/e1e17d41-ee90-43a7-9385-0f9c70f85639.png" 
-              alt="CARRINEX" 
+              alt={t('common.appName')} 
               className="h-12 w-auto" 
             />
           </div>
@@ -121,7 +120,7 @@ const SubcontractorSidebar: React.FC = () => {
       
       <SidebarFooter className="px-4 py-2">
         <div className="text-xs text-muted-foreground">
-          © {new Date().getFullYear()} CARRINEX
+          © {new Date().getFullYear()} {t('common.appName')}
         </div>
       </SidebarFooter>
     </Sidebar>

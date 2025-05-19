@@ -9,12 +9,15 @@ import AppLayout from '@/components/layout/AppLayout';
 const SubcontractorDashboard = () => {
   const { t } = useTranslation();
   
+  // Format date according to user's locale
+  const formattedDate = new Date().toLocaleDateString();
+  
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-bold">{t('dashboard.subcontractorWelcome')}</h1>
-          <p className="text-gray-500 mt-1">{t('dashboard.todayIsDate', { date: new Date().toLocaleDateString() })}</p>
+          <p className="text-gray-500 mt-1">{t('dashboard.todayIsDate', { date: formattedDate })}</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
