@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { TourFilterOptions } from '@/types/tour';
@@ -21,13 +22,24 @@ import { Filter, SortAsc, SortDesc, Calendar, MapPin, Truck, User } from 'lucide
 interface TourFilterBarProps {
   filterOptions: TourFilterOptions;
   onFilterChange: (key: keyof TourFilterOptions, value: any) => void;
+  // Allow for alternative prop name for backward compatibility
+  filters?: TourFilterOptions;
 }
 
 const TourFilterBar: React.FC<TourFilterBarProps> = ({ 
   filterOptions, 
-  onFilterChange 
+  onFilterChange,
+  filters
 }) => {
   const { t } = useTranslation();
+  
+  // Use filters prop as fallback if filterOptions is not provided
+  const actualFilters = filterOptions || filters;
+  
+  if (!actualFilters) {
+    console.error('No filter options provided to TourFilterBar');
+    return null;
+  }
   
   const timeframeOptions = [
     { value: 'all', label: t('filters.allTime') },
@@ -52,14 +64,14 @@ const TourFilterBar: React.FC<TourFilterBarProps> = ({
   ];
 
   const handleSortDirectionToggle = () => {
-    onFilterChange('sortDirection', filterOptions.sortDirection === 'asc' ? 'desc' : 'asc');
+    onFilterChange('sortDirection', actualFilters.sortDirection === 'asc' ? 'desc' : 'asc');
   };
 
   return (
     <div className="flex flex-wrap gap-2 mb-4">
       {/* Timeframe filter */}
       <Select
-        value={filterOptions.timeframe}
+        value={actualFilters.timeframe}
         onValueChange={(value) => onFilterChange('timeframe', value)}
       >
         <SelectTrigger className="w-[140px] h-9">
@@ -77,7 +89,7 @@ const TourFilterBar: React.FC<TourFilterBarProps> = ({
 
       {/* Status filter */}
       <Select
-        value={filterOptions.status}
+        value={actualFilters.status}
         onValueChange={(value) => onFilterChange('status', value)}
       >
         <SelectTrigger className="w-[140px] h-9">
@@ -99,7 +111,7 @@ const TourFilterBar: React.FC<TourFilterBarProps> = ({
         <Input
           placeholder={t('filters.vehicleType')}
           className="w-[140px] h-9 pl-8"
-          value={filterOptions.vehicleType}
+          value={actualFilters.vehicleType}
           onChange={(e) => onFilterChange('vehicleType', e.target.value)}
         />
       </div>
@@ -110,9 +122,9 @@ const TourFilterBar: React.FC<TourFilterBarProps> = ({
           <Button variant="outline" size="sm" className="h-9">
             <MapPin className="mr-2 h-4 w-4" />
             {t('filters.regions')}
-            {filterOptions.regions.length > 0 && (
+            {actualFilters.regions.length > 0 && (
               <span className="ml-1 rounded-full bg-primary w-5 h-5 text-[10px] flex items-center justify-center text-primary-foreground">
-                {filterOptions.regions.length}
+                {actualFilters.regions.length}
               </span>
             )}
           </Button>
@@ -120,33 +132,33 @@ const TourFilterBar: React.FC<TourFilterBarProps> = ({
         <DropdownMenuContent align="start" className="w-[200px]">
           {/* This would be populated with actual regions */}
           <DropdownMenuCheckboxItem
-            checked={filterOptions.regions.includes('berlin')}
+            checked={actualFilters.regions.includes('berlin')}
             onCheckedChange={(checked) => {
               const newRegions = checked 
-                ? [...filterOptions.regions, 'berlin']
-                : filterOptions.regions.filter(r => r !== 'berlin');
+                ? [...actualFilters.regions, 'berlin']
+                : actualFilters.regions.filter(r => r !== 'berlin');
               onFilterChange('regions', newRegions);
             }}
           >
             Berlin
           </DropdownMenuCheckboxItem>
           <DropdownMenuCheckboxItem
-            checked={filterOptions.regions.includes('hamburg')}
+            checked={actualFilters.regions.includes('hamburg')}
             onCheckedChange={(checked) => {
               const newRegions = checked 
-                ? [...filterOptions.regions, 'hamburg']
-                : filterOptions.regions.filter(r => r !== 'hamburg');
+                ? [...actualFilters.regions, 'hamburg']
+                : actualFilters.regions.filter(r => r !== 'hamburg');
               onFilterChange('regions', newRegions);
             }}
           >
             Hamburg
           </DropdownMenuCheckboxItem>
           <DropdownMenuCheckboxItem
-            checked={filterOptions.regions.includes('munich')}
+            checked={actualFilters.regions.includes('munich')}
             onCheckedChange={(checked) => {
               const newRegions = checked 
-                ? [...filterOptions.regions, 'munich']
-                : filterOptions.regions.filter(r => r !== 'munich');
+                ? [...actualFilters.regions, 'munich']
+                : actualFilters.regions.filter(r => r !== 'munich');
               onFilterChange('regions', newRegions);
             }}
           >
@@ -161,7 +173,7 @@ const TourFilterBar: React.FC<TourFilterBarProps> = ({
         <Input
           placeholder={t('filters.employee')}
           className="w-[140px] h-9 pl-8"
-          value={filterOptions.employeeId}
+          value={actualFilters.employeeId}
           onChange={(e) => onFilterChange('employeeId', e.target.value)}
         />
       </div>
@@ -169,7 +181,7 @@ const TourFilterBar: React.FC<TourFilterBarProps> = ({
       {/* Sort options */}
       <div className="flex ml-auto">
         <Select
-          value={filterOptions.sortBy}
+          value={actualFilters.sortBy}
           onValueChange={(value) => onFilterChange('sortBy', value)}
         >
           <SelectTrigger className="w-[140px] h-9 rounded-r-none border-r-0">
@@ -189,7 +201,7 @@ const TourFilterBar: React.FC<TourFilterBarProps> = ({
           className="h-9 rounded-l-none"
           onClick={handleSortDirectionToggle}
         >
-          {filterOptions.sortDirection === 'asc' ? (
+          {actualFilters.sortDirection === 'asc' ? (
             <SortAsc className="h-4 w-4" />
           ) : (
             <SortDesc className="h-4 w-4" />
