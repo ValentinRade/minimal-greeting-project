@@ -16,11 +16,11 @@ const EditTour: React.FC = () => {
   const { tour, isLoading: isLoadingTour } = useTourById(tourId);
   
   const defaultFilters: TourFilterOptions = {
-    timeframe: "all", // Use a literal string value that matches the expected type
+    timeframe: "all",
     regions: [],
     vehicleType: '',
     employeeId: '',
-    status: "all", // Use a literal string value that matches the expected type
+    status: "all",
     sortBy: 'date',
     sortDirection: 'asc',
   };
@@ -28,6 +28,21 @@ const EditTour: React.FC = () => {
   const { updateTour, isLoading: isUpdating } = useTours(defaultFilters);
   
   const handleSubmit = (data: any) => {
+    // Process schedules to ensure no empty strings for time fields
+    if (data.schedules) {
+      const formattedSchedules = Object.entries(data.schedules).map(([dayOfWeek, schedule]: [string, any]) => {
+        return {
+          day_of_week: parseInt(dayOfWeek),
+          is_active: schedule.is_active,
+          start_time: schedule.start_time || null,
+          loading_time: schedule.loading_time || null,
+          working_time: schedule.working_time || null,
+        };
+      });
+      
+      data.schedules = formattedSchedules;
+    }
+    
     updateTour({
       ...data,
       id: tourId,

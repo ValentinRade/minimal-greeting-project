@@ -167,7 +167,15 @@ const TourFormStep3: React.FC<TourFormStep3Props> = ({ form }) => {
                       <FormControl>
                         <Input
                           type="time"
-                          {...field}
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            // Only set value when it's not empty
+                            if (e.target.value) {
+                              field.onChange(e.target.value);
+                            } else {
+                              field.onChange(null);
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -185,8 +193,11 @@ const TourFormStep3: React.FC<TourFormStep3Props> = ({ form }) => {
                         <Input
                           type="number"
                           placeholder={t('tours.formPlaceholders.minutes')}
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            const value = e.target.value ? parseInt(e.target.value) : null;
+                            field.onChange(value);
+                          }}
                         />
                       </FormControl>
                       <FormDescription>
@@ -207,8 +218,11 @@ const TourFormStep3: React.FC<TourFormStep3Props> = ({ form }) => {
                         <Input
                           type="number"
                           placeholder={t('tours.formPlaceholders.minutes')}
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            const value = e.target.value ? parseInt(e.target.value) : null;
+                            field.onChange(value);
+                          }}
                         />
                       </FormControl>
                       <FormDescription>

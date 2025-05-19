@@ -27,6 +27,21 @@ const AddTour: React.FC = () => {
   const { createTour, isLoading } = useTours(defaultFilters);
   
   const handleSubmit = (data: any) => {
+    // Process schedules to ensure no empty strings for time fields
+    if (data.schedules) {
+      const formattedSchedules = Object.entries(data.schedules).map(([dayOfWeek, schedule]: [string, any]) => {
+        return {
+          day_of_week: parseInt(dayOfWeek),
+          is_active: schedule.is_active,
+          start_time: schedule.start_time || null,
+          loading_time: schedule.loading_time || null,
+          working_time: schedule.working_time || null,
+        };
+      });
+      
+      data.schedules = formattedSchedules;
+    }
+    
     createTour({
       ...data,
       user_id: user?.id,
