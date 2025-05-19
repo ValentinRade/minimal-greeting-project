@@ -1,9 +1,9 @@
 
 export interface TenderDetails {
   id: string;
-  tenderType: 'transport_route' | 'fixed_area';
   title: string;
   description: string;
+  tenderType: 'transport_route' | 'fixed_area';
   showContactInfo: boolean;
   prequalifications: string[];
   duration: {
@@ -12,11 +12,11 @@ export interface TenderDetails {
   };
   commercialCalculation: 'yes' | 'no';
   serviceProviderOption: 'own_fleet' | 'single_provider';
-  inviteServiceProviders?: {
+  inviteServiceProviders: {
     email: string;
     confirmed: boolean;
   };
-  contractorPreferences: {
+  contractorPreferences?: {
     experience: 'less_than_1_year' | 'more_than_1_year' | 'more_than_2_years' | 'more_than_3_years';
     fleetSize: 'less_than_3_vehicles' | '3_or_more_vehicles';
     vehicleAge: 'less_than_1_year' | 'more_than_1_year' | 'more_than_2_years';
@@ -27,8 +27,4 @@ export interface TenderDetails {
   createdAt: string;
   status: 'active' | 'draft' | 'closed' | 'awarded';
   toursCount: number;
-}
-
-export interface TourFormData {
-  // These will be populated in a future implementation
 }

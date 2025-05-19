@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import type { TourStats as TourStatsType } from '@/types/tour';
+import { Metric } from '@/components/ui/metric';
+import { Skeleton } from '@/components/ui/skeleton';
+import { TourStats as TourStatsType } from '@/types/tour';
 
 interface TourStatsProps {
   stats: TourStatsType;
@@ -12,120 +12,63 @@ interface TourStatsProps {
 
 const TourStats: React.FC<TourStatsProps> = ({ stats, isLoading }) => {
   const { t } = useTranslation();
-  
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="animate-pulse">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">{t('tours.totalTours')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-10 bg-muted rounded-md"></div>
-          </CardContent>
-        </Card>
-        <Card className="animate-pulse">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">{t('tours.averageDuration')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-10 bg-muted rounded-md"></div>
-          </CardContent>
-        </Card>
-        <Card className="animate-pulse">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">{t('tours.statusDistribution')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-10 bg-muted rounded-md"></div>
-          </CardContent>
-        </Card>
-        <Card className="animate-pulse">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">{t('tours.topRegions')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-10 bg-muted rounded-md"></div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-  
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">{t('tours.totalTours')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">{stats.total}</div>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">{t('tours.averageDuration')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">
-            {Math.floor(stats.averageDuration / 60)}h {stats.averageDuration % 60}m
-          </div>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">{t('tours.statusDistribution')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-xs">{t('tours.pending')}</span>
-              <span className="text-xs">{stats.statusDistribution.pendingPercent}%</span>
-            </div>
-            <Progress value={stats.statusDistribution.pendingPercent} className="h-2 bg-muted" />
-            <div className="bg-amber-500 h-1 w-3 rounded-full ml-1"></div>
-            
-            <div className="flex justify-between items-center">
-              <span className="text-xs">{t('tours.inProgress')}</span>
-              <span className="text-xs">{stats.statusDistribution.inProgressPercent}%</span>
-            </div>
-            <Progress value={stats.statusDistribution.inProgressPercent} className="h-2 bg-muted" />
-            <div className="bg-blue-500 h-1 w-3 rounded-full ml-1"></div>
-            
-            <div className="flex justify-between items-center">
-              <span className="text-xs">{t('tours.completed')}</span>
-              <span className="text-xs">{stats.statusDistribution.completedPercent}%</span>
-            </div>
-            <Progress value={stats.statusDistribution.completedPercent} className="h-2 bg-muted" />
-            <div className="bg-green-500 h-1 w-3 rounded-full ml-1"></div>
-          </div>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">{t('tours.topRegions')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {stats.topRegions.length === 0 ? (
-            <div className="text-sm text-muted-foreground">{t('tours.noRegionsData')}</div>
+    <Card className="col-span-4 md:col-span-8 lg:col-span-4">
+      <CardHeader>
+        <CardTitle>{t('tours.stats.title')}</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-4 grid-cols-1 md:grid-cols-2">
+        {/* Total Tours */}
+        <Metric
+          title={t('tours.stats.totalTours')}
+          value={isLoading ? <Skeleton className="h-4 w-[60px]" /> : stats.total.toString()}
+          isLoading={isLoading}
+        />
+
+        {/* Active Tours */}
+        <Metric
+          title={t('tours.stats.activeTours')}
+          value={isLoading ? <Skeleton className="h-4 w-[60px]" /> : stats.active.toString()}
+          isLoading={isLoading}
+        />
+
+        {/* Completed Tours */}
+        <Metric
+          title={t('tours.stats.completedTours')}
+          value={isLoading ? <Skeleton className="h-4 w-[60px]" /> : stats.completed.toString()}
+          isLoading={isLoading}
+        />
+
+        {/* Cancelled Tours */}
+        <Metric
+          title={t('tours.stats.cancelledTours')}
+          value={isLoading ? <Skeleton className="h-4 w-[60px]" /> : stats.cancelled.toString()}
+          isLoading={isLoading}
+        />
+        
+        {/* Top Regions */}
+        <div className="flex-1">
+          <h3 className="mb-2 font-medium">{t('tours.stats.topRegions')}</h3>
+          {isLoading ? (
+            <Skeleton className="h-[120px] w-full" />
           ) : (
             <ul className="space-y-2">
-              {stats.topRegions.slice(0, 5).map((region, index) => (
-                <li key={index} className="flex justify-between items-center">
-                  <span className="text-sm truncate max-w-[70%]" title={region.region}>
-                    {region.region || t('tours.unnamedRegion')}
-                  </span>
-                  <span className="text-sm font-medium">{region.count}</span>
-                </li>
-              ))}
+              {stats.topRegions && stats.topRegions.length > 0 ? (
+                stats.topRegions.map((region, index) => (
+                  <li key={index} className="flex items-center justify-between text-sm">
+                    <span>{region.name}</span>
+                    <span className="font-medium">{region.count}</span>
+                  </li>
+                ))
+              ) : (
+                <li className="text-muted-foreground text-sm">{t('tours.stats.noRegionsData')}</li>
+              )}
             </ul>
           )}
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

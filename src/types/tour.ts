@@ -81,6 +81,7 @@ export interface Tour {
   start_location_lng?: number;
   end_location_lat?: number;
   end_location_lng?: number;
+  user_id?: string; // Add missing field
 }
 
 export interface TourWithRelations extends Tour {
@@ -94,6 +95,12 @@ export interface TourWithRelations extends Tour {
     loading_time?: number;
     working_time?: number;
   }[];
+  stops?: {
+    location: string;
+    order: number;
+  }[];
+  vehicles?: any[]; // Adding missing field
+  employees?: any[]; // Adding missing field
   // Other relation fields
 }
 
@@ -105,6 +112,12 @@ export interface TourStats {
   averageDuration: number; // Add this missing property
   statusDistribution: {
     [key: string]: number;
+    pending: number;
+    in_progress: number;
+    completed: number;
+    pendingPercent: number;
+    inProgressPercent: number;
+    completedPercent: number;
   };
   topRegions: {
     name: string;

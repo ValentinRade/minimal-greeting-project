@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,6 +16,7 @@ import TenderFormNavigation from './TenderFormNavigation';
 import { createTender } from '@/services/tenderService';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { TenderDetails } from '@/types/tender';
 
 // Define the form schema for the first step
 const generalDetailsSchema = z.object({
@@ -118,10 +118,16 @@ const CreateTenderForm: React.FC<CreateTenderFormProps> = ({ onTenderCreated }) 
         description: generalDetails.description,
         showContactInfo: generalDetails.showContactInfo,
         prequalifications: generalDetails.prequalifications || [],
-        duration: generalDetails.duration,
+        duration: {
+          value: generalDetails.duration.value,
+          unit: generalDetails.duration.unit
+        },
         commercialCalculation: generalDetails.commercialCalculation,
         serviceProviderOption: generalDetails.serviceProviderOption,
-        inviteServiceProviders: generalDetails.inviteServiceProviders,
+        inviteServiceProviders: {
+          email: generalDetails.inviteServiceProviders?.email || '',
+          confirmed: generalDetails.inviteServiceProviders?.confirmed || false
+        },
         contractorPreferences: {
           experience: data.experience,
           fleetSize: data.fleetSize,

@@ -1,9 +1,8 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { TourFilterOptions, TourStats, TourWithRelations } from '@/types/tour';
+import { TourFilterOptions, TourStats, TourWithRelations, Tour, TourStatus, VehicleBodyType } from '@/types/tour';
 import { toast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -29,7 +28,8 @@ export function useTours(filterOptions: TourFilterOptions) {
 
     // Apply filters
     if (filterOptions.status !== 'all') {
-      query = query.eq('status', filterOptions.status);
+      // Using 'any' to bypass the type check temporarily
+      query = query.eq('status', filterOptions.status as any);
     }
 
     if (filterOptions.timeframe !== 'all') {
@@ -37,11 +37,11 @@ export function useTours(filterOptions: TourFilterOptions) {
       if (filterOptions.timeframe === 'today') {
         const today = now.toISOString().split('T')[0];
         query = query.eq('start_date', today);
-      } else if (filterOptions.timeframe === 'this_week') {
+      } else if (filterOptions.timeframe === 'week') {
         const startOfWeek = new Date(now);
         startOfWeek.setDate(now.getDate() - now.getDay());
         query = query.gte('start_date', startOfWeek.toISOString().split('T')[0]);
-      } else if (filterOptions.timeframe === 'this_month') {
+      } else if (filterOptions.timeframe === 'month') {
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         query = query.gte('start_date', startOfMonth.toISOString().split('T')[0]);
       }
@@ -66,7 +66,36 @@ export function useTours(filterOptions: TourFilterOptions) {
       return [];
     }
 
-    return data || [];
+    // Map DB fields to our interface
+    return data?.map(tour => ({
+      id: tour.id,
+      title: tour.title,
+      status: tour.status as TourStatus,
+      createdAt: tour.created_at,
+      vehicle_type: tour.vehicle_type,
+      body_type: tour.body_type as VehicleBodyType,
+      start_location: tour.start_location,
+      end_location: tour.end_location,
+      total_distance: tour.total_distance,
+      start_date: tour.start_date,
+      end_date: tour.end_date,
+      cargo_weight: tour.cargo_weight,
+      cargo_volume: tour.cargo_volume,
+      cargo_description: tour.cargo_description,
+      is_palletized: tour.is_palletized,
+      is_hazardous: tour.is_hazardous,
+      temperature_sensitive: tour.temperature_sensitive,
+      pallet_exchange: tour.pallet_exchange,
+      start_location_lat: tour.start_location_lat,
+      start_location_lng: tour.start_location_lng,
+      end_location_lat: tour.end_location_lat,
+      end_location_lng: tour.end_location_lng,
+      user_id: tour.user_id,
+      stops: tour.tour_stops,
+      schedules: tour.tour_schedules,
+      vehicles: tour.tour_vehicles,
+      employees: tour.tour_employees
+    })) || [];
   };
 
   // Fetch tour statistics
@@ -74,6 +103,9 @@ export function useTours(filterOptions: TourFilterOptions) {
     if (!company) {
       return {
         total: 0,
+        active: 0,
+        completed: 0,
+        cancelled: 0,
         averageDuration: 0,
         statusDistribution: {
           pending: 0,
@@ -97,6 +129,9 @@ export function useTours(filterOptions: TourFilterOptions) {
       console.error('Error fetching tour count:', countError);
       return {
         total: 0,
+        active: 0,
+        completed: 0,
+        cancelled: 0,
         averageDuration: 0,
         statusDistribution: {
           pending: 0,
@@ -119,11 +154,15 @@ export function useTours(filterOptions: TourFilterOptions) {
     let pending = 0;
     let inProgress = 0;
     let completed = 0;
+    let active = 0;
+    let cancelled = 0;
 
     if (!statusError && statusData) {
       pending = statusData.filter(tour => tour.status === 'pending').length;
       inProgress = statusData.filter(tour => tour.status === 'in_progress').length;
       completed = statusData.filter(tour => tour.status === 'completed').length;
+      active = statusData.filter(tour => tour.status === 'active').length;
+      cancelled = statusData.filter(tour => tour.status === 'cancelled').length;
     }
 
     const pendingPercent = total ? Math.round((pending / total) * 100) : 0;
@@ -136,7 +175,7 @@ export function useTours(filterOptions: TourFilterOptions) {
       .select('start_location')
       .eq('company_id', company.id);
 
-    let topRegions: { region: string; count: number }[] = [];
+    let topRegions: { name: string; count: number }[] = [];
     
     if (!regionsError && regionsData) {
       const regionCounts: Record<string, number> = {};
@@ -146,7 +185,7 @@ export function useTours(filterOptions: TourFilterOptions) {
       });
 
       topRegions = Object.entries(regionCounts)
-        .map(([region, count]) => ({ region, count }))
+        .map(([region, count]) => ({ name: region, count }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 5);
     }
@@ -156,6 +195,9 @@ export function useTours(filterOptions: TourFilterOptions) {
 
     return {
       total: total || 0,
+      active,
+      completed,
+      cancelled,
       averageDuration,
       statusDistribution: {
         pending,
@@ -198,7 +240,7 @@ export function useTours(filterOptions: TourFilterOptions) {
             user_id: tour.user_id,
             title: tour.title,
             vehicle_type: tour.vehicle_type,
-            body_type: tour.body_type,
+            body_type: tour.body_type as VehicleBodyType,
             start_location: tour.start_location,
             start_location_lat: tour.start_location_lat,
             start_location_lng: tour.start_location_lng,
@@ -206,7 +248,7 @@ export function useTours(filterOptions: TourFilterOptions) {
             end_location_lat: tour.end_location_lat,
             end_location_lng: tour.end_location_lng,
             total_distance: tour.total_distance,
-            status: tour.status,
+            status: tour.status as any,
             cargo_weight: tour.cargo_weight,
             cargo_volume: tour.cargo_volume,
             cargo_description: tour.cargo_description,
@@ -315,7 +357,7 @@ export function useTours(filterOptions: TourFilterOptions) {
           .update({
             title: tour.title,
             vehicle_type: tour.vehicle_type,
-            body_type: tour.body_type,
+            body_type: tour.body_type as VehicleBodyType,
             start_location: tour.start_location,
             start_location_lat: tour.start_location_lat,
             start_location_lng: tour.start_location_lng,
@@ -323,7 +365,7 @@ export function useTours(filterOptions: TourFilterOptions) {
             end_location_lat: tour.end_location_lat,
             end_location_lng: tour.end_location_lng,
             total_distance: tour.total_distance,
-            status: tour.status,
+            status: tour.status as any,
             cargo_weight: tour.cargo_weight,
             cargo_volume: tour.cargo_volume,
             cargo_description: tour.cargo_description,
@@ -496,6 +538,9 @@ export function useTours(filterOptions: TourFilterOptions) {
     isErrorTours: toursQuery.isError,
     stats: statsQuery.data || {
       total: 0,
+      active: 0,
+      completed: 0,
+      cancelled: 0,
       averageDuration: 0,
       statusDistribution: {
         pending: 0,

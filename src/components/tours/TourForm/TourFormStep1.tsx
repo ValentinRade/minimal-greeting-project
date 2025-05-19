@@ -35,7 +35,7 @@ const TourFormStep1: React.FC<TourFormStep1Props> = ({ form }) => {
   ];
 
   // Body types
-  const bodyTypes: Array<{ value: VehicleBodyType; label: string }> = [
+  const bodyTypes = [
     { value: 'box', label: t('tours.bodyTypes.box') },
     { value: 'curtain', label: t('tours.bodyTypes.curtain') },
     { value: 'refrigerated', label: t('tours.bodyTypes.refrigerated') },
