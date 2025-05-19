@@ -61,19 +61,19 @@ export const createTender = async (tenderData: Omit<TenderDetails, 'id' | 'creat
     id: data.id,
     title: data.title,
     description: data.description || '',
-    tenderType: data.tender_type,
+    tenderType: data.tender_type as 'transport_route' | 'fixed_area',
     showContactInfo: data.show_contact_info,
     prequalifications: data.prequalifications || [],
-    duration: data.duration,
+    duration: data.duration as { value: string; unit: 'days' | 'weeks' | 'months' },
     commercialCalculation: data.commercial_calculation ? 'yes' : 'no',
-    serviceProviderOption: data.service_provider_option,
+    serviceProviderOption: data.service_provider_option as 'own_fleet' | 'single_provider',
     inviteServiceProviders: { 
       email: tenderData.inviteServiceProviders?.email || '',
       confirmed: tenderData.inviteServiceProviders?.confirmed || false 
     },
     contractorPreferences: data.contractor_preferences,
     createdAt: data.created_at,
-    status: data.status,
+    status: data.status as 'active' | 'draft' | 'closed' | 'awarded',
     toursCount: 0
   };
   
@@ -119,18 +119,18 @@ export const getTenders = async (): Promise<TenderDetails[]> => {
       id: tender.id,
       title: tender.title,
       description: tender.description || '',
-      tenderType: tender.tender_type,
+      tenderType: tender.tender_type as 'transport_route' | 'fixed_area',
       showContactInfo: tender.show_contact_info,
       prequalifications: tender.prequalifications || [],
-      duration: tender.duration,
+      duration: tender.duration as { value: string; unit: 'days' | 'weeks' | 'months' },
       commercialCalculation: tender.commercial_calculation ? 'yes' : 'no',
-      serviceProviderOption: tender.service_provider_option,
+      serviceProviderOption: tender.service_provider_option as 'own_fleet' | 'single_provider',
       inviteServiceProviders: { email: '', confirmed: false },
-      contractorPreferences: tender.contractor_preferences,
+      contractorPreferences: tender.contractor_preferences as any,
       createdAt: tender.created_at,
-      status: tender.status,
+      status: tender.status as 'active' | 'draft' | 'closed' | 'awarded',
       toursCount: count || 0
-    };
+    } as TenderDetails;
   }));
 
   return tendersWithTourCount;
@@ -186,18 +186,18 @@ export const getTenderById = async (id: string): Promise<TenderDetails | undefin
     id: tender.id,
     title: tender.title,
     description: tender.description || '',
-    tenderType: tender.tender_type,
+    tenderType: tender.tender_type as 'transport_route' | 'fixed_area',
     showContactInfo: tender.show_contact_info,
     prequalifications: tender.prequalifications || [],
-    duration: tender.duration,
+    duration: tender.duration as { value: string; unit: 'days' | 'weeks' | 'months' },
     commercialCalculation: tender.commercial_calculation ? 'yes' : 'no',
-    serviceProviderOption: tender.service_provider_option,
+    serviceProviderOption: tender.service_provider_option as 'own_fleet' | 'single_provider',
     inviteServiceProviders: invitation 
       ? { email: invitation.email, confirmed: invitation.confirmed || false }
       : { email: '', confirmed: false },
-    contractorPreferences: tender.contractor_preferences,
+    contractorPreferences: tender.contractor_preferences as any,
     createdAt: tender.created_at,
-    status: tender.status,
+    status: tender.status as 'active' | 'draft' | 'closed' | 'awarded',
     toursCount: count || 0
   };
 };

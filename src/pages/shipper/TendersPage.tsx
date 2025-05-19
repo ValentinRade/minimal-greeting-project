@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { de } from 'date-fns/locale';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { toast } from '@/hooks/use-toast';
 
 const TendersPage: React.FC = () => {
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ const TendersPage: React.FC = () => {
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Handle resize to determine if mobile view should be used
   React.useEffect(() => {
@@ -38,9 +40,21 @@ const TendersPage: React.FC = () => {
     loadTenders();
   }, []);
   
-  const loadTenders = () => {
-    const loadedTenders = getTenders();
-    setTenders(loadedTenders);
+  const loadTenders = async () => {
+    setIsLoading(true);
+    try {
+      const loadedTenders = await getTenders();
+      setTenders(loadedTenders);
+    } catch (error) {
+      console.error("Error loading tenders:", error);
+      toast({
+        title: "Fehler beim Laden der Ausschreibungen",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   const handleTenderCreated = () => {
@@ -133,7 +147,11 @@ const TendersPage: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-2">
-          {tenders.length === 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center p-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : tenders.length === 0 ? (
             <div className="flex items-center justify-center p-8 text-muted-foreground border border-dashed rounded-lg">
               Keine Ausschreibungen vorhanden. Klicken Sie auf "Neue Ausschreibung", um zu beginnen.
             </div>
