@@ -10,7 +10,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { useTranslation } from 'react-i18next';
 
 interface AppLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {

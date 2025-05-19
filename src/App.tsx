@@ -42,11 +42,14 @@ function App() {
           <Route path="/public/profile/:companyId" element={<PublicProfile />} />
 
           {/* Protected dashboard routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><AppLayout>
-            <Routes>
-              <Route path="/*" element={<></>} />
-            </Routes>
-          </AppLayout></ProtectedRoute>}>
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          >
             {/* Shipper routes */}
             <Route path="shipper" element={<ShipperDashboard />} />
             <Route path="shipper/subcontractors/*" element={<ShipperSubcontractorDatabaseRoutes />} />
