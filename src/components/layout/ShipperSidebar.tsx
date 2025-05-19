@@ -1,7 +1,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useLocation, Link } from 'react-router-dom';
-import { Package, Truck, Users, Settings, Home, Contact } from 'lucide-react';
+import { Package, Truck, Users, Settings, Home, Contact, Database } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -39,6 +39,11 @@ const ShipperSidebar: React.FC = () => {
       icon: Contact, 
       label: 'CRM', 
       path: '/dashboard/shipper/crm' 
+    },
+    { 
+      icon: Database, 
+      label: 'Subunternehmerdatenbank', 
+      path: '/dashboard/shipper/subcontractor-database' 
     },
     { 
       icon: Users, 
