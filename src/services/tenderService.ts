@@ -49,5 +49,3 @@ export const deleteTender = (id: string): boolean => {
   
   return tenders.length !== initialLength;
 };
-
-export { TenderDetails } from "@/types/tender";

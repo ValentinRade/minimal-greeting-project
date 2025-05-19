@@ -21,6 +21,16 @@ const TourStatusBadge: React.FC<TourStatusBadgeProps> = ({ status, className }) 
         return 'bg-blue-100 text-blue-800 hover:bg-blue-100/80';
       case 'completed':
         return 'bg-green-100 text-green-800 hover:bg-green-100/80';
+      case 'active':
+        return 'bg-green-100 text-green-800 hover:bg-green-100/80';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800 hover:bg-red-100/80';
+      case 'paused':
+        return 'bg-slate-100 text-slate-800 hover:bg-slate-100/80';
+      case 'awarded':
+        return 'bg-purple-100 text-purple-800 hover:bg-purple-100/80';
+      case 'draft':
+        return 'bg-gray-100 text-gray-800 hover:bg-gray-100/80';
       default:
         return '';
     }
@@ -34,6 +44,16 @@ const TourStatusBadge: React.FC<TourStatusBadgeProps> = ({ status, className }) 
         return t('tours.inProgress');
       case 'completed':
         return t('tours.completed');
+      case 'active':
+        return t('tours.active');
+      case 'cancelled':
+        return t('tours.cancelled');
+      case 'paused':
+        return t('tours.paused');
+      case 'awarded':
+        return t('tours.awarded');
+      case 'draft':
+        return t('tours.draft');
       default:
         return status;
     }

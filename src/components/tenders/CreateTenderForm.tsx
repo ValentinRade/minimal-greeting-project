@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -112,7 +113,15 @@ const CreateTenderForm: React.FC<CreateTenderFormProps> = ({ onTenderCreated }) 
     try {
       // Combine both forms' data and create the tender
       const newTender = createTender({
-        ...generalDetails,
+        tenderType: generalDetails.tenderType,
+        title: generalDetails.title,
+        description: generalDetails.description,
+        showContactInfo: generalDetails.showContactInfo,
+        prequalifications: generalDetails.prequalifications || [],
+        duration: generalDetails.duration,
+        commercialCalculation: generalDetails.commercialCalculation,
+        serviceProviderOption: generalDetails.serviceProviderOption,
+        inviteServiceProviders: generalDetails.inviteServiceProviders,
         contractorPreferences: {
           experience: data.experience,
           fleetSize: data.fleetSize,

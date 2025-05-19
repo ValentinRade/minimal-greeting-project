@@ -55,7 +55,7 @@ export interface TourFormData {
 }
 
 // Add missing type definitions needed by components
-export type TourStatus = 'active' | 'cancelled' | 'paused' | 'awarded' | 'draft' | 'completed';
+export type TourStatus = 'active' | 'cancelled' | 'paused' | 'awarded' | 'draft' | 'completed' | 'pending' | 'in_progress';
 
 export interface Tour {
   id: string;
@@ -63,12 +63,37 @@ export interface Tour {
   status: TourStatus;
   createdAt: string;
   // Add other basic tour fields as needed
+  vehicle_type: string;
+  body_type: string;
+  start_location: string;
+  end_location?: string;
+  total_distance: number;
+  start_date: string;
+  end_date?: string;
+  cargo_weight: number;
+  cargo_volume?: number;
+  cargo_description?: string;
+  is_palletized: boolean;
+  is_hazardous: boolean;
+  temperature_sensitive: boolean;
+  pallet_exchange: boolean;
+  start_location_lat?: number;
+  start_location_lng?: number;
+  end_location_lat?: number;
+  end_location_lng?: number;
 }
 
 export interface TourWithRelations extends Tour {
   // Add related fields like driver, vehicle, etc.
   driverId?: string;
   vehicleId?: string;
+  schedules?: {
+    day_of_week: number;
+    is_active: boolean;
+    start_time?: string;
+    loading_time?: number;
+    working_time?: number;
+  }[];
   // Other relation fields
 }
 
@@ -77,7 +102,14 @@ export interface TourStats {
   active: number;
   completed: number;
   cancelled: number;
-  // Add other stats as needed
+  averageDuration: number; // Add this missing property
+  statusDistribution: {
+    [key: string]: number;
+  };
+  topRegions: {
+    name: string;
+    count: number;
+  }[];
 }
 
 export interface TourFilterOptions {
@@ -98,4 +130,6 @@ export type VehicleBodyType =
   | 'flatbed'
   | 'tank'
   | 'container'
+  | 'curtain' // Added to match usage in the code
+  | 'tanker' // Added to match usage in the code
   | 'other';
