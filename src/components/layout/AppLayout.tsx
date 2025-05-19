@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import ShipperHeader from './ShipperHeader';
 import SubcontractorHeader from './SubcontractorHeader';
@@ -28,7 +29,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           {isShipper ? <ShipperHeader /> : <SubcontractorHeader />}
           
           <main className="flex-1 p-6">
-            {children}
+            {children || <Outlet />}
           </main>
         </div>
       </div>

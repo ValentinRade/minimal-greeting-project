@@ -1,16 +1,12 @@
 
 import React from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
-import PreferencesLayout from '@/pages/subcontractor/preferences/PreferencesLayout';
+import { Route, Routes } from 'react-router-dom';
 import PreferencesPage from '@/pages/subcontractor/PreferencesPage';
 
-const SubcontractorPreferencesRoutes = () => {
+const SubcontractorPreferencesRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route element={<PreferencesLayout />}>
-        <Route index element={<Navigate to="/dashboard/subcontractor/selection/preferences" replace />} />
-        <Route path="edit" element={<Navigate to="/dashboard/subcontractor/selection/preferences/edit" replace />} />
-      </Route>
+      <Route index element={<PreferencesPage />} />
     </Routes>
   );
 };
