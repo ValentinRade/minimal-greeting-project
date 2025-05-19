@@ -24,10 +24,18 @@ const ToursList: React.FC = () => {
     sortDirection: 'desc',
   });
 
-  const { tours, stats, isLoadingTours } = useTours(filterOptions);
+  const { tours, stats, isLoadingTours, isLoadingStats, deleteTour } = useTours(filterOptions);
 
   const handleAddTour = () => {
     navigate('/dashboard/shipper/tours/add');
+  };
+  
+  // Filter handler function
+  const handleFilterChange = (key: keyof TourFilterOptions, value: any) => {
+    setFilterOptions(prev => ({
+      ...prev,
+      [key]: value
+    }));
   };
 
   return (
@@ -45,7 +53,7 @@ const ToursList: React.FC = () => {
         </Button>
       </div>
 
-      <TourStats stats={stats} />
+      <TourStats stats={stats} isLoading={isLoadingStats} />
 
       <Card>
         <CardHeader>
@@ -57,7 +65,7 @@ const ToursList: React.FC = () => {
         <CardContent className="pt-2">
           <TourFilterBar
             filterOptions={filterOptions}
-            onFilterChange={setFilterOptions}
+            onFilterChange={handleFilterChange}
           />
           
           {tours.length === 0 ? (
@@ -71,7 +79,7 @@ const ToursList: React.FC = () => {
               </Button>
             </div>
           ) : (
-            <TourTable tours={tours} isLoading={isLoadingTours} />
+            <TourTable tours={tours} isLoading={isLoadingTours} onDelete={deleteTour} />
           )}
         </CardContent>
       </Card>

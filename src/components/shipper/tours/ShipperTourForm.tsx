@@ -128,7 +128,9 @@ const ShipperTourForm: React.FC<ShipperTourFormProps> = ({ initialData, onSubmit
       payment_term_value: 14,
       payment_term_unit: 'days',
       currency: 'EUR',
-      status: initialData.status || 'pending',
+      status: (initialData.status === 'draft' || initialData.status === 'completed' || initialData.status === 'in_progress') 
+        ? 'pending' 
+        : initialData.status || 'pending',
       cancellation_reason: ''
     } : {
       // Default values for new tour
