@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Index from './pages/Index';
 import Auth from './pages/Auth';
@@ -41,7 +41,7 @@ function App() {
           <Route path="/create-company" element={<CreateCompany />} />
           <Route path="/public/profile/:companyId" element={<PublicProfile />} />
 
-          {/* Protected dashboard routes */}
+          {/* Protected dashboard routes with AppLayout */}
           <Route 
             path="/dashboard" 
             element={
@@ -50,6 +50,9 @@ function App() {
               </ProtectedRoute>
             }
           >
+            {/* Dashboard index route */}
+            <Route index element={<Navigate to="shipper" replace />} />
+            
             {/* Shipper routes */}
             <Route path="shipper" element={<ShipperDashboard />} />
             <Route path="shipper/subcontractors/*" element={<ShipperSubcontractorDatabaseRoutes />} />
