@@ -1,36 +1,50 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from './AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { languageToLocaleCode } from '@/i18n/languages';
 
 type LanguageContextType = {
   changeLanguage: (language: string) => Promise<void>;
+  currentLanguage: string | null;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+interface LanguageProviderProps {
+  children: ReactNode;
+  userId?: string | null;
+  userLanguage?: string | null;
+}
+
+export const LanguageProvider = ({ 
+  children, 
+  userId = null, 
+  userLanguage = null 
+}: LanguageProviderProps) => {
   const { i18n } = useTranslation();
-  const { user, profile } = useAuth();
+  const [currentLanguage, setCurrentLanguage] = useState<string | null>(
+    userLanguage || localStorage.getItem('userLanguage') || 'Deutsch'
+  );
 
   useEffect(() => {
-    if (profile?.language) {
-      const localeCode = languageToLocaleCode(profile.language);
+    // If user profile language is available, use it
+    if (userLanguage) {
+      const localeCode = languageToLocaleCode(userLanguage);
       i18n.changeLanguage(localeCode);
-      localStorage.setItem('userLanguage', profile.language);
+      localStorage.setItem('userLanguage', userLanguage);
+      setCurrentLanguage(userLanguage);
     }
-  }, [profile, i18n]);
+  }, [userLanguage, i18n]);
 
   const changeLanguage = async (language: string) => {
-    if (user) {
+    // Update user profile if logged in
+    if (userId) {
       try {
-        // Update language in profile
         const { error } = await supabase
           .from('profiles')
           .update({ language })
-          .eq('id', user.id);
+          .eq('id', userId);
 
         if (error) throw error;
       } catch (error) {
@@ -42,10 +56,11 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('userLanguage', language);
     const localeCode = languageToLocaleCode(language);
     i18n.changeLanguage(localeCode);
+    setCurrentLanguage(language);
   };
 
   return (
-    <LanguageContext.Provider value={{ changeLanguage }}>
+    <LanguageContext.Provider value={{ changeLanguage, currentLanguage }}>
       {children}
     </LanguageContext.Provider>
   );
