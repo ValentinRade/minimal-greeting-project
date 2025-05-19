@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 
 // Define the subcontractor data type based on the database structure
 type Subcontractor = {
@@ -49,9 +50,40 @@ const SubcontractorDatabasePage: React.FC = () => {
   const { data: subcontractors, isLoading, error } = useQuery({
     queryKey: ['subcontractors'],
     queryFn: async () => {
-      console.log('Starting fetch of subcontractor data...');
+      console.log('===== Starting fetch of subcontractor data... =====');
       
-      // First, fetch all subcontractor search data
+      // Check if we can access the search data table at all
+      try {
+        // First, try to fetch a single row just to test access
+        const testAccess = await supabase
+          .from('subcontractor_search_data')
+          .select('id')
+          .limit(1);
+          
+        console.log('Test access response:', testAccess);
+        
+        if (testAccess.error) {
+          console.error('Access error:', testAccess.error);
+          toast({
+            title: "Zugriffsfehler",
+            description: "Keine Zugriffsrechte auf die Subunternehmer-Daten. Bitte kontaktieren Sie den Administrator.",
+            variant: "destructive",
+          });
+          throw new Error(`Zugriffsfehler: ${testAccess.error.message}`);
+        }
+        
+        // Try to fetch profiles table access as well
+        const profilesTest = await supabase
+          .from('subcontractor_public_profiles')
+          .select('id')
+          .limit(1);
+          
+        console.log('Profiles test access:', profilesTest);
+      } catch (e) {
+        console.error('Error testing table access:', e);
+      }
+      
+      // Now fetch all search data
       const { data: searchData, error: searchError } = await supabase
         .from('subcontractor_search_data')
         .select('*')
@@ -59,29 +91,46 @@ const SubcontractorDatabasePage: React.FC = () => {
       
       if (searchError) {
         console.error('Error fetching search data:', searchError);
+        toast({
+          title: "Fehler beim Laden",
+          description: `Konnte Subunternehmer nicht laden: ${searchError.message}`,
+          variant: "destructive",
+        });
         throw searchError;
       }
       
-      console.log('Search data result:', searchData);
+      console.log('Search data result count:', searchData ? searchData.length : 0);
+      console.log('First few search records:', searchData ? searchData.slice(0, 3) : 'No data');
       
       if (!searchData || searchData.length === 0) {
         console.log('No subcontractor search data found');
         return [];
       }
       
-      // Then directly fetch all public profile data, not filtering by company_ids
-      // This ensures we get all available profiles
+      // Get all public profiles without filtering
+      const { data: allProfiles, error: profilesError } = await supabase
+        .from('subcontractor_public_profiles')
+        .select('*');
+        
+      console.log('All profiles count:', allProfiles ? allProfiles.length : 0);
+      console.log('First few profiles:', allProfiles ? allProfiles.slice(0, 3) : 'No profiles');
+      
+      if (profilesError) {
+        console.error('Error fetching all profiles:', profilesError);
+      }
+      
+      // Now specifically get enabled profiles for comparison
       const { data: profileData, error: profileError } = await supabase
         .from('subcontractor_public_profiles')
         .select('*')
         .eq('enabled', true);
       
       if (profileError) {
-        console.error('Error fetching profile data:', profileError);
-        throw profileError;
+        console.error('Error fetching enabled profiles:', profileError);
+        // Continue anyway, we want to show subcontractors even without profiles
       }
       
-      console.log('Profile data result:', profileData);
+      console.log('Enabled profiles count:', profileData ? profileData.length : 0);
       
       // Create a map of company_id to profile data for easy lookup
       const profileMap = {};
@@ -91,28 +140,34 @@ const SubcontractorDatabasePage: React.FC = () => {
         });
       }
       
-      console.log('Profile map created:', profileMap);
+      console.log('Profile map created with keys:', Object.keys(profileMap).length);
       
       // Combine the data
       const result = searchData.map(sub => {
         const profile = profileMap[sub.company_id];
-        console.log(`Mapping company ${sub.company_name} (${sub.company_id}):`, 
+        console.log(`Company ${sub.company_name} (${sub.company_id}):`, 
           'Has profile:', !!profile, 
           profile ? `URL: ${profile.profile_url_path}, Enabled: ${profile.enabled}` : '');
         
         return {
           ...sub,
           profile_url_path: profile ? profile.profile_url_path : null,
-          has_public_profile: profile ? !!profile.enabled : false,
+          has_public_profile: !!profile,
         };
       }) as Subcontractor[];
       
-      console.log('Final combined result:', result);
+      console.log('Final result count:', result.length);
+      if (result.length > 0) {
+        console.log('Sample result item:', result[0]);
+      }
+      
       return result;
-    }
+    },
+    staleTime: 60000, // Cache for 1 minute
+    retry: 2, // Retry twice if there's a failure
   });
   
-  console.log('Rendered with subcontractors:', subcontractors);
+  console.log('Render state - isLoading:', isLoading, 'error:', !!error, 'subcontractors count:', subcontractors?.length);
   
   // Filter subcontractors based on search query
   const filteredSubcontractors = subcontractors?.filter(sub => {
@@ -123,9 +178,9 @@ const SubcontractorDatabasePage: React.FC = () => {
       sub.company_name.toLowerCase().includes(query) ||
       sub.city.toLowerCase().includes(query) ||
       sub.country.toLowerCase().includes(query) ||
-      sub.specializations.some(s => s.toLowerCase().includes(query)) ||
-      sub.service_regions.some(r => r.toLowerCase().includes(query)) ||
-      sub.vehicle_types.some(v => v.toLowerCase().includes(query))
+      sub.specializations.some(s => s && s.toLowerCase().includes(query)) ||
+      sub.service_regions.some(r => r && r.toLowerCase().includes(query)) ||
+      sub.vehicle_types.some(v => v && v.toLowerCase().includes(query))
     );
   });
   
@@ -170,6 +225,18 @@ const SubcontractorDatabasePage: React.FC = () => {
             ) : !subcontractors || subcontractors.length === 0 ? (
               <div className="flex justify-center p-6">
                 <p>Keine Subunternehmer gefunden</p>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="ml-4"
+                  onClick={() => {
+                    console.log('Refreshing data...');
+                    // The invalidateQueries method is available on the QueryClient
+                    // You can get it using the useQueryClient hook
+                  }}
+                >
+                  Daten aktualisieren
+                </Button>
               </div>
             ) : !filteredSubcontractors || filteredSubcontractors.length === 0 ? (
               <div className="flex justify-center p-6">
@@ -226,6 +293,7 @@ const SubcontractorDatabasePage: React.FC = () => {
                               </Badge>
                             ))}
                           {subcontractor.vehicle_types
+                            .filter(Boolean)
                             .slice(0, 1)
                             .map((type, index) => (
                               <Badge key={`vt-${index}`} variant="outline">
