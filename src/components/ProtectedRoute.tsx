@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,24 +14,31 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   const location = useLocation();
   const [isReady, setIsReady] = useState(false);
   const checkedRef = useRef(false);
+  const loggedRef = useRef(false);
   
   // Exclude certain paths from protection - calculate these variables outside of any conditionals
   const isRegisterInvitedRoute = location.pathname === '/register-invited';
   const isAuthRoute = location.pathname === '/auth';
   const isCreateCompanyRoute = location.pathname === '/create-company';
   
-  // Debug logging useEffect - always called regardless of conditions
+  // Debug logging nur einmal pro Mount und Route-Änderung
   useEffect(() => {
-    // Only log once per mount when ready
-    if (isReady) {
+    // Nur loggen, wenn wir bereit sind und noch nicht für diesen Pfad geloggt haben
+    if (isReady && !loggedRef.current) {
       console.log("Protected Route Check:", {
         hasCompany,
         requireCompany,
         pathname: location.pathname,
         isReady
       });
+      loggedRef.current = true;
     }
-  }, [hasCompany, requireCompany, location.pathname, isReady]);
+    
+    // Logging-Flag zurücksetzen, wenn sich der Pfad ändert
+    return () => {
+      loggedRef.current = false;
+    };
+  }, [location.pathname]);
   
   // Wait for authentication and company data to be fully loaded
   useEffect(() => {

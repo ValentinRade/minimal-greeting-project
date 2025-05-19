@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -34,8 +33,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchCompanyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const companyDataCache = useRef<Map<string, { data: any, timestamp: number }>>(new Map());
   
-  // Cache duration in milliseconds (5 seconds)
-  const CACHE_DURATION = 5000;
+  // Cache duration in milliseconds - erhöht auf 30 Sekunden, um wiederholte Abfragen zu verhindern
+  const CACHE_DURATION = 30000;
+  // Minimale Zeit zwischen Unternehmensabfragen in Millisekunden
+  const MIN_FETCH_INTERVAL = 10000;
+  const lastFetchTime = useRef<number>(0);
 
   // Fetch profile data with debounce protection
   const fetchProfile = useCallback(async (userId: string) => {
@@ -71,9 +73,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchCompany = useCallback(async (userId: string) => {
     if (companyLoading) return;
     
+    // Überprüfen, ob genug Zeit seit der letzten Abfrage vergangen ist
+    const now = Date.now();
+    if (now - lastFetchTime.current < MIN_FETCH_INTERVAL) {
+      return; // Zu häufige Abfragen verhindern
+    }
+    
     // Check cache first
     const cachedData = companyDataCache.current.get(userId);
-    const now = Date.now();
     
     if (cachedData && (now - cachedData.timestamp < CACHE_DURATION)) {
       // Use cached data if it's fresh enough
@@ -86,6 +93,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       return;
     }
+    
+    // Update last fetch time
+    lastFetchTime.current = now;
     
     // Clear any pending timeouts
     if (fetchCompanyTimeoutRef.current) {
@@ -133,7 +143,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // Cache the result
           companyDataCache.current.set(userId, { 
             data: companyWithRole, 
-            timestamp: Date.now() 
+            timestamp: now 
           });
           
           setCompany(companyWithRole);
@@ -171,7 +181,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // Cache the result
           companyDataCache.current.set(userId, { 
             data: companyWithRole, 
-            timestamp: Date.now() 
+            timestamp: now 
           });
           
           setCompany(companyWithRole);
@@ -182,7 +192,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Cache null result
         companyDataCache.current.set(userId, { 
           data: null, 
-          timestamp: Date.now() 
+          timestamp: now 
         });
         
         setCompany(null);
@@ -196,7 +206,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         fetchCompanyTimeoutRef.current = null;
       }
     }, 100);
-  }, [companyLoading, t]);
+  }, [companyLoading, t, CACHE_DURATION, MIN_FETCH_INTERVAL]);
 
   useEffect(() => {
     let isMounted = true;
