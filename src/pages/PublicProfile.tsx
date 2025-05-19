@@ -31,7 +31,8 @@ import {
   Users,
   FileText,
   FileCheck,
-  User
+  User,
+  CheckCircle2
 } from 'lucide-react';
 
 const CompanyNotFound = () => {
@@ -106,7 +107,11 @@ const PublicProfile: React.FC = () => {
     vehicleTypes, 
     totalVehicles,
     totalVehicleTypes,
-    isLoading: isDataLoading 
+    prequalifications,
+    references,
+    isLoading: isDataLoading,
+    isPrequalificationsLoading,
+    isReferencesLoading
   } = useCompanyPublicData(profile?.company_id);
   
   if (isProfileLoading || isCompanyLoading || isDataLoading) {
@@ -154,6 +159,15 @@ const PublicProfile: React.FC = () => {
     .sort(([, countA], [, countB]) => countB - countA)
     .slice(0, 3)
     .map(([route]) => route);
+
+  // Check if company has any prequalifications
+  const hasPrequalifications = prequalifications && 
+    (prequalifications.pq_kep || 
+     prequalifications.bna_registration || 
+     prequalifications.adr_certificate || 
+     prequalifications.adr_1000_points || 
+     prequalifications.eu_license || 
+     prequalifications.other_qualification);
   
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
@@ -252,7 +266,7 @@ const PublicProfile: React.FC = () => {
               </ProfileSection>
             )}
             
-            {/* Staff Overview - New Section with Real Data */}
+            {/* Staff Overview */}
             {profile.show_fleet && employees.length > 0 && (
               <ProfileSection 
                 title={t('publicProfile.staffOverview')} 
@@ -283,7 +297,7 @@ const PublicProfile: React.FC = () => {
               </ProfileSection>
             )}
             
-            {/* Tours - Real Data */}
+            {/* Tours */}
             {profile.show_tours && (
               <ProfileSection 
                 title={t('publicProfile.toursOverview')} 
@@ -312,70 +326,111 @@ const PublicProfile: React.FC = () => {
               </ProfileSection>
             )}
             
-            {/* References */}
-            {profile.show_references && (
+            {/* References - Real Data */}
+            {profile.show_references && references && references.length > 0 && (
               <ProfileSection 
                 title={t('publicProfile.references')} 
                 icon={<Users className="text-primary w-5 h-5" />}
               >
-                {/* We'll use the actual references data once it's loaded */}
                 <div className="space-y-4">
-                  <div className="p-4 border rounded-md">
-                    <div className="flex justify-between mb-2">
-                      <h4 className="font-medium">Logistik GmbH</h4>
-                      <Badge>2020 - 2023</Badge>
+                  {references.map((reference) => (
+                    <div key={reference.id} className="p-4 border rounded-md">
+                      <div className="flex justify-between mb-2">
+                        <h4 className="font-medium">
+                          {reference.anonymize ? t('publicProfile.anonymousReference') : reference.customer_name || t('publicProfile.company')}
+                        </h4>
+                        <Badge>
+                          {new Date(reference.start_date).getFullYear()} - 
+                          {reference.until_today 
+                            ? t('publicProfile.today') 
+                            : reference.end_date && new Date(reference.end_date).getFullYear()}
+                        </Badge>
+                      </div>
+                      <p className="text-muted-foreground mb-2">{reference.industry} - {reference.category}</p>
                     </div>
-                    <p className="text-muted-foreground mb-2">Regelmäßige Transporte im Raum Bayern</p>
-                    <p className="italic text-sm">"Zuverlässiger Partner mit pünktlichen Lieferungen"</p>
-                  </div>
-                  
-                  <div className="p-4 border rounded-md">
-                    <div className="flex justify-between mb-2">
-                      <h4 className="font-medium">Spedition Müller</h4>
-                      <Badge>2019 - Heute</Badge>
-                    </div>
-                    <p className="text-muted-foreground mb-2">Internationale Stückguttransporte</p>
-                    <p className="italic text-sm">"Flexibel und professionell, auch bei kurzfristigen Aufträgen"</p>
-                  </div>
+                  ))}
                 </div>
               </ProfileSection>
             )}
           </div>
           
           <div className="space-y-6">
-            {/* Qualifications */}
-            {profile.show_qualifications && (
+            {/* Prequalifications - Real Data */}
+            {profile.show_qualifications && hasPrequalifications && !isPrequalificationsLoading && (
               <ProfileSection 
-                title={t('publicProfile.qualifications')} 
+                title={t('publicProfile.prequalifications')} 
                 icon={<GraduationCap className="text-primary w-5 h-5" />}
               >
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span>ADR Zertifikat</span>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      {t('publicProfile.verified')}
-                    </Badge>
-                  </div>
-                  <Separator />
-                  <div className="flex items-center justify-between">
-                    <span>EU Lizenz</span>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      {t('publicProfile.verified')}
-                    </Badge>
-                  </div>
-                  <Separator />
-                  <div className="flex items-center justify-between">
-                    <span>PQ KEP</span>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      {t('publicProfile.verified')}
-                    </Badge>
-                  </div>
+                  {prequalifications.pq_kep && (
+                    <div className="flex items-center justify-between">
+                      <span>PQ KEP</span>
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        {t('publicProfile.verified')}
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  {prequalifications.pq_kep && <Separator />}
+                  
+                  {prequalifications.bna_registration && (
+                    <div className="flex items-center justify-between">
+                      <span>{t('prequalifications.bnaRegistration')}</span>
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        {t('publicProfile.verified')}
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  {prequalifications.bna_registration && <Separator />}
+                  
+                  {prequalifications.adr_certificate && (
+                    <div className="flex items-center justify-between">
+                      <span>{t('prequalifications.adrCertificate')}</span>
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        {t('publicProfile.verified')}
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  {prequalifications.adr_certificate && <Separator />}
+                  
+                  {prequalifications.adr_1000_points && (
+                    <div className="flex items-center justify-between">
+                      <span>{t('prequalifications.adr1000')}</span>
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        {t('publicProfile.verified')}
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  {prequalifications.adr_1000_points && <Separator />}
+                  
+                  {prequalifications.eu_license && (
+                    <div className="flex items-center justify-between">
+                      <span>{t('prequalifications.euLicense')}</span>
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        {t('publicProfile.verified')}
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  {prequalifications.eu_license && prequalifications.other_qualification && <Separator />}
+                  
+                  {prequalifications.other_qualification && prequalifications.other_qualification_name && (
+                    <div className="flex items-center justify-between">
+                      <span>{prequalifications.other_qualification_name}</span>
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        {t('publicProfile.verified')}
+                      </Badge>
+                    </div>
+                  )}
                 </div>
               </ProfileSection>
             )}
             
-            {/* Documents - New Section */}
-            {profile.show_qualifications && (
+            {/* Documents Section */}
+            {profile.show_qualifications && hasPrequalifications && (
               <ProfileSection 
                 title={t('publicProfile.documents')} 
                 icon={<FileCheck className="text-primary w-5 h-5" />}
@@ -386,9 +441,7 @@ const PublicProfile: React.FC = () => {
                       <FileText className="w-4 h-4 text-muted-foreground" />
                       <span>Handelsregisterauszug</span>
                     </div>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      {t('publicProfile.verified')}
-                    </Badge>
+                    <CheckCircle2 className="w-5 h-5 text-green-600" />
                   </div>
                   
                   <div className="flex items-center justify-between p-3 border rounded-md">
@@ -396,9 +449,7 @@ const PublicProfile: React.FC = () => {
                       <FileText className="w-4 h-4 text-muted-foreground" />
                       <span>Versicherungsbescheinigung</span>
                     </div>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      {t('publicProfile.verified')}
-                    </Badge>
+                    <CheckCircle2 className="w-5 h-5 text-green-600" />
                   </div>
                   
                   <div className="flex items-center justify-between p-3 border rounded-md">
@@ -406,9 +457,7 @@ const PublicProfile: React.FC = () => {
                       <FileText className="w-4 h-4 text-muted-foreground" />
                       <span>Steuerbescheinigung</span>
                     </div>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      {t('publicProfile.verified')}
-                    </Badge>
+                    <CheckCircle2 className="w-5 h-5 text-green-600" />
                   </div>
                 </div>
               </ProfileSection>

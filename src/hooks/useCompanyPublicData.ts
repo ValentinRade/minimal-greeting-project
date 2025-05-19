@@ -6,6 +6,8 @@ import { toast } from '@/hooks/use-toast';
 import type { Employee } from '@/types/employee';
 import type { Tour } from '@/types/tour';
 import { mapDbEmployeeToEmployee } from '@/utils/employeeUtils';
+import { useCompanyPrequalifications } from './useCompanyPrequalifications';
+import { useCompanyReferences } from './useCompanyReferences';
 
 interface Vehicle {
   id: string;
@@ -31,10 +33,18 @@ interface CompanyPublicData {
   totalVehicleTypes: number;
   isLoading: boolean;
   isError: boolean;
+  prequalifications: any | null;
+  references: any[];
+  isPrequalificationsLoading: boolean;
+  isReferencesLoading: boolean;
 }
 
 export const useCompanyPublicData = (companyId: string | undefined): CompanyPublicData => {
   const { t } = useTranslation();
+  
+  // Get prequalifications and references using the hooks
+  const { data: prequalifications, isLoading: isPrequalificationsLoading } = useCompanyPrequalifications(companyId);
+  const { data: references, isLoading: isReferencesLoading } = useCompanyReferences(companyId);
 
   // Query to fetch company employees
   const employeesQuery = useQuery({
@@ -152,6 +162,8 @@ export const useCompanyPublicData = (companyId: string | undefined): CompanyPubl
     vehicleTypes: vehicleTypesQuery.data || [],
     totalVehicles: vehiclesQuery.data?.length || 0,
     totalVehicleTypes: companyVehicleTypes.length,
+    prequalifications,
+    references: references || [],
     isLoading: 
       employeesQuery.isLoading || 
       vehiclesQuery.isLoading || 
@@ -162,5 +174,7 @@ export const useCompanyPublicData = (companyId: string | undefined): CompanyPubl
       vehiclesQuery.isError || 
       toursQuery.isError ||
       vehicleTypesQuery.isError,
+    isPrequalificationsLoading,
+    isReferencesLoading
   };
 };

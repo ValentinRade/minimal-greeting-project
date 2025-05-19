@@ -110,5 +110,5 @@ export const useEmployees = (filters?: EmployeeFilter) => {
   };
 };
 
-// Export useEmployeeById separately (no circular reference)
+// Export a separate file for useEmployeeById to avoid circular dependencies
 export { useEmployeeById } from './useEmployeeById';

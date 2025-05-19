@@ -49,7 +49,7 @@ export interface Employee {
   // Additional calculated fields
   tour_count?: number;
   vehicle_count?: number;
-  performance_rating?: number; // Added this field
+  performance_rating?: number;
 }
 
 export interface CreateEmployeeData {
