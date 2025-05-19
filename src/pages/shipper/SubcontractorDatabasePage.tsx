@@ -49,7 +49,9 @@ const SubcontractorDatabasePage: React.FC = () => {
   const { data: subcontractors, isLoading, error } = useQuery({
     queryKey: ['subcontractors'],
     queryFn: async () => {
-      // First, get all subcontractor search data
+      console.log('Starting fetch of subcontractor data...');
+      
+      // First, fetch all subcontractor search data
       const { data: searchData, error: searchError } = await supabase
         .from('subcontractor_search_data')
         .select('*')
@@ -60,43 +62,43 @@ const SubcontractorDatabasePage: React.FC = () => {
         throw searchError;
       }
       
+      console.log('Search data result:', searchData);
+      
       if (!searchData || searchData.length === 0) {
         console.log('No subcontractor search data found');
         return [];
       }
       
-      console.log('Fetched search data:', searchData.length, 'records');
-      
-      // Then get public profile data for all company_ids
-      const companyIds = searchData.map(sub => sub.company_id);
-      
-      console.log('Fetching profiles for company IDs:', companyIds);
-      
+      // Then directly fetch all public profile data, not filtering by company_ids
+      // This ensures we get all available profiles
       const { data: profileData, error: profileError } = await supabase
         .from('subcontractor_public_profiles')
-        .select('company_id, profile_url_path, enabled');
+        .select('*')
+        .eq('enabled', true);
       
       if (profileError) {
         console.error('Error fetching profile data:', profileError);
         throw profileError;
       }
       
-      console.log('Fetched profile data:', profileData ? profileData.length : 0, 'records');
+      console.log('Profile data result:', profileData);
       
       // Create a map of company_id to profile data for easy lookup
       const profileMap = {};
-      if (profileData) {
+      if (profileData && profileData.length > 0) {
         profileData.forEach(profile => {
           profileMap[profile.company_id] = profile;
         });
       }
       
-      console.log('Profile map created with keys:', Object.keys(profileMap).length);
+      console.log('Profile map created:', profileMap);
       
       // Combine the data
-      return searchData.map(sub => {
+      const result = searchData.map(sub => {
         const profile = profileMap[sub.company_id];
-        console.log('Mapping company:', sub.company_name, 'Profile found:', !!profile);
+        console.log(`Mapping company ${sub.company_name} (${sub.company_id}):`, 
+          'Has profile:', !!profile, 
+          profile ? `URL: ${profile.profile_url_path}, Enabled: ${profile.enabled}` : '');
         
         return {
           ...sub,
@@ -104,8 +106,13 @@ const SubcontractorDatabasePage: React.FC = () => {
           has_public_profile: profile ? !!profile.enabled : false,
         };
       }) as Subcontractor[];
+      
+      console.log('Final combined result:', result);
+      return result;
     }
   });
+  
+  console.log('Rendered with subcontractors:', subcontractors);
   
   // Filter subcontractors based on search query
   const filteredSubcontractors = subcontractors?.filter(sub => {
@@ -160,9 +167,13 @@ const SubcontractorDatabasePage: React.FC = () => {
               <div className="flex justify-center p-6 text-red-500">
                 <p>Fehler beim Laden der Daten: {(error as Error).message}</p>
               </div>
-            ) : filteredSubcontractors?.length === 0 ? (
+            ) : !subcontractors || subcontractors.length === 0 ? (
               <div className="flex justify-center p-6">
                 <p>Keine Subunternehmer gefunden</p>
+              </div>
+            ) : !filteredSubcontractors || filteredSubcontractors.length === 0 ? (
+              <div className="flex justify-center p-6">
+                <p>Keine Subunternehmer gefunden, die Ihren Suchkriterien entsprechen</p>
               </div>
             ) : (
               <Table>
@@ -177,7 +188,7 @@ const SubcontractorDatabasePage: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredSubcontractors?.map((subcontractor) => (
+                  {filteredSubcontractors.map((subcontractor) => (
                     <TableRow key={subcontractor.id}>
                       <TableCell className="font-medium">
                         <div className="flex flex-col gap-1">
