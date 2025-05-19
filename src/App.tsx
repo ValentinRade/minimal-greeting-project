@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +17,7 @@ import SubcontractorDashboard from "./pages/SubcontractorDashboard";
 import NotFound from "./pages/NotFound";
 import CrmPage from "./pages/shipper/CrmPage";
 import SubcontractorDatabasePage from "./pages/shipper/SubcontractorDatabasePage";
+import TendersPage from "./pages/shipper/TendersPage";
 
 // Settings pages
 import SettingsLayout from "./pages/settings/SettingsLayout";
@@ -79,6 +81,15 @@ function App() {
                   <ProtectedRoute>
                     <AppLayout>
                       <CrmPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                } />
+                
+                {/* Shipper Tenders route */}
+                <Route path="/dashboard/shipper/tenders" element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <TendersPage />
                     </AppLayout>
                   </ProtectedRoute>
                 } />
