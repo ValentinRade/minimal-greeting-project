@@ -28,6 +28,7 @@ import SubcontractorPreferencesRoutes from "./routes/SubcontractorPreferencesRou
 import SubcontractorSelectionRoutes from './routes/SubcontractorSelectionRoutes';
 import SubcontractorVehiclesRoutes from './routes/SubcontractorVehiclesRoutes';
 import SubcontractorEmployeesRoutes from './routes/SubcontractorEmployeesRoutes';
+import SubcontractorToursRoutes from './routes/SubcontractorToursRoutes';
 
 // Import i18n for internationalization
 import '@/i18n';
@@ -82,6 +83,13 @@ const App = () => (
               <Route path="/dashboard/subcontractor/preferences/*" element={
                 <ProtectedRoute>
                   <SubcontractorPreferencesRoutes />
+                </ProtectedRoute>
+              } />
+
+              {/* Subcontractor Tours route */}
+              <Route path="/dashboard/subcontractor/tours/*" element={
+                <ProtectedRoute>
+                  <SubcontractorToursRoutes />
                 </ProtectedRoute>
               } />
               

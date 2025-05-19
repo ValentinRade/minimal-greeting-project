@@ -612,6 +612,258 @@ export type Database = {
           },
         ]
       }
+      tour_employees: {
+        Row: {
+          created_at: string
+          employee_id: string
+          id: string
+          tour_id: string
+        }
+        Insert: {
+          created_at?: string
+          employee_id: string
+          id?: string
+          tour_id: string
+        }
+        Update: {
+          created_at?: string
+          employee_id?: string
+          id?: string
+          tour_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_employees_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tour_employees_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_schedules: {
+        Row: {
+          created_at: string
+          day_of_week: number
+          id: string
+          is_active: boolean
+          loading_time: number | null
+          start_time: string | null
+          tour_id: string
+          updated_at: string
+          working_time: number | null
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: number
+          id?: string
+          is_active?: boolean
+          loading_time?: number | null
+          start_time?: string | null
+          tour_id: string
+          updated_at?: string
+          working_time?: number | null
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: number
+          id?: string
+          is_active?: boolean
+          loading_time?: number | null
+          start_time?: string | null
+          tour_id?: string
+          updated_at?: string
+          working_time?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_schedules_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_stops: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          location: string
+          location_lat: number | null
+          location_lng: number | null
+          stop_number: number
+          tour_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location: string
+          location_lat?: number | null
+          location_lng?: number | null
+          stop_number: number
+          tour_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          stop_number?: number
+          tour_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_stops_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_vehicles: {
+        Row: {
+          created_at: string
+          id: string
+          tour_id: string
+          vehicle_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tour_id: string
+          vehicle_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tour_id?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_vehicles_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tour_vehicles_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tours: {
+        Row: {
+          body_type: Database["public"]["Enums"]["vehicle_body_type"]
+          cargo_description: string | null
+          cargo_volume: number | null
+          cargo_weight: number
+          company_id: string
+          created_at: string
+          end_date: string
+          end_location: string | null
+          end_location_lat: number | null
+          end_location_lng: number | null
+          id: string
+          is_hazardous: boolean | null
+          is_palletized: boolean | null
+          pallet_exchange: boolean | null
+          start_date: string
+          start_location: string
+          start_location_lat: number | null
+          start_location_lng: number | null
+          status: Database["public"]["Enums"]["tour_status"]
+          temperature_sensitive: boolean | null
+          title: string
+          total_distance: number
+          updated_at: string
+          user_id: string
+          vehicle_type: string
+        }
+        Insert: {
+          body_type: Database["public"]["Enums"]["vehicle_body_type"]
+          cargo_description?: string | null
+          cargo_volume?: number | null
+          cargo_weight: number
+          company_id: string
+          created_at?: string
+          end_date: string
+          end_location?: string | null
+          end_location_lat?: number | null
+          end_location_lng?: number | null
+          id?: string
+          is_hazardous?: boolean | null
+          is_palletized?: boolean | null
+          pallet_exchange?: boolean | null
+          start_date: string
+          start_location: string
+          start_location_lat?: number | null
+          start_location_lng?: number | null
+          status?: Database["public"]["Enums"]["tour_status"]
+          temperature_sensitive?: boolean | null
+          title: string
+          total_distance: number
+          updated_at?: string
+          user_id: string
+          vehicle_type: string
+        }
+        Update: {
+          body_type?: Database["public"]["Enums"]["vehicle_body_type"]
+          cargo_description?: string | null
+          cargo_volume?: number | null
+          cargo_weight?: number
+          company_id?: string
+          created_at?: string
+          end_date?: string
+          end_location?: string | null
+          end_location_lat?: number | null
+          end_location_lng?: number | null
+          id?: string
+          is_hazardous?: boolean | null
+          is_palletized?: boolean | null
+          pallet_exchange?: boolean | null
+          start_date?: string
+          start_location?: string
+          start_location_lat?: number | null
+          start_location_lng?: number | null
+          status?: Database["public"]["Enums"]["tour_status"]
+          temperature_sensitive?: boolean | null
+          title?: string
+          total_distance?: number
+          updated_at?: string
+          user_id?: string
+          vehicle_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tours_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicle_types: {
         Row: {
           created_at: string | null
@@ -803,6 +1055,14 @@ export type Database = {
       employee_type: "employed" | "contractor"
       license_type: "B" | "BE" | "C1" | "C1E" | "C" | "CE"
       payment_type: "salary" | "invoice" | "credit"
+      tour_status: "pending" | "in_progress" | "completed"
+      vehicle_body_type:
+        | "box"
+        | "curtain"
+        | "refrigerated"
+        | "tanker"
+        | "flatbed"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -928,6 +1188,15 @@ export const Constants = {
       employee_type: ["employed", "contractor"],
       license_type: ["B", "BE", "C1", "C1E", "C", "CE"],
       payment_type: ["salary", "invoice", "credit"],
+      tour_status: ["pending", "in_progress", "completed"],
+      vehicle_body_type: [
+        "box",
+        "curtain",
+        "refrigerated",
+        "tanker",
+        "flatbed",
+        "other",
+      ],
     },
   },
 } as const

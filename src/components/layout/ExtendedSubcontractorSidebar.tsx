@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Truck, Settings, FileText, Users } from 'lucide-react';
+import { Truck, Settings, FileText, Users, Route } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
@@ -56,6 +56,13 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 <span>{t('dashboard.overview')}</span>
+              </NavLink>
+              <NavLink
+                to="/dashboard/subcontractor/tours"
+                className={navLinkClass}
+              >
+                <Route className="h-5 w-5" />
+                <span>{t('dashboard.tours')}</span>
               </NavLink>
               <NavLink
                 to="/dashboard/subcontractor/selection"

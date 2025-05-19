@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Package, Truck, Users, Settings, Home, FileCheck, Heart } from 'lucide-react';
+import { Package, Truck, Users, Settings, Home, FileCheck, Heart, Route } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -26,9 +26,9 @@ const SubcontractorSidebar: React.FC = () => {
       path: '/dashboard/subcontractor' 
     },
     { 
-      icon: Package, 
-      label: t('dashboard.assignments'), 
-      path: '/dashboard/subcontractor/assignments' 
+      icon: Route, 
+      label: t('dashboard.tours'), 
+      path: '/dashboard/subcontractor/tours' 
     },
     { 
       icon: Truck, 
