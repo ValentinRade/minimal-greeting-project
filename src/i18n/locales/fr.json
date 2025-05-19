@@ -1,3 +1,4 @@
+
 {
   "auth": {
     "welcome": "Bienvenue",
@@ -52,7 +53,25 @@
     "welcome": "Bienvenue",
     "metrics": "Métriques",
     "recentActivity": "Activité récente",
-    "upcomingTasks": "Tâches à venir"
+    "upcomingTasks": "Tâches à venir",
+    "subcontractorWelcome": "Tableau de bord du Sous-traitant",
+    "todayIsDate": "Aujourd'hui nous sommes le {{date}}",
+    "shipmentId": "ID d'expédition",
+    "route": "Itinéraire",
+    "zugewiesen": "Assigné",
+    "vehicleId": "ID du véhicule",
+    "driver": "Chauffeur",
+    "active": "Actif",
+    "maintenance": "Maintenance",
+    "availableSoon": "Disponible bientôt",
+    "transportActivityTitle": "Activité de Transport",
+    "recentTransportUpdates": "Mises à jour récentes de transport",
+    "vehicleStatusTitle": "État du Véhicule",
+    "fleetOverviewDescription": "Aperçu de la Flotte",
+    "viewAllTransportsButton": "Voir tous les transports",
+    "registeredVehicles": "Véhicules enregistrés",
+    "activeDrivers": "Chauffeurs actifs",
+    "activeAssignments": "Missions actives"
   },
   "profile": {
     "settings": "Paramètres",
