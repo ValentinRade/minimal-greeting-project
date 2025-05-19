@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, X, Calendar, ArrowRight, Edit, Trash2 } from 'lucide-react';
@@ -17,6 +18,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 const TendersPage: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
@@ -69,6 +71,10 @@ const TendersPage: React.FC = () => {
     }
   };
 
+  const handleToursClick = () => {
+    navigate('/dashboard/shipper/tours');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -79,37 +85,44 @@ const TendersPage: React.FC = () => {
           </p>
         </div>
         
-        {isMobileView ? (
-          <Sheet open={isCreateFormOpen} onOpenChange={setIsCreateFormOpen}>
-            <SheetTrigger asChild>
-              <Button className="gap-2">
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleToursClick} className="gap-2">
+            <Calendar className="h-4 w-4" />
+            Touren verwalten
+          </Button>
+
+          {isMobileView ? (
+            <Sheet open={isCreateFormOpen} onOpenChange={setIsCreateFormOpen}>
+              <SheetTrigger asChild>
+                <Button className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Neue Ausschreibung
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-[90vh] sm:h-[90vh] w-full overflow-y-auto">
+                <SheetHeader className="text-left">
+                  <SheetTitle>Neue Ausschreibung erstellen</SheetTitle>
+                </SheetHeader>
+                <div className="mt-4">
+                  <CreateTenderForm onTenderCreated={handleTenderCreated} />
+                </div>
+              </SheetContent>
+            </Sheet>
+          ) : (
+            <Dialog open={isCreateFormOpen} onOpenChange={setIsCreateFormOpen}>
+              <Button onClick={() => setIsCreateFormOpen(true)} className="gap-2">
                 <Plus className="h-4 w-4" />
                 Neue Ausschreibung
               </Button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="h-[90vh] sm:h-[90vh] w-full overflow-y-auto">
-              <SheetHeader className="text-left">
-                <SheetTitle>Neue Ausschreibung erstellen</SheetTitle>
-              </SheetHeader>
-              <div className="mt-4">
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Neue Ausschreibung erstellen</DialogTitle>
+                </DialogHeader>
                 <CreateTenderForm onTenderCreated={handleTenderCreated} />
-              </div>
-            </SheetContent>
-          </Sheet>
-        ) : (
-          <Dialog open={isCreateFormOpen} onOpenChange={setIsCreateFormOpen}>
-            <Button onClick={() => setIsCreateFormOpen(true)} className="gap-2">
-              <Plus className="h-4 w-4" />
-              Neue Ausschreibung
-            </Button>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Neue Ausschreibung erstellen</DialogTitle>
-              </DialogHeader>
-              <CreateTenderForm onTenderCreated={handleTenderCreated} />
-            </DialogContent>
-          </Dialog>
-        )}
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
       </div>
       
       <Card>
@@ -149,7 +162,12 @@ const TendersPage: React.FC = () => {
                       <TableCell>
                         <div className="flex items-center gap-1">
                           {tender.toursCount}
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-7 w-7 p-0"
+                            onClick={handleToursClick}
+                          >
                             <Plus className="h-4 w-4" />
                           </Button>
                         </div>

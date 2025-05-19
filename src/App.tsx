@@ -44,6 +44,9 @@ import '@/i18n';
 // Add these routes
 import PublicProfileRoutes from './routes/PublicProfileRoutes';
 
+// Shipper Tours Routes
+import ShipperToursRoutes from './routes/ShipperToursRoutes';
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -91,6 +94,13 @@ function App() {
                     <AppLayout>
                       <TendersPage />
                     </AppLayout>
+                  </ProtectedRoute>
+                } />
+                
+                {/* Shipper Tours routes */}
+                <Route path="/dashboard/shipper/tours/*" element={
+                  <ProtectedRoute>
+                    <ShipperToursRoutes />
                   </ProtectedRoute>
                 } />
                 
