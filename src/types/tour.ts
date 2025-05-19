@@ -1,4 +1,3 @@
-
 export interface TourFormData {
   // Step 1: Vehicle requirements and certificates
   title: string;
@@ -54,3 +53,49 @@ export interface TourFormData {
   status: 'active' | 'cancelled' | 'paused' | 'awarded';
   cancellationReason?: string;
 }
+
+// Add missing type definitions needed by components
+export type TourStatus = 'active' | 'cancelled' | 'paused' | 'awarded' | 'draft' | 'completed';
+
+export interface Tour {
+  id: string;
+  title: string;
+  status: TourStatus;
+  createdAt: string;
+  // Add other basic tour fields as needed
+}
+
+export interface TourWithRelations extends Tour {
+  // Add related fields like driver, vehicle, etc.
+  driverId?: string;
+  vehicleId?: string;
+  // Other relation fields
+}
+
+export interface TourStats {
+  total: number;
+  active: number;
+  completed: number;
+  cancelled: number;
+  // Add other stats as needed
+}
+
+export interface TourFilterOptions {
+  timeframe: 'today' | 'week' | 'month' | 'all';
+  regions: string[];
+  vehicleType: string;
+  employeeId: string;
+  status: TourStatus | 'all';
+  sortBy: 'date' | 'status' | 'price';
+  sortDirection: 'asc' | 'desc';
+}
+
+export type VehicleBodyType = 
+  | 'tarp' // Plane
+  | 'refrigerated' // Frigo
+  | 'walking_floor' // Schubboden
+  | 'box'
+  | 'flatbed'
+  | 'tank'
+  | 'container'
+  | 'other';

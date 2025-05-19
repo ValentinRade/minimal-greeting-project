@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -70,7 +69,7 @@ const steps = [
 
 const CreateTenderForm: React.FC<CreateTenderFormProps> = ({ onTenderCreated }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [generalDetails, setGeneralDetails] = useState<GeneralDetailsFormValues>();
+  const [generalDetails, setGeneralDetails] = useState<GeneralDetailsFormValues | undefined>();
   const { toast } = useToast();
   const navigate = useNavigate();
   
@@ -114,7 +113,14 @@ const CreateTenderForm: React.FC<CreateTenderFormProps> = ({ onTenderCreated }) 
       // Combine both forms' data and create the tender
       const newTender = createTender({
         ...generalDetails,
-        contractorPreferences: data
+        contractorPreferences: {
+          experience: data.experience,
+          fleetSize: data.fleetSize,
+          vehicleAge: data.vehicleAge,
+          regionality: data.regionality,
+          industryExperience: data.industryExperience,
+          flexibility: data.flexibility
+        }
       });
       
       toast({
