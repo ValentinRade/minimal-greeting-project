@@ -16,11 +16,11 @@ const EditTour: React.FC = () => {
   const { tour, isLoading: isLoadingTour } = useTourById(tourId);
   
   const defaultFilters: TourFilterOptions = {
-    timeframe: 'all',
+    timeframe: "all", // Use a literal string value that matches the expected type
     regions: [],
     vehicleType: '',
     employeeId: '',
-    status: 'all',
+    status: "all", // Use a literal string value that matches the expected type
     sortBy: 'date',
     sortDirection: 'asc',
   };

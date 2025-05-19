@@ -79,9 +79,41 @@ export interface EmployeeFormProps {
   isEdit?: boolean;
 }
 
-// Adding the missing EmployeeFilter interface
 export interface EmployeeFilter {
   position?: string;
   location?: string;
   status?: string;
+}
+
+// Define a raw employee interface from database to help with type mapping
+export interface RawEmployeeFromDb {
+  id: string;
+  company_id: string;
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  email?: string;
+  phone?: string;
+  position: string;
+  employee_type: EmployeeType;
+  payment_type: PaymentType;
+  gross_salary?: number;
+  net_salary?: number;
+  hourly_rate?: number;
+  location?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+  
+  // Related tables with different names
+  employee_licenses?: License[];
+  employee_availability?: Availability[];
+  employee_regions?: Region[];
+}
+
+// Employee query result interface
+export interface EmployeeQueryResult {
+  employee: Employee | null;
+  isLoading: boolean;
+  isError: boolean;
 }

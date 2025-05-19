@@ -14,7 +14,7 @@ const EditEmployee = () => {
   const navigate = useNavigate();
   const { useEmployee, updateEmployee } = useEmployees();
   
-  const { data: employee, isLoading, error } = useEmployee(id);
+  const { employee, isLoading, isError } = useEmployee(id);
 
   const handleSubmit = (data: CreateEmployeeData) => {
     if (!id) return;
@@ -52,7 +52,7 @@ const EditEmployee = () => {
     );
   }
 
-  if (error || !employee) {
+  if (isError || !employee) {
     return (
       <div className="text-center py-10">
         <h2 className="text-xl font-semibold text-destructive">{t('errors.loadFailed')}</h2>

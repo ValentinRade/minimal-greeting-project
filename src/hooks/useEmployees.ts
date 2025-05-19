@@ -3,9 +3,19 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import type { Employee, EmployeeFilter } from '@/types/employee';
+import type { Employee, EmployeeFilter, RawEmployeeFromDb, EmployeeQueryResult } from '@/types/employee';
 import { toast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
+
+// Helper function to map database response to Employee interface
+const mapDbEmployeeToEmployee = (item: RawEmployeeFromDb): Employee => {
+  return {
+    ...item,
+    licenses: item.employee_licenses || [],
+    availability: item.employee_availability || [],
+    regions: item.employee_regions || []
+  };
+};
 
 export const useEmployees = (filters?: EmployeeFilter) => {
   const { t } = useTranslation();
@@ -59,12 +69,7 @@ export const useEmployees = (filters?: EmployeeFilter) => {
     }
     
     // Transform the data to match the Employee interface
-    const employees: Employee[] = data ? data.map((item: any) => ({
-      ...item,
-      licenses: item.employee_licenses || [],
-      availability: item.employee_availability || [],
-      regions: item.employee_regions || []
-    })) : [];
+    const employees: Employee[] = data ? data.map(mapDbEmployeeToEmployee) : [];
 
     return employees;
   };
@@ -363,7 +368,7 @@ export const useEmployees = (filters?: EmployeeFilter) => {
   };
 };
 
-export const useEmployeeById = (employeeId?: string) => {
+export const useEmployeeById = (employeeId?: string): EmployeeQueryResult => {
   const { company } = useAuth();
   const { t } = useTranslation();
   
@@ -393,12 +398,7 @@ export const useEmployeeById = (employeeId?: string) => {
     }
     
     // Transform to match Employee interface
-    const employee: Employee = {
-      ...data,
-      licenses: data.employee_licenses || [],
-      availability: data.employee_availability || [],
-      regions: data.employee_regions || []
-    };
+    const employee = mapDbEmployeeToEmployee(data);
     
     return employee;
   };
@@ -410,7 +410,7 @@ export const useEmployeeById = (employeeId?: string) => {
   });
   
   return {
-    employee: employeeQuery.data,
+    employee: employeeQuery.data || null,
     isLoading: employeeQuery.isLoading,
     isError: employeeQuery.isError,
   };

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +25,6 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/hooks/use-toast';
 import { ArrowLeft, Edit, Loader2, Trash2 } from 'lucide-react';
-import { format } from 'date-fns';
 import {
   Tabs,
   TabsContent,
@@ -40,7 +38,7 @@ const EmployeeDetails = () => {
   const navigate = useNavigate();
   const { useEmployee, deleteEmployee } = useEmployees();
   
-  const { employee, isLoading, error } = useEmployee(id);
+  const { employee, isLoading, isError } = useEmployee(id);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleEditClick = () => {
@@ -76,7 +74,7 @@ const EmployeeDetails = () => {
     );
   }
 
-  if (error || !employee) {
+  if (isError || !employee) {
     return (
       <div className="text-center py-10">
         <h2 className="text-xl font-semibold text-destructive">{t('errors.loadFailed')}</h2>
