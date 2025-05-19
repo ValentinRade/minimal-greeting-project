@@ -1,16 +1,16 @@
 
 export type EmployeeType = 'employed' | 'contractor';
-export type PaymentType = 'salary' | 'invoice' | 'credit'; // Changed back to match the database schema
+export type PaymentType = 'salary' | 'invoice' | 'credit'; 
 export type LicenseType = 'B' | 'BE' | 'C1' | 'C1E' | 'C' | 'CE';
 
 export interface License {
-  id?: string; // Made optional to allow creating new licenses without IDs
+  id?: string; 
   license_type: LicenseType;
   description?: string;
 }
 
 export interface Availability {
-  id?: string; // Made optional to allow creating new availabilities without IDs
+  id?: string; 
   day_of_week: number;
   is_available: boolean;
   start_time?: string;
@@ -19,7 +19,7 @@ export interface Availability {
 }
 
 export interface Region {
-  id?: string; // Made optional to allow creating new regions without IDs
+  id?: string; 
   country: string;
 }
 
@@ -65,11 +65,11 @@ export interface CreateEmployeeData {
   hourly_rate?: number;
   location?: string;
   notes?: string;
-  user_id?: string; // Optional for creating new employees
+  user_id?: string;
   
   licenses: License[];
   availability: Availability[];
-  regions: Region[];
+  regions: Region[] | string[];
 }
 
 export interface EmployeeFormProps {
