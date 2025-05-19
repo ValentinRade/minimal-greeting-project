@@ -754,6 +754,108 @@ export type Database = {
           },
         ]
       }
+      subcontractor_search_data: {
+        Row: {
+          availability_type: string
+          avg_rating: number | null
+          body_types: string[]
+          city: string
+          company_id: string
+          company_name: string
+          country: string
+          created_at: string
+          has_adr_certificate: boolean
+          has_dangerous_goods_capability: boolean
+          has_eu_license: boolean
+          has_express_capability: boolean
+          has_gdp: boolean
+          has_other_certificates: boolean
+          has_temperature_control: boolean
+          id: string
+          languages: string[]
+          location_lat: number | null
+          location_lng: number | null
+          service_regions: string[]
+          specializations: string[]
+          total_employees: number
+          total_ratings: number
+          total_vehicles: number
+          updated_at: string
+          vehicle_types: string[]
+        }
+        Insert: {
+          availability_type?: string
+          avg_rating?: number | null
+          body_types?: string[]
+          city: string
+          company_id: string
+          company_name: string
+          country: string
+          created_at?: string
+          has_adr_certificate?: boolean
+          has_dangerous_goods_capability?: boolean
+          has_eu_license?: boolean
+          has_express_capability?: boolean
+          has_gdp?: boolean
+          has_other_certificates?: boolean
+          has_temperature_control?: boolean
+          id: string
+          languages?: string[]
+          location_lat?: number | null
+          location_lng?: number | null
+          service_regions?: string[]
+          specializations?: string[]
+          total_employees?: number
+          total_ratings?: number
+          total_vehicles?: number
+          updated_at?: string
+          vehicle_types?: string[]
+        }
+        Update: {
+          availability_type?: string
+          avg_rating?: number | null
+          body_types?: string[]
+          city?: string
+          company_id?: string
+          company_name?: string
+          country?: string
+          created_at?: string
+          has_adr_certificate?: boolean
+          has_dangerous_goods_capability?: boolean
+          has_eu_license?: boolean
+          has_express_capability?: boolean
+          has_gdp?: boolean
+          has_other_certificates?: boolean
+          has_temperature_control?: boolean
+          id?: string
+          languages?: string[]
+          location_lat?: number | null
+          location_lng?: number | null
+          service_regions?: string[]
+          specializations?: string[]
+          total_employees?: number
+          total_ratings?: number
+          total_vehicles?: number
+          updated_at?: string
+          vehicle_types?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_search_data_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subcontractor_search_data_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "subcontractor_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tour_employees: {
         Row: {
           created_at: string
@@ -1179,9 +1281,41 @@ export type Database = {
           email: string
         }[]
       }
+      gtrgm_compress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_decompress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_in: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_options: {
+        Args: { "": unknown }
+        Returns: undefined
+      }
+      gtrgm_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
       is_company_admin: {
         Args: { company_id: string }
         Returns: boolean
+      }
+      set_limit: {
+        Args: { "": number }
+        Returns: number
+      }
+      show_limit: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      show_trgm: {
+        Args: { "": string }
+        Returns: string[]
       }
       user_has_role: {
         Args: {
