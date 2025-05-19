@@ -1,3 +1,4 @@
+
 {
   "common": {
     "appName": "FreightBridge",
@@ -189,8 +190,11 @@
     "subcontractorWelcome": "Welcome to Subcontractor Portal",
     "todayIsDate": "Today is {{date}}",
     "assignments": "Assignments",
+    "activeAssignments": "Active assignments",
     "vehicles": "Vehicles",
+    "registeredVehicles": "Registered vehicles",
     "drivers": "Drivers",
+    "activeDrivers": "Active drivers",
     "preferences": "Preferences",
     "selectionCriteria": "Selection Criteria",
     "navigation": "Navigation",
@@ -201,9 +205,22 @@
     "messageCenter": "Message Center",
     "quickActions": "Quick Actions",
     "viewAll": "View All",
+    "viewAllTransportsButton": "View all transports",
     "noAssignments": "No assignments available",
     "noVehicles": "No vehicles available",
-    "noDrivers": "No drivers available"
+    "noDrivers": "No drivers available",
+    "transportActivityTitle": "Transport Activity",
+    "recentTransportUpdates": "Recent transport updates",
+    "vehicleStatusTitle": "Vehicle Status",
+    "fleetOverviewDescription": "Fleet overview description",
+    "shipmentId": "Shipment ID",
+    "route": "Route",
+    "vehicleId": "Vehicle ID",
+    "driver": "Driver",
+    "active": "Active",
+    "maintenance": "Maintenance",
+    "availableSoon": "Available soon",
+    "zugewiesen": "Assigned"
   },
   "profile": {
     "myProfile": "My Profile",
