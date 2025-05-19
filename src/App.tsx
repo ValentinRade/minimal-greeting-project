@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,6 +29,10 @@ import SubcontractorSelectionRoutes from './routes/SubcontractorSelectionRoutes'
 import SubcontractorVehiclesRoutes from './routes/SubcontractorVehiclesRoutes';
 import SubcontractorEmployeesRoutes from './routes/SubcontractorEmployeesRoutes';
 import SubcontractorToursRoutes from './routes/SubcontractorToursRoutes';
+import SubcontractorPublicProfileRoutes from './routes/SubcontractorPublicProfileRoutes';
+
+// Import public profile page
+import PublicProfile from './pages/PublicProfile';
 
 // Import i18n for internationalization
 import '@/i18n';
@@ -127,10 +132,14 @@ function App() {
                 } />
                 
                 {/* Add the public profile routes */}
-                <Route path="/dashboard/subcontractor/public-profile/*" element={<ProtectedRoute><SubcontractorPublicProfileRoutes /></ProtectedRoute>} />
+                <Route path="/dashboard/subcontractor/public-profile/*" element={
+                  <ProtectedRoute>
+                    <SubcontractorPublicProfileRoutes />
+                  </ProtectedRoute>
+                } />
                 
                 {/* Add the public profile route */}
-                <Route path="/profile/:profilePath" element={<PublicProfile />} />
+                <Route path="/profile/*" element={<PublicProfileRoutes />} />
                 
                 <Route path="/" element={
                   <ProtectedRoute>
