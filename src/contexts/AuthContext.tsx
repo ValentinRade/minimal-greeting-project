@@ -61,7 +61,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (error) throw error;
         setProfile(data);
       } catch (error) {
-        console.error(t('profile.errorFetchingProfile'), error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error(t('profile.errorFetchingProfile'), error);
+        }
       } finally {
         setProfileLoading(false);
         fetchProfileTimeoutRef.current = null;
@@ -106,7 +108,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     fetchCompanyTimeoutRef.current = setTimeout(async () => {
       try {
         setCompanyLoading(true);
-        console.log(t('company.fetchingCompanyData'), userId);
         
         // First, get company information
         const { data: companyData, error: companyError } = await supabase
@@ -120,7 +121,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .maybeSingle();
           
         if (companyError && companyError.code !== 'PGRST116') {
-          console.error(t('company.errorFetchingCompany'), companyError);
+          if (process.env.NODE_ENV === 'development') {
+            console.error(t('company.errorFetchingCompany'), companyError);
+          }
         }
         
         if (companyData) {
@@ -137,8 +140,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             ...companyData,
             role: roleData?.role || 'company_admin' // Default to company_admin for creator
           };
-          
-          console.log(t('company.foundCompanyThroughTable'), companyWithRole);
           
           // Cache the result
           companyDataCache.current.set(userId, { 
@@ -166,7 +167,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .maybeSingle();
         
         if (companyUserError && companyUserError.code !== 'PGRST116') {
-          console.error(t('company.errorFetchingCompanyUser'), companyUserError);
+          if (process.env.NODE_ENV === 'development') {
+            console.error(t('company.errorFetchingCompanyUser'), companyUserError);
+          }
         }
         
         if (companyUserData?.company) {
@@ -175,8 +178,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             ...companyUserData.company,
             role: companyUserData.role
           };
-          
-          console.log(t('company.foundCompanyThroughUsers'), companyWithRole);
           
           // Cache the result
           companyDataCache.current.set(userId, { 
@@ -198,7 +199,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setCompany(null);
         setHasCompany(false);
       } catch (error) {
-        console.error(t('company.errorFetchingCompany'), error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error(t('company.errorFetchingCompany'), error);
+        }
         setCompany(null);
         setHasCompany(false);
       } finally {
@@ -259,7 +262,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setLoading(false);
         }
       } catch (error) {
-        console.error(t('auth.errorInitializingAuth'), error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error(t('auth.errorInitializingAuth'), error);
+        }
         if (isMounted) {
           setLoading(false);
         }
@@ -302,7 +307,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Clear caches on signout
       companyDataCache.current.clear();
     } catch (error) {
-      console.error(t('auth.signOutError'), error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error(t('auth.signOutError'), error);
+      }
       toast({
         title: t('auth.error'),
         description: t('auth.signOutError'),
