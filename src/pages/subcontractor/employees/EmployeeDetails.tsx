@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -89,7 +90,7 @@ const EmployeeDetails: React.FC = () => {
               <h3 className="text-lg font-medium">{t('employees.performance')}</h3>
               <div className="flex items-center">
                 <Star className="h-5 w-5 text-yellow-500" />
-                <span className="ml-2">{t('employees.performanceRating')}: {employee.performance_rating}</span>
+                <span className="ml-2">{t('employees.performanceRating')}: {employee.performance_rating || 'N/A'}</span>
               </div>
             </div>
           </CardContent>

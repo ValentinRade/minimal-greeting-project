@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,9 +8,6 @@ import { toast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import { useEmployeeMutations } from './useEmployeeMutations';
 import { mapDbEmployeeToEmployee } from '@/utils/employeeUtils';
-
-// Import the hook implementation without using the exported hook to break circular reference
-import { useEmployeeByIdImpl } from './useEmployeeById';
 
 export const useEmployees = (filters?: EmployeeFilter) => {
   const { t } = useTranslation();
@@ -109,10 +107,8 @@ export const useEmployees = (filters?: EmployeeFilter) => {
     setPositionFilter,
     availabilityFilter,
     setAvailabilityFilter,
-    // Use the implementation directly to avoid circular reference
-    useEmployeeById: useEmployeeByIdImpl,
   };
 };
 
-// Export the hook separately 
+// Export useEmployeeById separately (no circular reference)
 export { useEmployeeById } from './useEmployeeById';

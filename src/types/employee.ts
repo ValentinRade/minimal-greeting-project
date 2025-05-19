@@ -1,4 +1,3 @@
-
 export type EmployeeType = 'employed' | 'contractor';
 export type PaymentType = 'salary' | 'invoice' | 'credit'; 
 export type LicenseType = 'B' | 'BE' | 'C1' | 'C1E' | 'C' | 'CE';
@@ -50,6 +49,7 @@ export interface Employee {
   // Additional calculated fields
   tour_count?: number;
   vehicle_count?: number;
+  performance_rating?: number; // Added this field
 }
 
 export interface CreateEmployeeData {
