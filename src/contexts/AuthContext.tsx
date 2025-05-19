@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
@@ -28,113 +28,175 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [companyLoading, setCompanyLoading] = useState(false);
   const [profileLoading, setProfileLoading] = useState(false);
   const { t } = useTranslation();
+  
+  // Add debounce refs to prevent multiple simultaneous API calls
+  const fetchProfileTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fetchCompanyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const companyDataCache = useRef<Map<string, { data: any, timestamp: number }>>(new Map());
+  
+  // Cache duration in milliseconds (5 seconds)
+  const CACHE_DURATION = 5000;
 
   // Fetch profile data with debounce protection
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = useCallback(async (userId: string) => {
     if (profileLoading) return;
     
-    try {
-      setProfileLoading(true);
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-        
-      if (error) throw error;
-      setProfile(data);
-    } catch (error) {
-      console.error(t('profile.errorFetchingProfile'), error);
-    } finally {
-      setProfileLoading(false);
+    // Clear any pending timeouts
+    if (fetchProfileTimeoutRef.current) {
+      clearTimeout(fetchProfileTimeoutRef.current);
     }
-  };
+    
+    // Set a new timeout for the profile fetch
+    fetchProfileTimeoutRef.current = setTimeout(async () => {
+      try {
+        setProfileLoading(true);
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single();
+          
+        if (error) throw error;
+        setProfile(data);
+      } catch (error) {
+        console.error(t('profile.errorFetchingProfile'), error);
+      } finally {
+        setProfileLoading(false);
+        fetchProfileTimeoutRef.current = null;
+      }
+    }, 100);
+  }, [profileLoading, t]);
 
-  // Fetch company data with debounce protection
-  const fetchCompany = async (userId: string) => {
+  // Fetch company data with debounce and caching
+  const fetchCompany = useCallback(async (userId: string) => {
     if (companyLoading) return;
     
-    try {
-      setCompanyLoading(true);
-      console.log(t('company.fetchingCompanyData'), userId);
-      
-      // First, get company information
-      const { data: companyData, error: companyError } = await supabase
-        .from('companies')
-        .select(`
-          *,
-          company_types(name),
-          company_legal_forms(name)
-        `)
-        .eq('user_id', userId)
-        .maybeSingle();
-        
-      if (companyError && companyError.code !== 'PGRST116') {
-        console.error(t('company.errorFetchingCompany'), companyError);
-      }
-      
-      if (companyData) {
-        // For company creators, fetch their role
-        const { data: roleData } = await supabase
-          .from('company_users')
-          .select('role')
-          .eq('company_id', companyData.id)
-          .eq('user_id', userId)
-          .maybeSingle();
-        
-        // Add role to company data
-        const companyWithRole = {
-          ...companyData,
-          role: roleData?.role || 'company_admin' // Default to company_admin for creator
-        };
-        
-        console.log(t('company.foundCompanyThroughTable'), companyWithRole);
-        setCompany(companyWithRole);
+    // Check cache first
+    const cachedData = companyDataCache.current.get(userId);
+    const now = Date.now();
+    
+    if (cachedData && (now - cachedData.timestamp < CACHE_DURATION)) {
+      // Use cached data if it's fresh enough
+      if (cachedData.data) {
+        setCompany(cachedData.data);
         setHasCompany(true);
-        return;
+      } else {
+        setCompany(null);
+        setHasCompany(false);
       }
-      
-      // Check if user is part of a company but not the creator
-      const { data: companyUserData, error: companyUserError } = await supabase
-        .from('company_users')
-        .select(`
-          *,
-          company:company_id (
+      return;
+    }
+    
+    // Clear any pending timeouts
+    if (fetchCompanyTimeoutRef.current) {
+      clearTimeout(fetchCompanyTimeoutRef.current);
+    }
+    
+    // Set a new timeout for the company fetch
+    fetchCompanyTimeoutRef.current = setTimeout(async () => {
+      try {
+        setCompanyLoading(true);
+        console.log(t('company.fetchingCompanyData'), userId);
+        
+        // First, get company information
+        const { data: companyData, error: companyError } = await supabase
+          .from('companies')
+          .select(`
             *,
             company_types(name),
             company_legal_forms(name)
-          )
-        `)
-        .eq('user_id', userId)
-        .maybeSingle();
-      
-      if (companyUserError && companyUserError.code !== 'PGRST116') {
-        console.error(t('company.errorFetchingCompanyUser'), companyUserError);
-      }
-      
-      if (companyUserData?.company) {
-        // Merge role information with company data
-        const companyWithRole = {
-          ...companyUserData.company,
-          role: companyUserData.role
-        };
+          `)
+          .eq('user_id', userId)
+          .maybeSingle();
+          
+        if (companyError && companyError.code !== 'PGRST116') {
+          console.error(t('company.errorFetchingCompany'), companyError);
+        }
         
-        console.log(t('company.foundCompanyThroughUsers'), companyWithRole);
-        setCompany(companyWithRole);
-        setHasCompany(true);
-        return;
+        if (companyData) {
+          // For company creators, fetch their role
+          const { data: roleData } = await supabase
+            .from('company_users')
+            .select('role')
+            .eq('company_id', companyData.id)
+            .eq('user_id', userId)
+            .maybeSingle();
+          
+          // Add role to company data
+          const companyWithRole = {
+            ...companyData,
+            role: roleData?.role || 'company_admin' // Default to company_admin for creator
+          };
+          
+          console.log(t('company.foundCompanyThroughTable'), companyWithRole);
+          
+          // Cache the result
+          companyDataCache.current.set(userId, { 
+            data: companyWithRole, 
+            timestamp: Date.now() 
+          });
+          
+          setCompany(companyWithRole);
+          setHasCompany(true);
+          return;
+        }
+        
+        // Check if user is part of a company but not the creator
+        const { data: companyUserData, error: companyUserError } = await supabase
+          .from('company_users')
+          .select(`
+            *,
+            company:company_id (
+              *,
+              company_types(name),
+              company_legal_forms(name)
+            )
+          `)
+          .eq('user_id', userId)
+          .maybeSingle();
+        
+        if (companyUserError && companyUserError.code !== 'PGRST116') {
+          console.error(t('company.errorFetchingCompanyUser'), companyUserError);
+        }
+        
+        if (companyUserData?.company) {
+          // Merge role information with company data
+          const companyWithRole = {
+            ...companyUserData.company,
+            role: companyUserData.role
+          };
+          
+          console.log(t('company.foundCompanyThroughUsers'), companyWithRole);
+          
+          // Cache the result
+          companyDataCache.current.set(userId, { 
+            data: companyWithRole, 
+            timestamp: Date.now() 
+          });
+          
+          setCompany(companyWithRole);
+          setHasCompany(true);
+          return;
+        }
+        
+        // Cache null result
+        companyDataCache.current.set(userId, { 
+          data: null, 
+          timestamp: Date.now() 
+        });
+        
+        setCompany(null);
+        setHasCompany(false);
+      } catch (error) {
+        console.error(t('company.errorFetchingCompany'), error);
+        setCompany(null);
+        setHasCompany(false);
+      } finally {
+        setCompanyLoading(false);
+        fetchCompanyTimeoutRef.current = null;
       }
-      
-      setCompany(null);
-      setHasCompany(false);
-    } catch (error) {
-      console.error(t('company.errorFetchingCompany'), error);
-      setCompany(null);
-      setHasCompany(false);
-    } finally {
-      setCompanyLoading(false);
-    }
-  };
+    }, 100);
+  }, [companyLoading, t]);
 
   useEffect(() => {
     let isMounted = true;
@@ -152,6 +214,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setProfile(null);
           setCompany(null);
           setHasCompany(false);
+          // Clear caches on signout
+          companyDataCache.current.clear();
           return;
         }
         
@@ -197,13 +261,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       isMounted = false;
       subscription.unsubscribe();
+      
+      // Clear any pending timeouts on unmount
+      if (fetchProfileTimeoutRef.current) {
+        clearTimeout(fetchProfileTimeoutRef.current);
+      }
+      if (fetchCompanyTimeoutRef.current) {
+        clearTimeout(fetchCompanyTimeoutRef.current);
+      }
     };
-  }, [t]);
+  }, [t, fetchProfile, fetchCompany]);
 
+  // Force refreshCompanyData with cache invalidation
   const refreshCompanyData = async () => {
-    if (user) {
-      await fetchCompany(user.id);
-    }
+    if (!user) return;
+    
+    // Clear the cache for this user
+    companyDataCache.current.delete(user.id);
+    
+    // Fetch fresh data
+    await fetchCompany(user.id);
   };
 
   const signOut = async () => {
@@ -212,6 +289,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setProfile(null);
       setCompany(null);
       setHasCompany(false);
+      // Clear caches on signout
+      companyDataCache.current.clear();
     } catch (error) {
       console.error(t('auth.signOutError'), error);
       toast({

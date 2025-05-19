@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   const { t } = useTranslation();
   const location = useLocation();
   const [isReady, setIsReady] = useState(false);
+  const checkedRef = useRef(false);
   
   // Exclude certain paths from protection
   const isRegisterInvitedRoute = location.pathname === '/register-invited';
@@ -22,7 +23,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   
   // Wait for authentication and company data to be fully loaded
   useEffect(() => {
-    if (!authLoading) {
+    if (!authLoading && !checkedRef.current) {
+      checkedRef.current = true;
       // Set a small timeout to ensure company data is fully loaded
       const timer = setTimeout(() => {
         setIsReady(true);
@@ -47,13 +49,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
     return <Navigate to="/auth" />;
   }
   
-  // Log the current state at a reasonable level (DEBUG only, not excessive)
-  console.log("Protected Route Check:", {
-    hasCompany,
-    requireCompany,
-    pathname: location.pathname,
-    isReady
-  });
+  // Log the current state only once per mount - for debugging purposes only
+  useEffect(() => {
+    console.log("Protected Route Check:", {
+      hasCompany,
+      requireCompany,
+      pathname: location.pathname,
+      isReady
+    });
+  }, [hasCompany, requireCompany, location.pathname, isReady]);
   
   // Handle redirect to create-company page
   if (isReady && requireCompany && !hasCompany && !isCreateCompanyRoute) {
