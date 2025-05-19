@@ -3,14 +3,30 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import type { Employee, EmployeeFilter, RawEmployeeFromDb, EmployeeQueryResult } from '@/types/employee';
+import type { Employee, EmployeeFilter, RawEmployeeFromDb, EmployeeQueryResult, CreateEmployeeData } from '@/types/employee';
 import { toast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 
 // Helper function to map database response to Employee interface
 const mapDbEmployeeToEmployee = (item: RawEmployeeFromDb): Employee => {
   return {
-    ...item,
+    id: item.id,
+    company_id: item.company_id,
+    user_id: item.user_id,
+    first_name: item.first_name,
+    last_name: item.last_name,
+    email: item.email,
+    phone: item.phone,
+    position: item.position,
+    employee_type: item.employee_type,
+    payment_type: item.payment_type,
+    gross_salary: item.gross_salary,
+    net_salary: item.net_salary,
+    hourly_rate: item.hourly_rate,
+    location: item.location,
+    notes: item.notes,
+    created_at: item.created_at,
+    updated_at: item.updated_at,
     licenses: item.employee_licenses || [],
     availability: item.employee_availability || [],
     regions: item.employee_regions || []
@@ -69,7 +85,9 @@ export const useEmployees = (filters?: EmployeeFilter) => {
     }
     
     // Transform the data to match the Employee interface
-    const employees: Employee[] = data ? data.map(mapDbEmployeeToEmployee) : [];
+    // We need to explicitly type 'data' to avoid deep type instantiation issues
+    const rawData = data as RawEmployeeFromDb[] | null;
+    const employees: Employee[] = rawData ? rawData.map(mapDbEmployeeToEmployee) : [];
 
     return employees;
   };
@@ -84,7 +102,7 @@ export const useEmployees = (filters?: EmployeeFilter) => {
 
   // Mutation for creating a new employee
   const createEmployee = useMutation({
-    mutationFn: async (employee: any) => {
+    mutationFn: async (employee: CreateEmployeeData) => {
       setIsLoading(true);
       try {
         const { data, error } = await supabase
@@ -398,7 +416,8 @@ export const useEmployeeById = (employeeId?: string): EmployeeQueryResult => {
     }
     
     // Transform to match Employee interface
-    const employee = mapDbEmployeeToEmployee(data);
+    const rawData = data as RawEmployeeFromDb;
+    const employee = mapDbEmployeeToEmployee(rawData);
     
     return employee;
   };

@@ -65,6 +65,7 @@ export interface CreateEmployeeData {
   hourly_rate?: number;
   location?: string;
   notes?: string;
+  user_id?: string; // Optional for creating new employees
   
   licenses: License[];
   availability: Availability[];

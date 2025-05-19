@@ -15,11 +15,11 @@ const AddTour: React.FC = () => {
   const { user } = useAuth();
   
   const defaultFilters: TourFilterOptions = {
-    timeframe: "all", // Use a literal string value that matches the expected type
+    timeframe: "all", 
     regions: [],
     vehicleType: '',
     employeeId: '',
-    status: "all", // Use a literal string value that matches the expected type
+    status: "all", 
     sortBy: 'date',
     sortDirection: 'asc',
   };
