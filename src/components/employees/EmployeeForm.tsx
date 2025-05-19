@@ -60,7 +60,7 @@ import {
   Trash2, 
   X 
 } from 'lucide-react';
-import { Employee, CreateEmployeeData, LicenseType } from '@/types/employee';
+import { Employee, CreateEmployeeData, LicenseType, PaymentType } from '@/types/employee';
 
 // Create zod schema for validation
 const employeeSchema = z.object({
@@ -215,9 +215,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
   const handleSubmit = (data: FormValues) => {
     // Convert string values to numbers
-    const hourlyRate = data.hourly_rate ? Number(data.hourly_rate) : null;
-    const netSalary = data.net_salary ? Number(data.net_salary) : null;
-    const grossSalary = data.gross_salary ? Number(data.gross_salary) : null;
+    const hourlyRate = data.hourly_rate ? Number(data.hourly_rate) : undefined;
+    const netSalary = data.net_salary ? Number(data.net_salary) : undefined;
+    const grossSalary = data.gross_salary ? Number(data.gross_salary) : undefined;
 
     // Ensure all required fields have values
     const submissionData: CreateEmployeeData = {

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -148,12 +147,10 @@ export const useEmployees = () => {
         throw employeeError;
       }
 
-      const employeeId = employeeResult.id;
-
       // Insert licenses
       if (licenses.length > 0) {
         const licensesData = licenses.map(license => ({
-          employee_id: employeeId,
+          employee_id: employeeResult.id,
           license_type: license.license_type,
           description: license.description
         }));
@@ -170,7 +167,7 @@ export const useEmployees = () => {
       // Insert availability
       if (availability.length > 0) {
         const availabilityData = availability.map(avail => ({
-          employee_id: employeeId,
+          employee_id: employeeResult.id,
           day_of_week: avail.day_of_week,
           is_available: avail.is_available,
           start_time: avail.start_time,
@@ -190,7 +187,7 @@ export const useEmployees = () => {
       // Insert regions
       if (regions.length > 0) {
         const regionsData = regions.map(region => ({
-          employee_id: employeeId,
+          employee_id: employeeResult.id,
           country: region.country
         }));
 
