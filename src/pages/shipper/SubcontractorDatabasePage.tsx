@@ -55,29 +55,55 @@ const SubcontractorDatabasePage: React.FC = () => {
         .select('*')
         .order('company_name');
       
-      if (searchError) throw searchError;
+      if (searchError) {
+        console.error('Error fetching search data:', searchError);
+        throw searchError;
+      }
+      
+      if (!searchData || searchData.length === 0) {
+        console.log('No subcontractor search data found');
+        return [];
+      }
+      
+      console.log('Fetched search data:', searchData.length, 'records');
       
       // Then get public profile data for all company_ids
       const companyIds = searchData.map(sub => sub.company_id);
+      
+      console.log('Fetching profiles for company IDs:', companyIds);
+      
       const { data: profileData, error: profileError } = await supabase
         .from('subcontractor_public_profiles')
-        .select('company_id, profile_url_path, enabled')
-        .in('company_id', companyIds);
+        .select('company_id, profile_url_path, enabled');
       
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Error fetching profile data:', profileError);
+        throw profileError;
+      }
+      
+      console.log('Fetched profile data:', profileData ? profileData.length : 0, 'records');
       
       // Create a map of company_id to profile data for easy lookup
-      const profileMap = profileData.reduce((map, profile) => {
-        map[profile.company_id] = profile;
-        return map;
-      }, {});
+      const profileMap = {};
+      if (profileData) {
+        profileData.forEach(profile => {
+          profileMap[profile.company_id] = profile;
+        });
+      }
+      
+      console.log('Profile map created with keys:', Object.keys(profileMap).length);
       
       // Combine the data
-      return searchData.map(sub => ({
-        ...sub,
-        profile_url_path: profileMap[sub.company_id]?.profile_url_path || null,
-        has_public_profile: !!profileMap[sub.company_id]?.enabled,
-      })) as Subcontractor[];
+      return searchData.map(sub => {
+        const profile = profileMap[sub.company_id];
+        console.log('Mapping company:', sub.company_name, 'Profile found:', !!profile);
+        
+        return {
+          ...sub,
+          profile_url_path: profile ? profile.profile_url_path : null,
+          has_public_profile: profile ? !!profile.enabled : false,
+        };
+      }) as Subcontractor[];
     }
   });
   
@@ -132,7 +158,7 @@ const SubcontractorDatabasePage: React.FC = () => {
               </div>
             ) : error ? (
               <div className="flex justify-center p-6 text-red-500">
-                <p>Fehler beim Laden der Daten</p>
+                <p>Fehler beim Laden der Daten: {(error as Error).message}</p>
               </div>
             ) : filteredSubcontractors?.length === 0 ? (
               <div className="flex justify-center p-6">
