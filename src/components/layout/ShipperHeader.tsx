@@ -51,7 +51,7 @@ const ShipperHeader: React.FC = () => {
             <User size={16} />
           </div>
           <span className="hidden text-sm font-medium md:block">
-            {company?.name}
+            {company?.name || 'Unternehmen'}
           </span>
         </div>
         

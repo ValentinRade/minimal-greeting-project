@@ -15,16 +15,18 @@ import { toast } from '@/hooks/use-toast';
 const ShipperDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, loading: isAuthLoading } = useAuth();
+  const { user, loading } = useAuth();
   const [tenderCount, setTenderCount] = useState<number | null>(null);
   const [subcontractorCount, setSubcontractorCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAuthLoading && user) {
+    if (!loading && user) {
       loadDashboardData();
+    } else if (!loading && !user) {
+      navigate('/auth');
     }
-  }, [user, isAuthLoading]);
+  }, [user, loading, navigate]);
 
   const loadDashboardData = async () => {
     setIsLoading(true);
@@ -61,7 +63,7 @@ const ShipperDashboard = () => {
     navigate('/dashboard/shipper/tenders', { state: { openCreateForm: true } });
   };
 
-  if (isAuthLoading) {
+  if (loading) {
     return (
       <AppLayout>
         <div className="flex items-center justify-center p-8">

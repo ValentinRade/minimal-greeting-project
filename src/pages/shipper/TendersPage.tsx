@@ -21,7 +21,7 @@ const TendersPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, loading: isAuthLoading } = useAuth();
+  const { user, loading } = useAuth();
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
@@ -49,10 +49,12 @@ const TendersPage: React.FC = () => {
   
   // Load tenders on mount and when user changes
   useEffect(() => {
-    if (!isAuthLoading && user) {
+    if (!loading && user) {
       loadTenders();
+    } else if (!loading && !user) {
+      navigate('/auth');
     }
-  }, [user, isAuthLoading]);
+  }, [user, loading]);
   
   const loadTenders = async () => {
     setIsLoading(true);
@@ -129,7 +131,7 @@ const TendersPage: React.FC = () => {
     navigate('/dashboard/shipper/tours');
   };
 
-  if (isAuthLoading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -153,7 +155,7 @@ const TendersPage: React.FC = () => {
         </div>
         
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleToursClick} className="gap-2">
+          <Button variant="outline" onClick={() => navigate('/dashboard/shipper/tours')} className="gap-2">
             <Calendar className="h-4 w-4" />
             Touren verwalten
           </Button>
