@@ -23,8 +23,8 @@ import ShipperSubcontractorDatabaseRoutes from './routes/ShipperSubcontractorDat
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 
-// Import i18n initialization
-import '@/i18n';
+// Import i18n initialization to ensure it's loaded before rendering
+import './i18n';
 
 // Settings routes
 import SettingsLayout from './pages/settings/SettingsLayout';

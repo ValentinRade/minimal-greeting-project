@@ -34,6 +34,12 @@ export const LanguageProvider = ({
       i18n.changeLanguage(localeCode);
       localStorage.setItem('userLanguage', userLanguage);
       setCurrentLanguage(userLanguage);
+    } else {
+      // Fallback to stored language or default
+      const storedLanguage = localStorage.getItem('userLanguage') || 'Deutsch';
+      const localeCode = languageToLocaleCode(storedLanguage);
+      i18n.changeLanguage(localeCode);
+      setCurrentLanguage(storedLanguage);
     }
   }, [userLanguage, i18n]);
 
