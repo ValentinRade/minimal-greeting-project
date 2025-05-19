@@ -49,24 +49,34 @@ const SubcontractorDatabasePage: React.FC = () => {
   const { data: subcontractors, isLoading, error } = useQuery({
     queryKey: ['subcontractors'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First, get all subcontractor search data
+      const { data: searchData, error: searchError } = await supabase
         .from('subcontractor_search_data')
-        .select(`
-          *,
-          public_profile:subcontractor_public_profiles!company_id(
-            profile_url_path,
-            enabled
-          )
-        `)
+        .select('*')
         .order('company_name');
-        
-      if (error) throw error;
       
-      // Transform the data to include public profile information
-      return data.map(sub => ({
+      if (searchError) throw searchError;
+      
+      // Then get public profile data for all company_ids
+      const companyIds = searchData.map(sub => sub.company_id);
+      const { data: profileData, error: profileError } = await supabase
+        .from('subcontractor_public_profiles')
+        .select('company_id, profile_url_path, enabled')
+        .in('company_id', companyIds);
+      
+      if (profileError) throw profileError;
+      
+      // Create a map of company_id to profile data for easy lookup
+      const profileMap = profileData.reduce((map, profile) => {
+        map[profile.company_id] = profile;
+        return map;
+      }, {});
+      
+      // Combine the data
+      return searchData.map(sub => ({
         ...sub,
-        profile_url_path: sub.public_profile?.profile_url_path,
-        has_public_profile: !!sub.public_profile?.enabled,
+        profile_url_path: profileMap[sub.company_id]?.profile_url_path || null,
+        has_public_profile: !!profileMap[sub.company_id]?.enabled,
       })) as Subcontractor[];
     }
   });
