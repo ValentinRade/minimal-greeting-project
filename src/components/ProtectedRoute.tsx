@@ -1,7 +1,7 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompany = true }) => {
   const { user, loading: authLoading, hasCompany, company } = useAuth();
+  const { t } = useTranslation();
   const location = useLocation();
   const routeCheckedRef = useRef(false);
   
@@ -44,7 +45,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   
   // Show loading state while auth is being checked
   if (authLoading) {
-    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
+    return <div className="flex min-h-screen items-center justify-center">{t('common.loading')}</div>;
   }
   
   // User not authenticated - redirect to auth

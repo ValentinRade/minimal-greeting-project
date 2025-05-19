@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -56,12 +55,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setProfile(data);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.error("Error fetching profile:", error);
+        console.error(t('profile.errorFetchingProfile'), error);
       }
     } finally {
       setProfileLoading(false);
     }
-  }, [profileLoading]);
+  }, [profileLoading, t]);
 
   // Fetch company data with debounce and caching
   const fetchCompany = useCallback(async (userId: string) => {
@@ -107,7 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
       if (companyError && companyError.code !== 'PGRST116') {
         if (process.env.NODE_ENV === 'development') {
-          console.error("Error fetching company:", companyError);
+          console.error(t('company.errorFetchingCompany'), companyError);
         }
       }
       
@@ -153,7 +152,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (companyUserError && companyUserError.code !== 'PGRST116') {
         if (process.env.NODE_ENV === 'development') {
-          console.error("Error fetching company user:", companyUserError);
+          console.error(t('company.errorFetchingCompanyUser'), companyUserError);
         }
       }
       
@@ -185,14 +184,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setHasCompany(false);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.error("Error fetching company:", error);
+        console.error(t('company.errorFetchingCompany'), error);
       }
       setCompany(null);
       setHasCompany(false);
     } finally {
       setCompanyLoading(false);
     }
-  }, [companyLoading]);
+  }, [companyLoading, t, CACHE_DURATION, MIN_FETCH_INTERVAL]);
 
   useEffect(() => {
     let isMounted = true;
@@ -245,7 +244,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         if (process.env.NODE_ENV === 'development') {
-          console.error("Error initializing auth:", error);
+          console.error(t('auth.errorInitializingAuth'), error);
         }
         if (isMounted) {
           setLoading(false);
@@ -259,7 +258,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [fetchProfile, fetchCompany]);
+  }, [t, fetchProfile, fetchCompany]);
 
   // Force refreshCompanyData with cache invalidation
   const refreshCompanyData = async () => {
@@ -282,11 +281,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       companyDataCache.current.clear();
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.error("Sign out error:", error);
+        console.error(t('auth.signOutError'), error);
       }
       toast({
-        title: "Error",
-        description: "Failed to sign out",
+        title: t('auth.error'),
+        description: t('auth.signOutError'),
         variant: "destructive"
       });
     }
@@ -308,9 +307,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+  const { t } = useTranslation();
   
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error(t('auth.useAuthError'));
   }
   return context;
 };
