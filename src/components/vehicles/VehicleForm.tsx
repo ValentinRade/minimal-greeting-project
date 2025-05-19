@@ -167,7 +167,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       const vehicleData = {
         ...data,
         company_id: company.id,
-        user_id: user.id, // Use the user.id directly instead of a Promise
+        user_id: user.id,
       };
 
       let result;
