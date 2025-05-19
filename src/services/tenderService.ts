@@ -71,7 +71,7 @@ export const createTender = async (tenderData: Omit<TenderDetails, 'id' | 'creat
       email: tenderData.inviteServiceProviders?.email || '',
       confirmed: tenderData.inviteServiceProviders?.confirmed || false 
     },
-    contractorPreferences: data.contractor_preferences,
+    contractorPreferences: data.contractor_preferences as TenderDetails['contractorPreferences'],
     createdAt: data.created_at,
     status: data.status as 'active' | 'draft' | 'closed' | 'awarded',
     toursCount: 0
@@ -115,6 +115,7 @@ export const getTenders = async (): Promise<TenderDetails[]> => {
       console.error("Error counting tours for tender:", countError);
     }
 
+    // Konvertiere die Daten in das richtige Format mit expliziten Typ-Assertions
     return {
       id: tender.id,
       title: tender.title,
@@ -126,7 +127,7 @@ export const getTenders = async (): Promise<TenderDetails[]> => {
       commercialCalculation: tender.commercial_calculation ? 'yes' : 'no',
       serviceProviderOption: tender.service_provider_option as 'own_fleet' | 'single_provider',
       inviteServiceProviders: { email: '', confirmed: false },
-      contractorPreferences: tender.contractor_preferences as any,
+      contractorPreferences: tender.contractor_preferences as TenderDetails['contractorPreferences'],
       createdAt: tender.created_at,
       status: tender.status as 'active' | 'draft' | 'closed' | 'awarded',
       toursCount: count || 0
@@ -195,7 +196,7 @@ export const getTenderById = async (id: string): Promise<TenderDetails | undefin
     inviteServiceProviders: invitation 
       ? { email: invitation.email, confirmed: invitation.confirmed || false }
       : { email: '', confirmed: false },
-    contractorPreferences: tender.contractor_preferences as any,
+    contractorPreferences: tender.contractor_preferences as TenderDetails['contractorPreferences'],
     createdAt: tender.created_at,
     status: tender.status as 'active' | 'draft' | 'closed' | 'awarded',
     toursCount: count || 0
