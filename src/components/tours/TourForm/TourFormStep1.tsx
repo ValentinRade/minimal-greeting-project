@@ -39,7 +39,7 @@ const TourFormStep1: React.FC<TourFormStep1Props> = ({ form }) => {
     { value: 'box', label: t('tours.bodyTypes.box') },
     { value: 'curtain', label: t('tours.bodyTypes.curtain') },
     { value: 'refrigerated', label: t('tours.bodyTypes.refrigerated') },
-    { value: 'tanker', label: t('tours.bodyTypes.tanker') },
+    { value: 'tank', label: t('tours.bodyTypes.tanker') },
     { value: 'flatbed', label: t('tours.bodyTypes.flatbed') },
     { value: 'other', label: t('tours.bodyTypes.other') },
   ];

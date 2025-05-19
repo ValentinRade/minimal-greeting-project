@@ -1,3 +1,4 @@
+
 export interface TourFormData {
   // Step 1: Vehicle requirements and certificates
   title: string;
@@ -62,9 +63,9 @@ export interface Tour {
   title: string;
   status: TourStatus;
   createdAt: string;
-  // Add other basic tour fields as needed
+  // Database fields
   vehicle_type: string;
-  body_type: string;
+  body_type: VehicleBodyType;
   start_location: string;
   end_location?: string;
   total_distance: number;
@@ -81,11 +82,11 @@ export interface Tour {
   start_location_lng?: number;
   end_location_lat?: number;
   end_location_lng?: number;
-  user_id?: string; // Add missing field
+  user_id?: string;
 }
 
 export interface TourWithRelations extends Tour {
-  // Add related fields like driver, vehicle, etc.
+  // Add related fields
   driverId?: string;
   vehicleId?: string;
   schedules?: {
@@ -99,9 +100,8 @@ export interface TourWithRelations extends Tour {
     location: string;
     order: number;
   }[];
-  vehicles?: any[]; // Adding missing field
-  employees?: any[]; // Adding missing field
-  // Other relation fields
+  vehicles?: any[];
+  employees?: any[];
 }
 
 export interface TourStats {
@@ -109,9 +109,8 @@ export interface TourStats {
   active: number;
   completed: number;
   cancelled: number;
-  averageDuration: number; // Add this missing property
+  averageDuration: number;
   statusDistribution: {
-    [key: string]: number;
     pending: number;
     in_progress: number;
     completed: number;
