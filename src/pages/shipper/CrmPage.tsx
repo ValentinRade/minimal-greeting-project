@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter, Plus, Search, MoreHorizontal } from 'lucide-react';
@@ -51,7 +52,7 @@ const CrmPage: React.FC = () => {
   const { t } = useTranslation();
   const [cards, setCards] = useState(initialCards);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState<string>('');
+  const [selectedPriority, setSelectedPriority] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<string>('');
 
   // Filtern der Karten basierend auf den Filterkriterien
@@ -123,7 +124,7 @@ const CrmPage: React.FC = () => {
                     <SelectValue placeholder="Priorität" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Alle Prioritäten</SelectItem>
+                    <SelectItem value="all">Alle Prioritäten</SelectItem>
                     <SelectItem value="Hoch">Hoch</SelectItem>
                     <SelectItem value="Mittel">Mittel</SelectItem>
                     <SelectItem value="Niedrig">Niedrig</SelectItem>
@@ -141,7 +142,7 @@ const CrmPage: React.FC = () => {
               
               <Button variant="outline" onClick={() => {
                 setSearchQuery('');
-                setSelectedPriority('');
+                setSelectedPriority('all');
                 setSelectedDate('');
               }}>
                 Zurücksetzen
