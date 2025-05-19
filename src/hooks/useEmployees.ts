@@ -6,9 +6,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import type { Employee, EmployeeFilter } from '@/types/employee';
 import { toast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
-import { useEmployeeById } from './useEmployeeById';
 import { useEmployeeMutations } from './useEmployeeMutations';
 import { mapDbEmployeeToEmployee } from '@/utils/employeeUtils';
+
+// Import useEmployeeById separately to break circular reference
+import { useEmployeeById as importedUseEmployeeById } from './useEmployeeById';
 
 export const useEmployees = (filters?: EmployeeFilter) => {
   const { t } = useTranslation();
@@ -108,8 +110,10 @@ export const useEmployees = (filters?: EmployeeFilter) => {
     setPositionFilter,
     availabilityFilter,
     setAvailabilityFilter,
-    useEmployee: useEmployeeById,
+    // Breaking circular reference by renaming the property
+    useEmployeeById: importedUseEmployeeById,
   };
 };
 
+// Export the hook separately to avoid circular reference
 export { useEmployeeById } from './useEmployeeById';
