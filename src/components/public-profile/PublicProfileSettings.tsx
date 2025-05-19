@@ -53,10 +53,17 @@ const PublicProfileSettings: React.FC = () => {
     updateProfile({ short_description: description });
   };
   
-  const handleToggleSection = (section: keyof typeof profile, currentValue: boolean) => {
+  // Update the toggle section handler to use the correct property names
+  const handleToggleSection = (section: string) => {
     if (!profile) return;
+    
+    // Map the section name to the corresponding property in the PublicProfile interface
     const updateKey = `show_${section}` as keyof typeof profile;
-    updateProfile({ [updateKey]: !currentValue } as any);
+    
+    if (updateKey in profile) {
+      const currentValue = profile[updateKey] as boolean;
+      updateProfile({ [updateKey]: !currentValue } as any);
+    }
   };
   
   const copyProfileUrl = () => {
@@ -214,7 +221,7 @@ const PublicProfileSettings: React.FC = () => {
                 <Switch
                   id="show-fleet"
                   checked={profile.show_fleet}
-                  onCheckedChange={() => handleToggleSection('fleet', profile.show_fleet)}
+                  onCheckedChange={() => handleToggleSection('fleet')}
                 />
               </div>
               
@@ -223,7 +230,7 @@ const PublicProfileSettings: React.FC = () => {
                 <Switch
                   id="show-references"
                   checked={profile.show_references}
-                  onCheckedChange={() => handleToggleSection('references', profile.show_references)}
+                  onCheckedChange={() => handleToggleSection('references')}
                 />
               </div>
               
@@ -232,7 +239,7 @@ const PublicProfileSettings: React.FC = () => {
                 <Switch
                   id="show-qualifications"
                   checked={profile.show_qualifications}
-                  onCheckedChange={() => handleToggleSection('qualifications', profile.show_qualifications)}
+                  onCheckedChange={() => handleToggleSection('qualifications')}
                 />
               </div>
               
@@ -241,7 +248,7 @@ const PublicProfileSettings: React.FC = () => {
                 <Switch
                   id="show-tours"
                   checked={profile.show_tours}
-                  onCheckedChange={() => handleToggleSection('tours', profile.show_tours)}
+                  onCheckedChange={() => handleToggleSection('tours')}
                 />
               </div>
               
@@ -250,7 +257,7 @@ const PublicProfileSettings: React.FC = () => {
                 <Switch
                   id="show-ratings"
                   checked={profile.show_ratings}
-                  onCheckedChange={() => handleToggleSection('ratings', profile.show_ratings)}
+                  onCheckedChange={() => handleToggleSection('ratings')}
                 />
               </div>
             </div>
