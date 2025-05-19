@@ -14,6 +14,9 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { ArrowRight, X } from 'lucide-react';
 import TenderFormNavigation from './TenderFormNavigation';
+import { createTender } from '@/services/tenderService';
+import { useToast } from '@/components/ui/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 // Define the form schema for the first step
 const generalDetailsSchema = z.object({
@@ -49,6 +52,10 @@ const contractorPreferencesSchema = z.object({
 type GeneralDetailsFormValues = z.infer<typeof generalDetailsSchema>;
 type ContractorPreferencesFormValues = z.infer<typeof contractorPreferencesSchema>;
 
+interface CreateTenderFormProps {
+  onTenderCreated?: () => void;
+}
+
 const prequalificationOptions = [
   { id: 'pq_kep', label: 'PQ KEP' },
   { id: 'adr', label: 'ADR' },
@@ -59,12 +66,13 @@ const prequalificationOptions = [
 const steps = [
   { id: 1, label: 'Ausschreibungsdetails' },
   { id: 2, label: 'Unternehmerpräferenzen' },
-  { id: 3, label: 'Touren hinzufügen' },
 ];
 
-const CreateTenderForm: React.FC = () => {
+const CreateTenderForm: React.FC<CreateTenderFormProps> = ({ onTenderCreated }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [generalDetails, setGeneralDetails] = useState<GeneralDetailsFormValues>();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   
   // General details form
   const generalDetailsForm = useForm<GeneralDetailsFormValues>({
@@ -100,8 +108,39 @@ const CreateTenderForm: React.FC = () => {
   };
   
   const handleContractorPreferencesSubmit = (data: ContractorPreferencesFormValues) => {
-    // We would combine both forms' data and proceed
-    setCurrentStep(3);
+    if (!generalDetails) return;
+    
+    try {
+      // Combine both forms' data and create the tender
+      const newTender = createTender({
+        ...generalDetails,
+        contractorPreferences: data
+      });
+      
+      toast({
+        title: "Ausschreibung erstellt",
+        description: "Die Ausschreibung wurde erfolgreich erstellt.",
+        variant: "default",
+      });
+      
+      // Close the form and refresh the list
+      if (onTenderCreated) {
+        onTenderCreated();
+      }
+      
+      // Reset the forms
+      generalDetailsForm.reset();
+      contractorPreferencesForm.reset();
+      setCurrentStep(1);
+      
+    } catch (error) {
+      console.error("Error creating tender:", error);
+      toast({
+        title: "Fehler",
+        description: "Die Ausschreibung konnte nicht erstellt werden.",
+        variant: "destructive",
+      });
+    }
   };
   
   return (
@@ -583,38 +622,12 @@ const CreateTenderForm: React.FC = () => {
                 Zurück
               </Button>
               <Button type="submit" className="gap-2">
-                Touren hinzufügen
+                Ausschreibung erstellen
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           </form>
         </Form>
-      )}
-      
-      {currentStep === 3 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Touren hinzufügen</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              Dieser Abschnitt wird später implementiert.
-            </p>
-            
-            <div className="flex justify-end gap-4 mt-6">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => setCurrentStep(2)}
-              >
-                Zurück
-              </Button>
-              <Button type="button">
-                Speichern
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       )}
     </div>
   );
