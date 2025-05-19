@@ -37,10 +37,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { 
-  Checkbox, 
-  CheckboxIndicator 
-} from '@/components/ui/checkbox';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
@@ -214,9 +211,21 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
     onSubmit({
       ...data,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      phone: data.phone,
+      position: data.position,
+      employee_type: data.employee_type,
+      payment_type: data.payment_type,
       hourly_rate: hourlyRate,
       net_salary: netSalary,
       gross_salary: grossSalary,
+      location: data.location,
+      notes: data.notes,
+      licenses: data.licenses,
+      availability: data.availability,
+      regions: data.regions
     });
   };
 

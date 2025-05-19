@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -167,12 +166,13 @@ const EmployeesList: React.FC = () => {
 
       {/* Filters */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div>
+        <div className="relative">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder={t('employees.searchPlaceholder')}
             value={filter}
             onChange={e => setFilter(e.target.value)}
-            className="w-full"
+            className="w-full pl-9"
             icon={Search}
           />
         </div>

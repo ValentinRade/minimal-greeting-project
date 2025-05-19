@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
+import { Employee, CreateEmployeeData } from '@/types/employee';
 
 export type EmployeeType = 'employed' | 'contractor';
 export type PaymentType = 'salary' | 'invoice' | 'credit';
@@ -73,7 +73,7 @@ export const useEmployees = () => {
   const { company } = useAuth();
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState('');
-  const [employeeTypeFilter, setEmployeeTypeFilter] = useState<EmployeeType | ''>('');
+  const [employeeTypeFilter, setEmployeeTypeFilter] = useState<'employed' | 'contractor' | ''>('');
   const [positionFilter, setPositionFilter] = useState('');
   const [availabilityFilter, setAvailabilityFilter] = useState<number | null>(null);
 
@@ -197,7 +197,7 @@ export const useEmployees = () => {
         .insert({
           ...employeeBase,
           company_id: company.id,
-          user_id: supabase.auth.getUser().then(({data}) => data.user?.id || ''),
+          user_id: (await supabase.auth.getUser()).data.user?.id || '',
         })
         .select()
         .single();
