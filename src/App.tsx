@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -32,6 +31,10 @@ import SubcontractorToursRoutes from './routes/SubcontractorToursRoutes';
 
 // Import i18n for internationalization
 import '@/i18n';
+
+// Add these routes
+import PublicProfile from "./pages/PublicProfile";
+import SubcontractorPublicProfileRoutes from "./routes/SubcontractorPublicProfileRoutes";
 
 const queryClient = new QueryClient();
 
@@ -126,6 +129,12 @@ const App = () => (
                   <SubcontractorEmployeesRoutes />
                 </ProtectedRoute>
               } />
+              
+              {/* Add the public profile routes */}
+              <Route path="/dashboard/subcontractor/public-profile/*" element={<ProtectedRoute><SubcontractorPublicProfileRoutes /></ProtectedRoute>} />
+              
+              {/* Add the public profile route */}
+              <Route path="/profile/:profilePath" element={<PublicProfile />} />
               
               <Route path="/" element={
                 <ProtectedRoute>

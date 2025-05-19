@@ -423,6 +423,50 @@ export type Database = {
         }
         Relationships: []
       }
+      subcontractor_awards: {
+        Row: {
+          awarded_at: string
+          badge_type: string
+          company_id: string
+          created_at: string
+          description: string | null
+          id: string
+          title: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          awarded_at?: string
+          badge_type: string
+          company_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          awarded_at?: string
+          badge_type?: string
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_awards_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subcontractor_preferences: {
         Row: {
           client_types: string[]
@@ -551,6 +595,104 @@ export type Database = {
             foreignKeyName: "subcontractor_prequalifications_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subcontractor_public_profiles: {
+        Row: {
+          company_id: string
+          created_at: string
+          enabled: boolean
+          id: string
+          profile_url_path: string | null
+          short_description: string | null
+          show_fleet: boolean
+          show_qualifications: boolean
+          show_ratings: boolean
+          show_references: boolean
+          show_tours: boolean
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          profile_url_path?: string | null
+          short_description?: string | null
+          show_fleet?: boolean
+          show_qualifications?: boolean
+          show_ratings?: boolean
+          show_references?: boolean
+          show_tours?: boolean
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          profile_url_path?: string | null
+          short_description?: string | null
+          show_fleet?: boolean
+          show_qualifications?: boolean
+          show_ratings?: boolean
+          show_references?: boolean
+          show_tours?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_public_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subcontractor_ratings: {
+        Row: {
+          comment: string | null
+          company_id: string
+          created_at: string
+          id: string
+          rated_by: string | null
+          rating_value: number
+          updated_at: string
+        }
+        Insert: {
+          comment?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          rated_by?: string | null
+          rating_value: number
+          updated_at?: string
+        }
+        Update: {
+          comment?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          rated_by?: string | null
+          rating_value?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_ratings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subcontractor_ratings_rated_by_fkey"
+            columns: ["rated_by"]
+            isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
@@ -1018,6 +1160,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_profile_url_path: {
+        Args: { company_name: string }
+        Returns: string
+      }
       get_employee_tour_count: {
         Args: { employee_id: string }
         Returns: number

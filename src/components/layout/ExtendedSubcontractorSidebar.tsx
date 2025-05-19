@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Truck, Settings, FileText, Users, Route } from 'lucide-react';
+import { Truck, Settings, FileText, Users, Route, Globe, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
@@ -84,6 +84,20 @@ const ExtendedSubcontractorSidebar: React.FC<SidebarProps> = ({ open, onOpenChan
               >
                 <Users className="h-5 w-5" />
                 <span>{t('employees.title')}</span>
+              </NavLink>
+              <NavLink
+                to="/dashboard/subcontractor/preferences"
+                className={navLinkClass}
+              >
+                <Heart className="h-5 w-5" />
+                <span>{t('dashboard.preferences')}</span>
+              </NavLink>
+              <NavLink
+                to="/dashboard/subcontractor/public-profile"
+                className={navLinkClass}
+              >
+                <Globe className="h-5 w-5" />
+                <span>{t('publicProfile.navTitle')}</span>
               </NavLink>
             </nav>
           </div>

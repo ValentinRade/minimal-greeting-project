@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import type { Employee, EmployeeFilter, RawEmployeeFromDb } from '@/types/employee';
+import type { Employee, EmployeeFilter } from '@/types/employee';
 import { toast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import { useEmployeeById } from './useEmployeeById';
@@ -19,7 +19,7 @@ export const useEmployees = (filters?: EmployeeFilter) => {
   const [availabilityFilter, setAvailabilityFilter] = useState<number | null>(null);
   const { createEmployee, updateEmployee, deleteEmployee, isLoading: mutationLoading } = useEmployeeMutations();
 
-  const fetchEmployees = async (): Promise<Employee[]> => {
+  const fetchEmployees = async () => {
     console.log('Employees query started');
     
     if (!company) return [];
@@ -46,13 +46,7 @@ export const useEmployees = (filters?: EmployeeFilter) => {
       query = query.eq('status', filters.status);
     }
 
-    // Use explicit typing for the query response
-    interface EmployeeQueryResponse {
-      data: RawEmployeeFromDb[] | null;
-      error: any;
-    }
-
-    const { data, error }: EmployeeQueryResponse = await query;
+    const { data, error } = await query;
     
     console.log('Employees query response: ', { data, error });
     
@@ -67,7 +61,7 @@ export const useEmployees = (filters?: EmployeeFilter) => {
     }
     
     // Transform the data to match the Employee interface
-    const employees: Employee[] = data ? data.map(mapDbEmployeeToEmployee) : [];
+    const employees = data ? data.map(mapDbEmployeeToEmployee) : [];
 
     return employees;
   };
