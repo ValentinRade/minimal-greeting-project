@@ -245,7 +245,35 @@
     "saveSuccess": "Preferencje zapisane pomyślnie",
     "updateSuccess": "Preferencje zaktualizowane pomyślnie",
     "saveError": "Błąd zapisywania preferencji",
-    "loadError": "Błąd ładowania preferencji"
+    "loadError": "Błąd ładowania preferencji",
+    "companyExperience": "Od kiedy Twoja firma działa w sektorze transportowym?",
+    "teamSize": "Jaki jest obecny rozmiar Twojego zespołu?",
+    "drivers": "Kierowcy",
+    "dispatchers": "Dyspozytorzy",
+    "others": "Inni",
+    "preferredTourTypes": "Jakie rodzaje tras wolisz realizować?",
+    "selectAllApplicable": "Wybierz wszystkie pasujące opcje.",
+    "flexibility": "Jak elastyczna jest Twoja dostępność?",
+    "spotOnly": "Tylko zlecenia jednorazowe",
+    "fixedOnly": "Tylko trasy o stałych harmonogramach",
+    "both": "Obie opcje (jednorazowe + stałe)",
+    "specialization": "Jaka jest Twoja szczególna mocna strona lub specjalizacja?",
+    "specializationPlaceholder": "Opisz swoje mocne strony lub specjalizacje...",
+    "frequentRoutes": "Które trasy obsługujesz najczęściej?",
+    "routesDescription": "Wprowadź do 5 najczęściej obsługiwanych tras.",
+    "routePlaceholder": "np. Warszawa → Kraków",
+    "clientTypes": "Jakie rodzaje klientów znasz z praktyki?",
+    "communication": "Jak zazwyczaj przebiega u Ciebie komunikacja?",
+    "responseTime": "Czas odpowiedzi",
+    "languages": "Języki",
+    "languagesDescription": "Wybierz wszystkie używane języki.",
+    "problemHandling": "Jak radzisz sobie z problemami podczas transportu?",
+    "problemHandlingPlaceholder": "Opisz, jak radzisz sobie z problemami...",
+    "expectationsFromShipper": "Czego oczekujesz od nadawcy ładunku dla dobrej współpracy?",
+    "expectationsPlaceholder": "Opisz swoje oczekiwania...",
+    "orderPreference": "Czy wolisz otrzymywać regularne zlecenia, czy raczej spontaniczne, pojedyncze przejazdy?",
+    "regularOrders": "Regularne (np. możliwe limity tygodniowe)",
+    "spontaneousOrders": "Spontaniczne/pojedyncze przejazdy"
   },
   "ranking": {
     "title": "Ranking",
@@ -315,5 +343,39 @@
     "errorFetchingCompanyUser": "Błąd podczas pobierania użytkownika firmy:",
     "foundCompanyThroughUsers": "Znaleziono firmę przez company_users:",
     "foundCompanyThroughTable": "Znaleziono firmę przez tabelę companies:"
+  },
+  "ui": {
+    "sr": {
+      "close": "Zamknij",
+      "more": "Więcej",
+      "previous": "Poprzedni",
+      "next": "Następny",
+      "toggle": "Przełącz",
+      "pickDate": "Wybierz datę"
+    },
+    "pageNotFound": {
+      "title": "404",
+      "message": "Ups! Strona nie znaleziona",
+      "backToHome": "Powrót do strony głównej"
+    },
+    "form": {
+      "loading": "Ładowanie danych...",
+      "addButton": "Dodaj",
+      "selectMonth": "Wybierz miesiąc",
+      "selectYear": "Wybierz rok",
+      "month": "Miesiąc",
+      "year": "Rok",
+      "previous": "Poprzedni",
+      "next": "Następny"
+    },
+    "pagination": {
+      "previous": "Poprzedni",
+      "next": "Następny",
+      "more": "Więcej stron"
+    },
+    "carousel": {
+      "previousSlide": "Poprzedni slajd",
+      "nextSlide": "Następny slajd"
+    }
   }
 }

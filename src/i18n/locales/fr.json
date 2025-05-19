@@ -106,7 +106,7 @@
     "list": "Liste des véhicules",
     "vehicle": "Véhicule",
     "noVehicles": "Aucun véhicule trouvé",
-    "addFirst": "Ajoutez votre premier v��hicule",
+    "addFirst": "Ajoutez votre premier véhicule",
     "vehicleAdded": "Véhicule ajouté avec succès",
     "vehicleUpdated": "Véhicule mis à jour avec succès",
     "vehicleDeleted": "Véhicule supprimé avec succès",
@@ -199,16 +199,78 @@
     "editButton": "Modifier",
     "noData": "Aucune donnée disponible. Cliquez sur 'Modifier' pour ajouter vos critères de sélection."
   },
+  "ui": {
+    "sr": {
+      "close": "Fermer",
+      "more": "Plus",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "toggle": "Basculer",
+      "pickDate": "Choisir une date"
+    },
+    "pageNotFound": {
+      "title": "404",
+      "message": "Oups! Page non trouvée",
+      "backToHome": "Retour à l'accueil"
+    },
+    "form": {
+      "loading": "Chargement des données...",
+      "addButton": "Ajouter",
+      "selectMonth": "Sélectionner le mois",
+      "selectYear": "Sélectionner l'année",
+      "month": "Mois",
+      "year": "Année",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "more": "Plus de pages"
+    },
+    "carousel": {
+      "previousSlide": "Diapositive précédente",
+      "nextSlide": "Diapositive suivante"
+    }
+  },
   "preferences": {
     "title": "Préférences",
     "overview": "Aperçu des Préférences",
     "edit": "Modifier les Préférences",
-    "formTitle": "Préférences d'Entreprise",
-    "formDescription": "Veuillez partager vos préférences avec nous afin que nous puissions vous proposer des missions adaptées.",
+    "formTitle": "Préférences de l'entreprise",
+    "formDescription": "Partagez vos préférences avec nous afin que nous puissions vous associer à des missions adaptées.",
     "saveSuccess": "Préférences enregistrées avec succès",
     "updateSuccess": "Préférences mises à jour avec succès",
     "saveError": "Erreur lors de l'enregistrement des préférences",
-    "loadError": "Erreur lors du chargement des préférences"
+    "loadError": "Erreur lors du chargement des préférences",
+    "companyExperience": "Depuis quand votre entreprise est-elle active dans le secteur du transport?",
+    "teamSize": "Quelle est la taille actuelle de votre équipe?",
+    "drivers": "Chauffeurs",
+    "dispatchers": "Répartiteurs",
+    "others": "Autres",
+    "preferredTourTypes": "Quels types de tournées préférez-vous entreprendre?",
+    "selectAllApplicable": "Sélectionnez toutes les options applicables.",
+    "flexibility": "Quelle est votre flexibilité de disponibilité?",
+    "spotOnly": "Uniquement des affaires ponctuelles",
+    "fixedOnly": "Uniquement des tournées à horaire fixe",
+    "both": "Les deux (ponctuel + fixe)",
+    "specialization": "Quelle est votre force particulière ou spécialisation?",
+    "specializationPlaceholder": "Décrivez vos forces ou spécialisations...",
+    "frequentRoutes": "Quelles routes desservez-vous le plus fréquemment?",
+    "routesDescription": "Entrez jusqu'à 5 itinéraires fréquemment desservis.",
+    "routePlaceholder": "ex. Paris → Lyon",
+    "clientTypes": "Quels types de clients connaissez-vous par la pratique?",
+    "communication": "Comment fonctionne généralement la communication pour vous?",
+    "responseTime": "Temps de réponse",
+    "languages": "Langues",
+    "languagesDescription": "Sélectionnez toutes les langues applicables.",
+    "problemHandling": "Comment gérez-vous les problèmes pendant les transports?",
+    "problemHandlingPlaceholder": "Décrivez comment vous gérez les problèmes...",
+    "expectationsFromShipper": "Qu'attendez-vous d'un expéditeur pour une bonne coopération?",
+    "expectationsPlaceholder": "Décrivez vos attentes...",
+    "orderPreference": "Souhaitez-vous recevoir des commandes régulières ou plutôt des trajets ponctuels?",
+    "regularOrders": "Régulier (ex. limites hebdomadaires acceptables)",
+    "spontaneousOrders": "Spontané/trajets individuels"
   },
   "prequalifications": {
     "title": "Préqualifications",

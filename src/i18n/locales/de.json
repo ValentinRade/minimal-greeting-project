@@ -538,5 +538,71 @@
     "errorFetchingCompanyUser": "Fehler beim Abrufen des Unternehmensnutzers:",
     "foundCompanyThroughUsers": "Unternehmen über company_users gefunden:",
     "foundCompanyThroughTable": "Unternehmen über companies-Tabelle gefunden:"
+  },
+  "ui": {
+    "sr": {
+      "close": "Schließen",
+      "more": "Mehr",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "toggle": "Umschalten",
+      "pickDate": "Datum auswählen"
+    },
+    "pageNotFound": {
+      "title": "404",
+      "message": "Ups! Seite nicht gefunden",
+      "backToHome": "Zurück zur Startseite"
+    },
+    "form": {
+      "loading": "Daten werden geladen...",
+      "addButton": "Hinzufügen",
+      "selectMonth": "Monat auswählen",
+      "selectYear": "Jahr auswählen",
+      "month": "Monat",
+      "year": "Jahr",
+      "previous": "Zurück",
+      "next": "Weiter"
+    },
+    "pagination": {
+      "previous": "Zurück",
+      "next": "Weiter",
+      "more": "Mehr"
+    },
+    "carousel": {
+      "previousSlide": "Vorheriger Slide",
+      "nextSlide": "Nächster Slide"
+    }
+  },
+  "preferences": {
+    "formTitle": "Unternehmens-Präferenzen",
+    "formDescription": "Bitte teilen Sie Ihre Präferenzen mit uns, damit wir Ihnen passende Aufträge vermitteln können.",
+    "companyExperience": "Seit wann ist Ihr Unternehmen im Transportbereich aktiv?",
+    "teamSize": "Wie groß ist Ihr Team aktuell?",
+    "drivers": "Fahrer",
+    "dispatchers": "Disponenten",
+    "others": "Weitere",
+    "preferredTourTypes": "Welche Art von Touren übernehmen Sie bevorzugt?",
+    "selectAllApplicable": "Wählen Sie alle zutreffenden Optionen aus.",
+    "flexibility": "Wie flexibel ist Ihre Einsatzbereitschaft?",
+    "spotOnly": "Nur Spot-Geschäft",
+    "fixedOnly": "Nur feste Termin-Touren",
+    "both": "Beides (Spot + Termin)",
+    "specialization": "Worin liegt Ihre besondere Stärke oder Spezialisierung?",
+    "specializationPlaceholder": "Beschreiben Sie Ihre Stärken oder Spezialisierungen...",
+    "frequentRoutes": "Welche Strecken bedienen Sie am häufigsten?",
+    "routesDescription": "Geben Sie bis zu 5 häufig bediente Strecken ein.",
+    "routePlaceholder": "z.B. München → Berlin",
+    "clientTypes": "Welche Auftraggeber-Typen kennen Sie aus der Praxis?",
+    "communication": "Wie läuft bei Ihnen typischerweise die Kommunikation ab?",
+    "responseTime": "Antwortzeit",
+    "languages": "Sprachen",
+    "languagesDescription": "Wählen Sie alle zutreffenden Sprachen aus.",
+    "problemHandling": "Wie gehen Sie mit Problemen während der Transporte um?",
+    "problemHandlingPlaceholder": "Beschreiben Sie Ihren Umgang mit Problemen...",
+    "expectationsFromShipper": "Was erwarten Sie von einem Versender für eine gute Zusammenarbeit?",
+    "expectationsPlaceholder": "Beschreiben Sie Ihre Erwartungen...",
+    "orderPreference": "Möchten Sie regelmäßig Aufträge erhalten oder lieber spontane Einzelfahrten?",
+    "regularOrders": "Regelmäßig (z. B. Wochenlimits vereinbar)",
+    "spontaneousOrders": "Spontan/Einzelfahrten"
   }
 }

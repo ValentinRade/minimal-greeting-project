@@ -260,11 +260,39 @@
     "overview": "Tercihler Genel Bakış",
     "edit": "Tercihleri Düzenle",
     "formTitle": "Şirket Tercihleri",
-    "formDescription": "Lütfen size uygun görevler bulabilmemiz için tercihlerinizi bizimle paylaşın.",
+    "formDescription": "Size uygun görevler eşleştirebilmemiz için tercihlerinizi bizimle paylaşın.",
     "saveSuccess": "Tercihler başarıyla kaydedildi",
     "updateSuccess": "Tercihler başarıyla güncellendi",
     "saveError": "Tercihleri kaydetme hatası",
-    "loadError": "Tercihleri yükleme hatası"
+    "loadError": "Tercihleri yükleme hatası",
+    "companyExperience": "Şirketiniz ne zamandan beri taşımacılık sektöründe faaliyet gösteriyor?",
+    "teamSize": "Ekibiniz şu anda ne kadar büyük?",
+    "drivers": "Sürücüler",
+    "dispatchers": "Sevkiyatçılar",
+    "others": "Diğerleri",
+    "preferredTourTypes": "Hangi tur tiplerini üstlenmeyi tercih edersiniz?",
+    "selectAllApplicable": "Uygun olan tüm seçenekleri seçin.",
+    "flexibility": "Müsaitlik durumunuz ne kadar esnek?",
+    "spotOnly": "Sadece spot işler",
+    "fixedOnly": "Sadece sabit programlı turlar",
+    "both": "Her ikisi de (spot + sabit)",
+    "specialization": "Özel gücünüz veya uzmanlığınız nedir?",
+    "specializationPlaceholder": "Güçlü yanlarınızı veya uzmanlıklarınızı açıklayın...",
+    "frequentRoutes": "En sık hangi rotaları hizmet veriyorsunuz?",
+    "routesDescription": "Sık hizmet verdiğiniz 5 rotaya kadar girin.",
+    "routePlaceholder": "örn. İstanbul → Ankara",
+    "clientTypes": "Pratikte hangi müşteri türlerini tanıyorsunuz?",
+    "communication": "İletişim genellikle sizin için nasıl işliyor?",
+    "responseTime": "Yanıt süresi",
+    "languages": "Diller",
+    "languagesDescription": "Uygun olan tüm dilleri seçin.",
+    "problemHandling": "Taşıma sırasında sorunları nasıl ele alıyorsunuz?",
+    "problemHandlingPlaceholder": "Sorunları nasıl ele aldığınızı açıklayın...",
+    "expectationsFromShipper": "İyi bir işbirliği için bir göndericiden ne bekliyorsunuz?",
+    "expectationsPlaceholder": "Beklentilerinizi açıklayın...",
+    "orderPreference": "Düzenli siparişler almak mı yoksa anlık tek seferlik yolculuklar mı istersiniz?",
+    "regularOrders": "Düzenli (örn. haftalık limitler kabul edilebilir)",
+    "spontaneousOrders": "Anlık/tek seferlik yolculuklar"
   },
   "references": {
     "title": "Referanslar",
@@ -327,5 +355,39 @@
     "show": "Göster",
     "hide": "Gizle",
     "close": "Kapat"
+  },
+  "ui": {
+    "sr": {
+      "close": "Kapat",
+      "more": "Daha fazla",
+      "previous": "Önceki",
+      "next": "Sonraki",
+      "toggle": "Değiştir",
+      "pickDate": "Tarih seçin"
+    },
+    "pageNotFound": {
+      "title": "404",
+      "message": "Ups! Sayfa bulunamadı",
+      "backToHome": "Ana sayfaya dön"
+    },
+    "form": {
+      "loading": "Veriler yükleniyor...",
+      "addButton": "Ekle",
+      "selectMonth": "Ay seçin",
+      "selectYear": "Yıl seçin",
+      "month": "Ay",
+      "year": "Yıl",
+      "previous": "Önceki",
+      "next": "Sonraki"
+    },
+    "pagination": {
+      "previous": "Önceki",
+      "next": "Sonraki",
+      "more": "Daha fazla sayfa"
+    },
+    "carousel": {
+      "previousSlide": "Önceki slayt",
+      "nextSlide": "Sonraki slayt"
+    }
   }
 }

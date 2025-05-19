@@ -1,4 +1,3 @@
-
 {
   "common": {
     "appName": "FreightBridge",
@@ -513,5 +512,71 @@
       "next": "Next",
       "save": "Save"
     }
+  },
+  "ui": {
+    "sr": {
+      "close": "Close",
+      "more": "More",
+      "previous": "Previous",
+      "next": "Next",
+      "toggle": "Toggle",
+      "pickDate": "Pick a date"
+    },
+    "pageNotFound": {
+      "title": "404",
+      "message": "Oops! Page not found",
+      "backToHome": "Back to home"
+    },
+    "form": {
+      "loading": "Loading data...",
+      "addButton": "Add",
+      "selectMonth": "Select month",
+      "selectYear": "Select year",
+      "month": "Month",
+      "year": "Year",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "more": "More pages"
+    },
+    "carousel": {
+      "previousSlide": "Previous slide",
+      "nextSlide": "Next slide"
+    }
+  },
+  "preferences": {
+    "formTitle": "Company Preferences",
+    "formDescription": "Please share your preferences with us so we can match you with suitable assignments.",
+    "companyExperience": "Since when has your company been active in the transport sector?",
+    "teamSize": "How large is your team currently?",
+    "drivers": "Drivers",
+    "dispatchers": "Dispatchers",
+    "others": "Others",
+    "preferredTourTypes": "What types of tours do you prefer to undertake?",
+    "selectAllApplicable": "Select all applicable options.",
+    "flexibility": "How flexible is your availability?",
+    "spotOnly": "Spot business only",
+    "fixedOnly": "Fixed schedule tours only",
+    "both": "Both (spot + fixed)",
+    "specialization": "What is your special strength or specialization?",
+    "specializationPlaceholder": "Describe your strengths or specializations...",
+    "frequentRoutes": "Which routes do you service most frequently?",
+    "routesDescription": "Enter up to 5 frequently serviced routes.",
+    "routePlaceholder": "e.g. Munich → Berlin",
+    "clientTypes": "What types of clients are you familiar with from practice?",
+    "communication": "How does communication typically work for you?",
+    "responseTime": "Response time",
+    "languages": "Languages",
+    "languagesDescription": "Select all applicable languages.",
+    "problemHandling": "How do you handle problems during transports?",
+    "problemHandlingPlaceholder": "Describe how you handle problems...",
+    "expectationsFromShipper": "What do you expect from a shipper for good cooperation?",
+    "expectationsPlaceholder": "Describe your expectations...",
+    "orderPreference": "Would you like to receive regular orders or rather spontaneous individual trips?",
+    "regularOrders": "Regular (e.g. weekly limits agreeable)",
+    "spontaneousOrders": "Spontaneous/individual trips"
   }
 }

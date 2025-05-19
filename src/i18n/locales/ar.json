@@ -1,4 +1,3 @@
-
 {
   "auth": {
     "welcome": "مرحبًا",
@@ -237,11 +236,39 @@
     "overview": "نظرة عامة على التفضيلات",
     "edit": "تحرير التفضيلات",
     "formTitle": "تفضيلات الشركة",
-    "formDescription": "يرجى مشاركة تفضيلاتك معنا حتى نتمكن من مطابقتك مع المهام المناسبة.",
+    "formDescription": "شارك تفضيلاتك معنا حتى نتمكن من مطابقتك مع المهام المناسبة.",
     "saveSuccess": "تم حفظ التفضيلات بنجاح",
     "updateSuccess": "تم تحديث التفضيلات بنجاح",
     "saveError": "خطأ في حفظ التفضيلات",
-    "loadError": "خطأ في تحميل التفضيلات"
+    "loadError": "خطأ في تحميل التفضيلات",
+    "companyExperience": "منذ متى وشركتك تنشط في قطاع النقل؟",
+    "teamSize": "ما هو حجم فريقك الحالي؟",
+    "drivers": "السائقين",
+    "dispatchers": "المرسلين",
+    "others": "آخرين",
+    "preferredTourTypes": "ما أنواع الجولات التي تفضل القيام بها؟",
+    "selectAllApplicable": "حدد كل الخيارات المناسبة.",
+    "flexibility": "ما مدى مرونة توفرك؟",
+    "spotOnly": "أعمال مؤقتة فقط",
+    "fixedOnly": "جولات بجدول ثابت فقط",
+    "both": "كلاهما (مؤقت + ثابت)",
+    "specialization": "ما هي نقطة قوتك الخاصة أو تخصصك؟",
+    "specializationPlaceholder": "صف نقاط قوتك أو تخصصاتك...",
+    "frequentRoutes": "ما هي المسارات التي تخدمها بشكل متكرر؟",
+    "routesDescription": "أدخل حتى 5 مسارات تخدمها بشكل متكرر.",
+    "routePlaceholder": "مثال: القاهرة → الإسكندرية",
+    "clientTypes": "ما أنواع العملاء التي تعرفها من الممارسة العملية؟",
+    "communication": "كيف تعمل عملية الاتصال عادة بالنسبة لك؟",
+    "responseTime": "وقت الاستجابة",
+    "languages": "اللغات",
+    "languagesDescription": "حدد كل اللغات المناسبة.",
+    "problemHandling": "كيف تتعامل مع المشاكل أثناء عمليات النقل؟",
+    "problemHandlingPlaceholder": "صف كيف تتعامل مع المشاكل...",
+    "expectationsFromShipper": "ما الذي تتوقعه من المرسل للتعاون الجيد؟",
+    "expectationsPlaceholder": "صف توقعاتك...",
+    "orderPreference": "هل ترغب في تلقي طلبات منتظمة أم رحلات فردية عفوية؟",
+    "regularOrders": "منتظم (مثل حدود أسبوعية مقبولة)",
+    "spontaneousOrders": "عفوي/رحلات فردية"
   },
   "references": {
     "title": "المراجع",
@@ -304,5 +331,39 @@
     "show": "عرض",
     "hide": "إخفاء",
     "close": "إغلاق"
+  },
+  "ui": {
+    "sr": {
+      "close": "إغلاق",
+      "more": "المزيد",
+      "previous": "السابق",
+      "next": "التالي",
+      "toggle": "تبديل",
+      "pickDate": "اختر تاريخًا"
+    },
+    "pageNotFound": {
+      "title": "404",
+      "message": "عذرًا! الصفحة غير موجودة",
+      "backToHome": "العودة إلى الصفحة الرئيسية"
+    },
+    "form": {
+      "loading": "جاري تحميل البيانات...",
+      "addButton": "إضافة",
+      "selectMonth": "اختر الشهر",
+      "selectYear": "اختر السنة",
+      "month": "الشهر",
+      "year": "السنة",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "pagination": {
+      "previous": "السابق",
+      "next": "التالي",
+      "more": "المزيد من الصفحات"
+    },
+    "carousel": {
+      "previousSlide": "الشريحة السابقة",
+      "nextSlide": "الشريحة التالية"
+    }
   }
 }

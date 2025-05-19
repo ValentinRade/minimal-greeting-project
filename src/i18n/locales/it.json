@@ -246,7 +246,35 @@
     "saveSuccess": "Preferenze salvate con successo",
     "updateSuccess": "Preferenze aggiornate con successo",
     "saveError": "Errore nel salvare le preferenze",
-    "loadError": "Errore nel caricare le preferenze"
+    "loadError": "Errore nel caricare le preferenze",
+    "companyExperience": "Da quando la tua azienda opera nel settore dei trasporti?",
+    "teamSize": "Qual è l'attuale dimensione del tuo team?",
+    "drivers": "Autisti",
+    "dispatchers": "Coordinatori",
+    "others": "Altri",
+    "preferredTourTypes": "Che tipo di trasporti preferisci effettuare?",
+    "selectAllApplicable": "Seleziona tutte le opzioni applicabili.",
+    "flexibility": "Quanto è flessibile la tua disponibilità?",
+    "spotOnly": "Solo trasporti spot",
+    "fixedOnly": "Solo trasporti a orari fissi",
+    "both": "Entrambi (spot + fissi)",
+    "specialization": "Qual è il tuo punto di forza o specializzazione?",
+    "specializationPlaceholder": "Descrivi i tuoi punti di forza o specializzazioni...",
+    "frequentRoutes": "Quali sono le rotte che servi più frequentemente?",
+    "routesDescription": "Inserisci fino a 5 rotte frequentemente servite.",
+    "routePlaceholder": "es. Milano → Roma",
+    "clientTypes": "Quali tipi di clienti conosci dalla pratica?",
+    "communication": "Come funziona tipicamente la comunicazione per te?",
+    "responseTime": "Tempo di risposta",
+    "languages": "Lingue",
+    "languagesDescription": "Seleziona tutte le lingue applicabili.",
+    "problemHandling": "Come gestisci i problemi durante i trasporti?",
+    "problemHandlingPlaceholder": "Descrivi come gestisci i problemi...",
+    "expectationsFromShipper": "Cosa ti aspetti da uno spedizioniere per una buona collaborazione?",
+    "expectationsPlaceholder": "Descrivi le tue aspettative...",
+    "orderPreference": "Preferisci ricevere ordini regolari o piuttosto viaggi individuali spontanei?",
+    "regularOrders": "Regolare (ad es. con limiti settimanali accettabili)",
+    "spontaneousOrders": "Spontaneo/viaggi individuali"
   },
   "prequalifications": {
     "title": "Prequalificazioni",
@@ -375,6 +403,40 @@
       "next": "Avanti",
       "save": "Salva",
       "cancel": "Annulla"
+    }
+  },
+  "ui": {
+    "sr": {
+      "close": "Chiudi",
+      "more": "Altro",
+      "previous": "Precedente",
+      "next": "Successivo",
+      "toggle": "Attiva/disattiva",
+      "pickDate": "Scegli una data"
+    },
+    "pageNotFound": {
+      "title": "404",
+      "message": "Ops! Pagina non trovata",
+      "backToHome": "Torna alla home"
+    },
+    "form": {
+      "loading": "Caricamento dati...",
+      "addButton": "Aggiungi",
+      "selectMonth": "Seleziona mese",
+      "selectYear": "Seleziona anno",
+      "month": "Mese",
+      "year": "Anno",
+      "previous": "Precedente",
+      "next": "Successivo"
+    },
+    "pagination": {
+      "previous": "Precedente",
+      "next": "Successivo",
+      "more": "Più pagine"
+    },
+    "carousel": {
+      "previousSlide": "Diapositiva precedente",
+      "nextSlide": "Diapositiva successiva"
     }
   }
 }

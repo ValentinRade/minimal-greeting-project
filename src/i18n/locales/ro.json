@@ -240,7 +240,35 @@
     "saveSuccess": "Preferințele au fost salvate cu succes",
     "updateSuccess": "Preferințele au fost actualizate cu succes",
     "saveError": "Eroare la salvarea preferințelor",
-    "loadError": "Eroare la încărcarea preferințelor"
+    "loadError": "Eroare la încărcarea preferințelor",
+    "companyExperience": "De când este compania dvs. activă în sectorul transporturilor?",
+    "teamSize": "Cât de mare este echipa dvs. în prezent?",
+    "drivers": "Șoferi",
+    "dispatchers": "Dispeceri",
+    "others": "Alții",
+    "preferredTourTypes": "Ce tipuri de curse preferați să efectuați?",
+    "selectAllApplicable": "Selectați toate opțiunile aplicabile.",
+    "flexibility": "Cât de flexibilă este disponibilitatea dvs.?",
+    "spotOnly": "Doar afaceri ocazionale",
+    "fixedOnly": "Doar curse cu program fix",
+    "both": "Ambele (ocazional + fix)",
+    "specialization": "Care este punctul dvs. forte sau specializarea?",
+    "specializationPlaceholder": "Descrieți punctele forte sau specializările dvs...",
+    "frequentRoutes": "Ce rute deserviți cel mai frecvent?",
+    "routesDescription": "Introduceți până la 5 rute deservite frecvent.",
+    "routePlaceholder": "ex. București → Cluj",
+    "clientTypes": "Ce tipuri de clienți cunoașteți din practică?",
+    "communication": "Cum funcționează în mod tipic comunicarea pentru dvs.?",
+    "responseTime": "Timp de răspuns",
+    "languages": "Limbi",
+    "languagesDescription": "Selectați toate limbile aplicabile.",
+    "problemHandling": "Cum gestionați problemele în timpul transporturilor?",
+    "problemHandlingPlaceholder": "Descrieți cum gestionați problemele...",
+    "expectationsFromShipper": "Ce așteptați de la un expeditor pentru o bună colaborare?",
+    "expectationsPlaceholder": "Descrieți așteptările dvs...",
+    "orderPreference": "Doriți să primiți comenzi regulate sau mai degrabă călătorii individuale spontane?",
+    "regularOrders": "Regulat (de ex. limite săptămânale acceptabile)",
+    "spontaneousOrders": "Spontan/călătorii individuale"
   },
   "references": {
     "title": "Referințe",
@@ -303,5 +331,39 @@
     "show": "Afișează",
     "hide": "Ascunde",
     "close": "Închide"
+  },
+  "ui": {
+    "sr": {
+      "close": "Închide",
+      "more": "Mai mult",
+      "previous": "Anterior",
+      "next": "Următor",
+      "toggle": "Comutare",
+      "pickDate": "Alege o dată"
+    },
+    "pageNotFound": {
+      "title": "404",
+      "message": "Ups! Pagina nu a fost găsită",
+      "backToHome": "Înapoi la pagina principală"
+    },
+    "form": {
+      "loading": "Se încarcă datele...",
+      "addButton": "Adaugă",
+      "selectMonth": "Selectează luna",
+      "selectYear": "Selectează anul",
+      "month": "Lună",
+      "year": "An",
+      "previous": "Anterior",
+      "next": "Următor"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Următor",
+      "more": "Mai multe pagini"
+    },
+    "carousel": {
+      "previousSlide": "Slide-ul anterior",
+      "nextSlide": "Slide-ul următor"
+    }
   }
 }

@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import { Json } from '@/integrations/supabase/types';
 
 // Generate year options from 2000 to 2025
@@ -357,9 +357,9 @@ const PreferencesForm: React.FC = () => {
 
   if (isLoadingPreferences) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="animate-spin h-8 w-8 text-blue-500" />
-        <span className="ml-2">Daten werden geladen...</span>
+      <div className="flex items-center justify-center py-6">
+        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+        <span className="ml-2">{t('ui.form.loading')}</span>
       </div>
     );
   }
@@ -367,477 +367,473 @@ const PreferencesForm: React.FC = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* Start Date Transport */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Seit wann ist Ihr Unternehmen im Transportbereich aktiv?</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="start_date_transport.month"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Monat</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Monat auswählen" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {monthOptions.map((month) => (
-                        <SelectItem key={month} value={month}>
-                          {month}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="start_date_transport.year"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Jahr</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Jahr auswählen" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {yearOptions.map((year) => (
-                        <SelectItem key={year} value={year}>
-                          {year}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        {/* Team Size */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Wie groß ist Ihr Team aktuell?</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <FormField
-              control={form.control}
-              name="team_size.drivers"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Fahrer</FormLabel>
-                  <FormControl>
-                    <Input type="number" min="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="team_size.dispatchers"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Disponenten</FormLabel>
-                  <FormControl>
-                    <Input type="number" min="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="team_size.others"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Weitere</FormLabel>
-                  <FormControl>
-                    <Input type="number" min="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        {/* Preferred Tour Types */}
-        <FormField
-          control={form.control}
-          name="preferred_tour_types"
-          render={() => (
-            <FormItem>
-              <div className="mb-4">
-                <FormLabel className="text-lg font-medium">Welche Art von Touren übernehmen Sie bevorzugt?</FormLabel>
-                <FormDescription>Wählen Sie alle zutreffenden Optionen aus.</FormDescription>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {tourTypesOptions.map((option) => (
-                  <FormField
-                    key={option.id}
-                    control={form.control}
-                    name="preferred_tour_types"
-                    render={({ field }) => {
-                      return (
-                        <FormItem key={option.id} className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(option.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, option.id])
-                                  : field.onChange(field.value?.filter((value) => value !== option.id));
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal">{option.label}</FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Flexibility */}
-        <FormField
-          control={form.control}
-          name="flexibility"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel className="text-lg font-medium">Wie flexibel ist Ihre Einsatzbereitschaft?</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="spot" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Nur Spot-Geschäft</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="fixed" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Nur feste Termin-Touren</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="both" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Beides (Spot + Termin)</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="24_7" />
-                    </FormControl>
-                    <FormLabel className="font-normal">24/7-Bereitschaft</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Specialization */}
-        <FormField
-          control={form.control}
-          name="specialization"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg font-medium">Worin liegt Ihre besondere Stärke oder Spezialisierung?</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Beschreiben Sie Ihre Stärken oder Spezialisierungen..." 
-                  className="min-h-[100px]" 
-                  {...field} 
-                  maxLength={500}
-                />
-              </FormControl>
-              <FormDescription>
-                {field.value.length}/500 Zeichen
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Frequent Routes */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Welche Strecken bedienen Sie am häufigsten?</h3>
-          <FormDescription>Geben Sie bis zu 5 häufig bediente Strecken ein.</FormDescription>
-
-          <div className="flex items-center gap-2">
-            <Input 
-              value={currentRoute}
-              onChange={(e) => setCurrentRoute(e.target.value)}
-              placeholder="z.B. München → Berlin"
-              className="flex-1"
-              maxLength={50}
-            />
-            <Button type="button" onClick={addRoute}>Hinzufügen</Button>
-          </div>
-
-          <div className="space-y-2">
-            {routes.map((route, index) => (
-              <div key={index} className="flex items-center justify-between bg-muted p-2 rounded-md">
-                <span>{route}</span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeRoute(index)}
-                >
-                  Entfernen
-                </Button>
-              </div>
-            ))}
-          </div>
-          {form.formState.errors.frequent_routes && (
-            <p className="text-sm font-medium text-destructive">{form.formState.errors.frequent_routes.message}</p>
-          )}
-        </div>
-
-        {/* Client Types */}
-        <FormField
-          control={form.control}
-          name="client_types"
-          render={() => (
-            <FormItem>
-              <div className="mb-4">
-                <FormLabel className="text-lg font-medium">Welche Auftraggeber-Typen kennen Sie aus der Praxis?</FormLabel>
-                <FormDescription>Wählen Sie alle zutreffenden Optionen aus.</FormDescription>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {clientTypesOptions.map((option) => (
-                  <FormField
-                    key={option.id}
-                    control={form.control}
-                    name="client_types"
-                    render={({ field }) => {
-                      return (
-                        <FormItem key={option.id} className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(option.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, option.id])
-                                  : field.onChange(field.value?.filter((value) => value !== option.id));
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal">{option.label}</FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Communication */}
-        <div className="space-y-6">
-          <h3 className="text-lg font-medium">Wie läuft bei Ihnen typischerweise die Kommunikation ab?</h3>
-          
-          {/* Communication Response Time */}
-          <FormField
-            control={form.control}
-            name="communication.response_time"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Antwortzeit</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="less_1h" />
-                      </FormControl>
-                      <FormLabel className="font-normal">&#60; 1 h</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="1_4h" />
-                      </FormControl>
-                      <FormLabel className="font-normal">1–4 h</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="4_24h" />
-                      </FormControl>
-                      <FormLabel className="font-normal">4–24 h</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="more_24h" />
-                      </FormControl>
-                      <FormLabel className="font-normal">&#62; 24 h</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Communication Languages */}
-          <FormField
-            control={form.control}
-            name="communication.languages"
-            render={() => (
-              <FormItem>
-                <div className="mb-4">
-                  <FormLabel>Sprachen</FormLabel>
-                  <FormDescription>Wählen Sie alle zutreffenden Sprachen aus.</FormDescription>
-                </div>
-                <div className="flex flex-wrap gap-6">
-                  {languagesOptions.map((option) => (
+        {!isLoadingPreferences && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-8">
+                {/* Company Experience */}
+                <div>
+                  <h3 className="text-lg font-medium">{t('preferences.companyExperience')}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     <FormField
-                      key={option.id}
                       control={form.control}
-                      name="communication.languages"
-                      render={({ field }) => {
-                        return (
-                          <FormItem key={option.id} className="flex flex-row items-start space-x-3 space-y-0">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(option.id)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, option.id])
-                                    : field.onChange(field.value?.filter((value) => value !== option.id));
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">{option.label}</FormLabel>
-                          </FormItem>
-                        );
-                      }}
+                      name="start_date_transport.month"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel>{t('ui.form.month')}</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('ui.form.selectMonth')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {monthOptions.map((month) => (
+                                <SelectItem key={month} value={month}>
+                                  {month}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  ))}
+                    <FormField
+                      control={form.control}
+                      name="start_date_transport.year"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel>{t('ui.form.year')}</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('ui.form.selectYear')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {yearOptions.map((year) => (
+                                <SelectItem key={year} value={year}>
+                                  {year}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
 
-        {/* Problem Handling */}
-        <FormField
-          control={form.control}
-          name="problem_handling"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg font-medium">Wie gehen Sie mit Problemen während der Transporte um?</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Beschreiben Sie Ihren Umgang mit Problemen..." 
-                  className="min-h-[100px]" 
-                  {...field} 
-                  maxLength={500}
+                {/* Team Size */}
+                <div>
+                  <h3 className="text-lg font-medium">{t('preferences.teamSize')}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <FormField
+                      control={form.control}
+                      name="team_size.drivers"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t('preferences.drivers')}</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} min={0} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="team_size.dispatchers"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t('preferences.dispatchers')}</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} min={0} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="team_size.others"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t('preferences.others')}</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} min={0} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Tour Types */}
+                <FormField
+                  control={form.control}
+                  name="preferred_tour_types"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-medium">{t('preferences.preferredTourTypes')}</FormLabel>
+                      <FormDescription>{t('preferences.selectAllApplicable')}</FormDescription>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                        {tourTypesOptions.map((option) => (
+                          <FormField
+                            key={option.id}
+                            control={form.control}
+                            name="preferred_tour_types"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={option.id}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(option.id)}
+                                      onCheckedChange={(checked) => {
+                                        if (checked) {
+                                          field.onChange([...field.value, option.id]);
+                                        } else {
+                                          field.onChange(
+                                            field.value?.filter((value) => value !== option.id)
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {option.label}
+                                  </FormLabel>
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </FormControl>
-              <FormDescription>
-                {field.value.length}/500 Zeichen
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        {/* Expectations From Shipper */}
-        <FormField
-          control={form.control}
-          name="expectations_from_shipper"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg font-medium">Was erwarten Sie von einem Versender für eine gute Zusammenarbeit?</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Beschreiben Sie Ihre Erwartungen..." 
-                  className="min-h-[100px]" 
-                  {...field} 
-                  maxLength={500}
+                {/* Flexibility */}
+                <FormField
+                  control={form.control}
+                  name="flexibility"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-lg font-medium">{t('preferences.flexibility')}</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          className="flex flex-col space-y-1"
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="spot" />
+                            </FormControl>
+                            <FormLabel className="font-normal">{t('preferences.spotOnly')}</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="fixed" />
+                            </FormControl>
+                            <FormLabel className="font-normal">{t('preferences.fixedOnly')}</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="both" />
+                            </FormControl>
+                            <FormLabel className="font-normal">{t('preferences.both')}</FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </FormControl>
-              <FormDescription>
-                {field.value.length}/500 Zeichen
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              </div>
 
-        {/* Order Preference */}
-        <FormField
-          control={form.control}
-          name="order_preference"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel className="text-lg font-medium">Möchten Sie regelmäßig Aufträge erhalten oder lieber spontane Einzelfahrten?</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="regular" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Regelmäßig (z. B. Wochenlimits vereinbar)</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="spontaneous" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Spontan/Einzelfahrten</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              <div className="space-y-8">
+                {/* Specialization */}
+                <FormField
+                  control={form.control}
+                  name="specialization"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-medium">{t('preferences.specialization')}</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder={t('preferences.specializationPlaceholder')}
+                          {...field}
+                          rows={4}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-        <Button 
-          type="submit" 
-          className="w-full md:w-auto"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Wird gespeichert...
-            </>
-          ) : (
-            'Präferenzen speichern'
-          )}
-        </Button>
+                {/* Frequent Routes */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">{t('preferences.frequentRoutes')}</h3>
+                  <FormDescription>{t('preferences.routesDescription')}</FormDescription>
+                  <div className="flex space-x-2">
+                    <Input
+                      value={currentRoute}
+                      onChange={(e) => setCurrentRoute(e.target.value)}
+                      placeholder={t('preferences.routePlaceholder')}
+                      className="flex-grow"
+                    />
+                    <Button type="button" onClick={addRoute}>{t('ui.form.addButton')}</Button>
+                  </div>
+                  {routes.length > 0 && (
+                    <div className="mt-4 space-y-2">
+                      {routes.map((route, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 border rounded-md">
+                          <span>{route}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeRoute(index)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Client Types */}
+            <FormField
+              control={form.control}
+              name="client_types"
+              render={() => (
+                <FormItem>
+                  <FormLabel className="text-lg font-medium">{t('preferences.clientTypes')}</FormLabel>
+                  <FormDescription>{t('preferences.selectAllApplicable')}</FormDescription>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+                    {clientTypesOptions.map((option) => (
+                      <FormField
+                        key={option.id}
+                        control={form.control}
+                        name="client_types"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={option.id}
+                              className="flex flex-row items-start space-x-3 space-y-0"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(option.id)}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      field.onChange([...field.value, option.id]);
+                                    } else {
+                                      field.onChange(
+                                        field.value?.filter((value) => value !== option.id)
+                                      );
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {option.label}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Communication */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">{t('preferences.communication')}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <FormField
+                  control={form.control}
+                  name="communication.response_time"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>{t('preferences.responseTime')}</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          className="flex flex-col space-y-1"
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="less_1h" />
+                            </FormControl>
+                            <FormLabel className="font-normal">&lt; 1h</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="1_4h" />
+                            </FormControl>
+                            <FormLabel className="font-normal">1-4h</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="4_24h" />
+                            </FormControl>
+                            <FormLabel className="font-normal">4-24h</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="more_24h" />
+                            </FormControl>
+                            <FormLabel className="font-normal">&gt; 24h</FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="communication.languages"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>{t('preferences.languages')}</FormLabel>
+                      <FormDescription>{t('preferences.languagesDescription')}</FormDescription>
+                      <div className="space-y-1 mt-2">
+                        {languagesOptions.map((option) => (
+                          <FormField
+                            key={option.id}
+                            control={form.control}
+                            name="communication.languages"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={option.id}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(option.id)}
+                                      onCheckedChange={(checked) => {
+                                        if (checked) {
+                                          field.onChange([...field.value, option.id]);
+                                        } else {
+                                          field.onChange(
+                                            field.value?.filter((value) => value !== option.id)
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {option.label}
+                                  </FormLabel>
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Problem Handling */}
+            <FormField
+              control={form.control}
+              name="problem_handling"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-medium">{t('preferences.problemHandling')}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder={t('preferences.problemHandlingPlaceholder')}
+                      {...field}
+                      rows={4}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Expectations from Shipper */}
+            <FormField
+              control={form.control}
+              name="expectations_from_shipper"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-medium">{t('preferences.expectationsFromShipper')}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder={t('preferences.expectationsPlaceholder')}
+                      {...field}
+                      rows={4}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Order Preference */}
+            <FormField
+              control={form.control}
+              name="order_preference"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel className="text-lg font-medium">{t('preferences.orderPreference')}</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="regular" />
+                        </FormControl>
+                        <FormLabel className="font-normal">{t('preferences.regularOrders')}</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="spontaneous" />
+                        </FormControl>
+                        <FormLabel className="font-normal">{t('preferences.spontaneousOrders')}</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('common.saving')}
+                </>
+              ) : (
+                t('common.save')
+              )}
+            </Button>
+          </>
+        )}
       </form>
     </Form>
   );
