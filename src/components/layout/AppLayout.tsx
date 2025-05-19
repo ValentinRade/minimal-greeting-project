@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Outlet } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import ShipperHeader from './ShipperHeader';
 import SubcontractorHeader from './SubcontractorHeader';
@@ -10,7 +9,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { useTranslation } from 'react-i18next';
 
 interface AppLayoutProps {
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
@@ -29,7 +28,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           {isShipper ? <ShipperHeader /> : <SubcontractorHeader />}
           
           <main className="flex-1 p-6">
-            {children || <Outlet />}
+            {children}
           </main>
         </div>
       </div>

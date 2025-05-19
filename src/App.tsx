@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Index from './pages/Index';
 import Auth from './pages/Auth';
@@ -20,11 +20,6 @@ import SubcontractorSelectionRoutes from './routes/SubcontractorSelectionRoutes'
 import SubcontractorPreferencesRoutes from './routes/SubcontractorPreferencesRoutes';
 import SubcontractorPublicProfileRoutes from './routes/SubcontractorPublicProfileRoutes';
 import ShipperSubcontractorDatabaseRoutes from './routes/ShipperSubcontractorDatabaseRoutes';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { LanguageProvider } from './contexts/LanguageContext';
-
-// Import i18n initialization to ensure it's loaded before rendering
-import './i18n';
 
 // Settings routes
 import SettingsLayout from './pages/settings/SettingsLayout';
@@ -35,12 +30,9 @@ import CompanyInvitations from './pages/settings/CompanyInvitations';
 import CompanyUsers from './pages/settings/CompanyUsers';
 import RolesInfo from './pages/settings/RolesInfo';
 
-// Content component that uses auth data to configure the language provider
-const AppContent = () => {
-  const { user, profile } = useAuth();
-  
+function App() {
   return (
-    <LanguageProvider userId={user?.id} userLanguage={profile?.language}>
+    <>
       <Router>
         <Routes>
           <Route path="/" element={<Index />} />
@@ -49,18 +41,8 @@ const AppContent = () => {
           <Route path="/create-company" element={<CreateCompany />} />
           <Route path="/public/profile/:companyId" element={<PublicProfile />} />
 
-          {/* Protected dashboard routes with AppLayout */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            {/* Dashboard index route */}
-            <Route index element={<Navigate to="shipper" replace />} />
-            
+          {/* Protected dashboard routes */}
+          <Route path="/dashboard" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             {/* Shipper routes */}
             <Route path="shipper" element={<ShipperDashboard />} />
             <Route path="shipper/subcontractors/*" element={<ShipperSubcontractorDatabaseRoutes />} />
@@ -89,15 +71,7 @@ const AppContent = () => {
         </Routes>
       </Router>
       <Toaster />
-    </LanguageProvider>
-  );
-};
-
-function App() {
-  return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    </>
   );
 }
 

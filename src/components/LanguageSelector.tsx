@@ -14,15 +14,16 @@ import { Globe } from 'lucide-react';
 
 interface LanguageSelectorProps {
   className?: string;
+  currentLanguage: string;
 }
 
-const LanguageSelector: React.FC<LanguageSelectorProps> = ({ className }) => {
+const LanguageSelector: React.FC<LanguageSelectorProps> = ({ className, currentLanguage }) => {
   const { t } = useTranslation();
-  const { changeLanguage, currentLanguage } = useLanguage();
+  const { changeLanguage } = useLanguage();
   const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage || 'Deutsch');
 
   useEffect(() => {
-    // Update the selected language when the currentLanguage from context changes
+    // Update the selected language when the currentLanguage prop changes
     if (currentLanguage) {
       setSelectedLanguage(currentLanguage);
     }

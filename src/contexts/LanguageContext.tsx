@@ -1,56 +1,36 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from './AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { languageToLocaleCode } from '@/i18n/languages';
 
 type LanguageContextType = {
   changeLanguage: (language: string) => Promise<void>;
-  currentLanguage: string | null;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-interface LanguageProviderProps {
-  children: ReactNode;
-  userId?: string | null;
-  userLanguage?: string | null;
-}
-
-export const LanguageProvider = ({ 
-  children, 
-  userId = null, 
-  userLanguage = null 
-}: LanguageProviderProps) => {
+export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const { i18n } = useTranslation();
-  const [currentLanguage, setCurrentLanguage] = useState<string | null>(
-    userLanguage || localStorage.getItem('userLanguage') || 'Deutsch'
-  );
+  const { user, profile } = useAuth();
 
   useEffect(() => {
-    // If user profile language is available, use it
-    if (userLanguage) {
-      const localeCode = languageToLocaleCode(userLanguage);
+    if (profile?.language) {
+      const localeCode = languageToLocaleCode(profile.language);
       i18n.changeLanguage(localeCode);
-      localStorage.setItem('userLanguage', userLanguage);
-      setCurrentLanguage(userLanguage);
-    } else {
-      // Fallback to stored language or default
-      const storedLanguage = localStorage.getItem('userLanguage') || 'Deutsch';
-      const localeCode = languageToLocaleCode(storedLanguage);
-      i18n.changeLanguage(localeCode);
-      setCurrentLanguage(storedLanguage);
+      localStorage.setItem('userLanguage', profile.language);
     }
-  }, [userLanguage, i18n]);
+  }, [profile, i18n]);
 
   const changeLanguage = async (language: string) => {
-    // Update user profile if logged in
-    if (userId) {
+    if (user) {
       try {
+        // Update language in profile
         const { error } = await supabase
           .from('profiles')
           .update({ language })
-          .eq('id', userId);
+          .eq('id', user.id);
 
         if (error) throw error;
       } catch (error) {
@@ -62,11 +42,10 @@ export const LanguageProvider = ({
     localStorage.setItem('userLanguage', language);
     const localeCode = languageToLocaleCode(language);
     i18n.changeLanguage(localeCode);
-    setCurrentLanguage(language);
   };
 
   return (
-    <LanguageContext.Provider value={{ changeLanguage, currentLanguage }}>
+    <LanguageContext.Provider value={{ changeLanguage }}>
       {children}
     </LanguageContext.Provider>
   );
