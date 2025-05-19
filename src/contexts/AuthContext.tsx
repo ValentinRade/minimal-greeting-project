@@ -69,34 +69,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       clearTimeout(fetchProfileTimeoutRef.current);
     }
     
-    // Set a new timeout for the profile fetch
-    fetchProfileTimeoutRef.current = setTimeout(async () => {
-      try {
-        setProfileLoading(true);
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .single();
-          
-        if (error) throw error;
-        setProfile(data);
+    // Ausführung direkt ohne setTimeout - reduziert die Anzahl der Anfragen
+    try {
+      setProfileLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
         
-        // Markiere Profil als geladen
-        dataLoadingRef.current.profileLoaded = true;
-        checkDataLoaded();
-      } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error(t('profile.errorFetchingProfile'), error);
-        }
-        // Auch bei Fehler als geladen markieren, um den Ladezustand zu beenden
-        dataLoadingRef.current.profileLoaded = true;
-        checkDataLoaded();
-      } finally {
-        setProfileLoading(false);
-        fetchProfileTimeoutRef.current = null;
+      if (error) throw error;
+      setProfile(data);
+      
+      // Markiere Profil als geladen
+      dataLoadingRef.current.profileLoaded = true;
+      checkDataLoaded();
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(t('profile.errorFetchingProfile'), error);
       }
-    }, 100);
+      // Auch bei Fehler als geladen markieren, um den Ladezustand zu beenden
+      dataLoadingRef.current.profileLoaded = true;
+      checkDataLoaded();
+    } finally {
+      setProfileLoading(false);
+      fetchProfileTimeoutRef.current = null;
+    }
   }, [profileLoading, t, checkDataLoaded]);
 
   // Fetch company data with debounce and caching
@@ -109,6 +107,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Überprüfen, ob genug Zeit seit der letzten Abfrage vergangen ist
     const now = Date.now();
     if (now - lastFetchTime.current < MIN_FETCH_INTERVAL) {
+      // Bei zu häufigen Anfragen trotzdem als geladen markieren
+      dataLoadingRef.current.companyLoaded = true;
+      checkDataLoaded();
       return; // Zu häufige Abfragen verhindern
     }
     
@@ -139,127 +140,125 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       clearTimeout(fetchCompanyTimeoutRef.current);
     }
     
-    // Set a new timeout for the company fetch
-    fetchCompanyTimeoutRef.current = setTimeout(async () => {
-      try {
-        setCompanyLoading(true);
+    // Ausführung direkt ohne setTimeout - reduziert die Anzahl der Anfragen
+    try {
+      setCompanyLoading(true);
+      
+      // First, get company information
+      const { data: companyData, error: companyError } = await supabase
+        .from('companies')
+        .select(`
+          *,
+          company_types(name),
+          company_legal_forms(name)
+        `)
+        .eq('user_id', userId)
+        .maybeSingle();
         
-        // First, get company information
-        const { data: companyData, error: companyError } = await supabase
-          .from('companies')
-          .select(`
-            *,
-            company_types(name),
-            company_legal_forms(name)
-          `)
-          .eq('user_id', userId)
-          .maybeSingle();
-          
-        if (companyError && companyError.code !== 'PGRST116') {
-          if (process.env.NODE_ENV === 'development') {
-            console.error(t('company.errorFetchingCompany'), companyError);
-          }
+      if (companyError && companyError.code !== 'PGRST116') {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(t('company.errorFetchingCompany'), companyError);
         }
-        
-        if (companyData) {
-          // For company creators, fetch their role
-          const { data: roleData } = await supabase
-            .from('company_users')
-            .select('role')
-            .eq('company_id', companyData.id)
-            .eq('user_id', userId)
-            .maybeSingle();
-          
-          // Add role to company data
-          const companyWithRole = {
-            ...companyData,
-            role: roleData?.role || 'company_admin' // Default to company_admin for creator
-          };
-          
-          // Cache the result
-          companyDataCache.current.set(userId, { 
-            data: companyWithRole, 
-            timestamp: now 
-          });
-          
-          setCompany(companyWithRole);
-          setHasCompany(true);
-          
-          // Markiere Unternehmensdaten als geladen
-          dataLoadingRef.current.companyLoaded = true;
-          checkDataLoaded();
-          return;
-        }
-        
-        // Check if user is part of a company but not the creator
-        const { data: companyUserData, error: companyUserError } = await supabase
+      }
+      
+      if (companyData) {
+        // For company creators, fetch their role
+        const { data: roleData } = await supabase
           .from('company_users')
-          .select(`
-            *,
-            company:company_id (
-              *,
-              company_types(name),
-              company_legal_forms(name)
-            )
-          `)
+          .select('role')
+          .eq('company_id', companyData.id)
           .eq('user_id', userId)
           .maybeSingle();
         
-        if (companyUserError && companyUserError.code !== 'PGRST116') {
-          if (process.env.NODE_ENV === 'development') {
-            console.error(t('company.errorFetchingCompanyUser'), companyUserError);
-          }
-        }
+        // Add role to company data
+        const companyWithRole = {
+          ...companyData,
+          role: roleData?.role || 'company_admin' // Default to company_admin for creator
+        };
         
-        if (companyUserData?.company) {
-          // Merge role information with company data
-          const companyWithRole = {
-            ...companyUserData.company,
-            role: companyUserData.role
-          };
-          
-          // Cache the result
-          companyDataCache.current.set(userId, { 
-            data: companyWithRole, 
-            timestamp: now 
-          });
-          
-          setCompany(companyWithRole);
-          setHasCompany(true);
-          
-          // Markiere Unternehmensdaten als geladen
-          dataLoadingRef.current.companyLoaded = true;
-          checkDataLoaded();
-          return;
-        }
-        
-        // Cache null result
+        // Cache the result
         companyDataCache.current.set(userId, { 
-          data: null, 
+          data: companyWithRole, 
           timestamp: now 
         });
         
-        setCompany(null);
-        setHasCompany(false);
+        setCompany(companyWithRole);
+        setHasCompany(true);
         
-        // Auch bei fehlendem Unternehmen als geladen markieren
+        // Markiere Unternehmensdaten als geladen
         dataLoadingRef.current.companyLoaded = true;
         checkDataLoaded();
-      } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error(t('company.errorFetchingCompany'), error);
-        }
-        setCompany(null);
-        setHasCompany(false);
-        
-        // Auch bei Fehler als geladen markieren
-        dataLoadingRef.current.companyLoaded = true;
-        checkDataLoaded();
-      } finally {
-        setCompanyLoading(false);
-        fetchCompanyTimeoutRef.current = null;
+        return;
       }
-    }, 100);
+      
+      // Check if user is part of a company but not the creator
+      const { data: companyUserData, error: companyUserError } = await supabase
+        .from('company_users')
+        .select(`
+          *,
+          company:company_id (
+            *,
+            company_types(name),
+            company_legal_forms(name)
+          )
+        `)
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (companyUserError && companyUserError.code !== 'PGRST116') {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(t('company.errorFetchingCompanyUser'), companyUserError);
+        }
+      }
+      
+      if (companyUserData?.company) {
+        // Merge role information with company data
+        const companyWithRole = {
+          ...companyUserData.company,
+          role: companyUserData.role
+        };
+        
+        // Cache the result
+        companyDataCache.current.set(userId, { 
+          data: companyWithRole, 
+          timestamp: now 
+        });
+        
+        setCompany(companyWithRole);
+        setHasCompany(true);
+        
+        // Markiere Unternehmensdaten als geladen
+        dataLoadingRef.current.companyLoaded = true;
+        checkDataLoaded();
+        return;
+      }
+      
+      // Cache null result
+      companyDataCache.current.set(userId, { 
+        data: null, 
+        timestamp: now 
+      });
+      
+      setCompany(null);
+      setHasCompany(false);
+      
+      // Auch bei fehlendem Unternehmen als geladen markieren
+      dataLoadingRef.current.companyLoaded = true;
+      checkDataLoaded();
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(t('company.errorFetchingCompany'), error);
+      }
+      setCompany(null);
+      setHasCompany(false);
+      
+      // Auch bei Fehler als geladen markieren
+      dataLoadingRef.current.companyLoaded = true;
+      checkDataLoaded();
+    } finally {
+      setCompanyLoading(false);
+      fetchCompanyTimeoutRef.current = null;
+    }
   }, [companyLoading, t, CACHE_DURATION, MIN_FETCH_INTERVAL, checkDataLoaded]);
 
   useEffect(() => {
@@ -304,15 +303,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Bei Anmeldung/Sitzungsänderung als noch nicht geladen markieren
         setLoading(true);
         
-        // Fetch profile data if user is signed in
-        // Use setTimeout to avoid blocking the auth state change handler
-        if (currentSession?.user) {
-          setTimeout(() => {
-            if (isMounted) {
-              fetchProfile(currentSession.user.id);
-              fetchCompany(currentSession.user.id);
-            }
-          }, 0);
+        // Fetch profile data if user is signed in - ohne setTimeout
+        if (currentSession?.user && isMounted) {
+          fetchProfile(currentSession.user.id);
+          fetchCompany(currentSession.user.id);
         }
       }
     );
