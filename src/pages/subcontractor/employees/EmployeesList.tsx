@@ -1,7 +1,9 @@
+
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useEmployees } from '@/hooks/useEmployees';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -34,6 +36,7 @@ import { Employee } from '@/types/employee';
 const EmployeesList: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { company } = useAuth();
   const {
     employees,
     isLoading,
@@ -45,7 +48,7 @@ const EmployeesList: React.FC = () => {
     setPositionFilter,
     availabilityFilter,
     setAvailabilityFilter,
-  } = useEmployees();
+  } = useEmployees(company?.id);
 
   // Collect unique positions for filter
   const positions = useMemo(() => {

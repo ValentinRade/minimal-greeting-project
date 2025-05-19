@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useEmployees } from '@/hooks/useEmployees';
+import { useAuth } from '@/contexts/AuthContext';
 import EmployeeForm from '@/components/employees/EmployeeForm';
 import { CreateEmployeeData } from '@/types/employee';
 import { toast } from '@/hooks/use-toast';
@@ -10,7 +11,8 @@ import { toast } from '@/hooks/use-toast';
 const AddEmployee = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { createEmployee } = useEmployees();
+  const { company } = useAuth();
+  const { createEmployee } = useEmployees(company?.id);
 
   const handleSubmit = (data: CreateEmployeeData) => {
     createEmployee.mutate(data, {
