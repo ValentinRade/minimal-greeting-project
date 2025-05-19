@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, X, Calendar, ArrowRight, Edit, Trash2 } from 'lucide-react';
@@ -21,12 +20,22 @@ import { useAuth } from '@/contexts/AuthContext';
 const TendersPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, loading: isAuthLoading } = useAuth();
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  
+  // Check if we should open the create form based on navigation state
+  useEffect(() => {
+    if (location.state && location.state.openCreateForm) {
+      setIsCreateFormOpen(true);
+      // Clear the state to prevent reopening on page refresh
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location]);
   
   // Handle resize to determine if mobile view should be used
   useEffect(() => {

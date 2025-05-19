@@ -4,7 +4,12 @@ import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/LanguageSelector';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { User } from 'lucide-react';
+import { User, Bell } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const ShipperHeader: React.FC = () => {
   const { company, signOut, profile } = useAuth();
@@ -17,6 +22,28 @@ const ShipperHeader: React.FC = () => {
       </div>
       
       <div className="flex items-center gap-4">
+        {/* Notifications */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+              <span className="sr-only">Benachrichtigungen</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80" align="end">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-medium">Benachrichtigungen</h4>
+                <Button variant="ghost" size="sm">Alle markieren</Button>
+              </div>
+              <div className="h-[200px] flex flex-col items-center justify-center text-sm text-muted-foreground">
+                <p>Keine neuen Benachrichtigungen</p>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+        
         <LanguageSelector currentLanguage={profile?.language || 'Deutsch'} />
         
         <div className="flex items-center gap-2">
