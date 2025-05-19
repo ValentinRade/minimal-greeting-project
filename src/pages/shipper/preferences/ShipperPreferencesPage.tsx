@@ -1,18 +1,21 @@
+
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getShipperPreferences } from '@/services/shipperPreferencesService';
 import ShipperPreferencesForm from '@/components/shipper/preferences/ShipperPreferencesForm';
 import { ShipperPreferences } from '@/types/shipperPreference';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, AlertCircle, Loader2 } from 'lucide-react';
+import { Edit, AlertCircle, Loader2, LogIn, Building } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/contexts/AuthContext';
 
 const ShipperPreferencesPage: React.FC = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { user, company, hasCompany } = useAuth();
   const [preferences, setPreferences] = useState<ShipperPreferences | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -20,16 +23,24 @@ const ShipperPreferencesPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user && hasCompany) {
-      loadPreferences();
-    } else if (user && !hasCompany) {
+    // If we're on this page but not logged in, redirect to auth
+    if (!user) {
+      navigate('/auth', { replace: true });
+      return;
+    }
+    
+    // If logged in but no company, show error (don't try to load preferences)
+    if (user && !hasCompany) {
       setIsLoading(false);
       setError("Sie müssen ein Unternehmen erstellen, bevor Sie Präferenzen festlegen können.");
-    } else if (!user) {
-      setIsLoading(false);
-      setError("Sie müssen angemeldet sein, um Präferenzen festlegen zu können.");
+      return;
     }
-  }, [user, hasCompany]);
+    
+    // Only load preferences if both user and company are available
+    if (user && hasCompany) {
+      loadPreferences();
+    }
+  }, [user, hasCompany, navigate]);
 
   const loadPreferences = async () => {
     setIsLoading(true);
@@ -55,6 +66,39 @@ const ShipperPreferencesPage: React.FC = () => {
     setPreferences(data);
     setIsEditMode(false);
   };
+
+  const redirectToAuth = () => {
+    navigate('/auth');
+  };
+
+  const redirectToCreateCompany = () => {
+    navigate('/create-company');
+  };
+
+  if (!user) {
+    return (
+      <div className="max-w-5xl mx-auto p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Anmeldung erforderlich</CardTitle>
+            <CardDescription>Bitte melden Sie sich an, um Ihre Präferenzen zu verwalten.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>Sie müssen angemeldet sein, um Präferenzen festlegen zu können.</AlertDescription>
+            </Alert>
+            <div className="flex justify-center">
+              <Button onClick={redirectToAuth}>
+                <LogIn className="mr-2 h-4 w-4" />
+                Anmelden
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -85,12 +129,13 @@ const ShipperPreferencesPage: React.FC = () => {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
             <div className="flex justify-center">
-              {user && hasCompany ? (
-                <Button onClick={loadPreferences}>Erneut versuchen</Button>
-              ) : hasCompany === false ? (
-                <Button onClick={() => window.location.href = "/create-company"}>Unternehmen erstellen</Button>
+              {user && !hasCompany ? (
+                <Button onClick={redirectToCreateCompany}>
+                  <Building className="mr-2 h-4 w-4" />
+                  Unternehmen erstellen
+                </Button>
               ) : (
-                <Button onClick={() => window.location.href = "/auth"}>Anmelden</Button>
+                <Button onClick={loadPreferences}>Erneut versuchen</Button>
               )}
             </div>
           </CardContent>
