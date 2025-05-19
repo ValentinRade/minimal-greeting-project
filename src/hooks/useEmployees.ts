@@ -1,398 +1,373 @@
+
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from '@/hooks/use-toast';
+import type { Employee, EmployeeFilter } from '@/types/employee';
+import { toast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
-import { Employee, CreateEmployeeData, EmployeeType, PaymentType, LicenseType } from '@/types/employee';
 
-export const useEmployees = () => {
+export const useEmployees = (filters?: EmployeeFilter) => {
   const { t } = useTranslation();
   const { company } = useAuth();
   const queryClient = useQueryClient();
-  const [filter, setFilter] = useState('');
-  const [employeeTypeFilter, setEmployeeTypeFilter] = useState<'employed' | 'contractor' | ''>('');
-  const [positionFilter, setPositionFilter] = useState('');
-  const [availabilityFilter, setAvailabilityFilter] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Get all employees
-  const { data: employees = [], isLoading, refetch } = useQuery({
-    queryKey: ['employees', company?.id, filter, employeeTypeFilter, positionFilter, availabilityFilter],
-    queryFn: async () => {
-      if (!company?.id) return [];
+  const fetchEmployees = async (): Promise<Employee[]> => {
+    console.log('Employees query started');
+    
+    if (!company) return [];
 
-      let query = supabase
-        .from('employees')
-        .select(`
-          *,
-          employee_licenses(id, license_type, description),
-          employee_availability(id, day_of_week, is_available, start_time, end_time, notes),
-          employee_regions(id, country)
-        `)
-        .eq('company_id', company.id)
-        .order('last_name', { ascending: true });
+    let query = supabase
+      .from('employees')
+      .select(`
+        *,
+        employee_licenses(*),
+        employee_availability(*),
+        employee_regions(*)
+      `)
+      .eq('company_id', company.id);
 
-      if (filter) {
-        query = query.or(`first_name.ilike.%${filter}%,last_name.ilike.%${filter}%,email.ilike.%${filter}%`);
-      }
-      
-      if (employeeTypeFilter) {
-        query = query.eq('employee_type', employeeTypeFilter);
-      }
-      
-      if (positionFilter) {
-        query = query.eq('position', positionFilter);
-      }
+    if (filters?.position) {
+      query = query.eq('position', filters.position);
+    }
 
-      const { data, error } = await query;
+    if (filters?.location) {
+      query = query.eq('location', filters.location);
+    }
 
-      if (error) {
-        console.error('Error fetching employees:', error);
-        toast({
-          title: t('errors.fetchFailed'),
-          description: error.message,
-          variant: 'destructive',
-        });
-        return [];
-      }
+    if (filters?.status) {
+      query = query.eq('status', filters.status);
+    }
 
-      // Process availability filter client-side if set
-      let filteredData = data;
-      if (availabilityFilter !== null) {
-        filteredData = data.filter(employee => {
-          const availabilityForDay = employee.employee_availability.find(
-            a => a.day_of_week === availabilityFilter
-          );
-          return availabilityForDay?.is_available;
-        });
-      }
+    const { data, error } = await query;
+    
+    console.log('Employees query response: ', { data, error });
+    
+    if (error) {
+      console.error('Error fetching employees:', error);
+      toast({
+        title: t('employees.fetchError'),
+        description: error.message,
+        variant: 'destructive',
+      });
+      return [];
+    }
+    
+    return data || [];
+  };
 
-      // Transform and enhance data
-      return filteredData.map((employee: any) => ({
-        ...employee,
-        licenses: employee.employee_licenses,
-        availability: employee.employee_availability,
-        regions: employee.employee_regions,
-        // In a real app, we would fetch these counts from a join or separate query
-        tour_count: 0, // Placeholder, would be replaced with actual data
-        vehicle_count: 0 // Placeholder, would be replaced with actual data
-      }));
-    },
-    enabled: !!company?.id,
-    // Füge staleTime und cacheTime hinzu, um unnötige Refetches zu vermeiden
-    staleTime: 30000, // 30 Sekunden
-    cacheTime: 300000, // 5 Minuten
+  // Query for employees
+  const employeesQuery = useQuery({
+    queryKey: ['employees', company?.id, filters],
+    queryFn: fetchEmployees,
+    enabled: !!company,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  // Get single employee
-  const useEmployee = (id?: string) => useQuery({
-    queryKey: ['employee', id],
-    queryFn: async () => {
-      if (!id) return null;
-      
-      const { data, error } = await supabase
-        .from('employees')
-        .select(`
-          *,
-          employee_licenses(id, license_type, description),
-          employee_availability(id, day_of_week, is_available, start_time, end_time, notes),
-          employee_regions(id, country)
-        `)
-        .eq('id', id)
-        .single();
-
-      if (error) {
-        console.error('Error fetching employee:', error);
-        toast({
-          title: t('errors.fetchFailed'),
-          description: error.message,
-          variant: 'destructive',
-        });
-        return null;
-      }
-
-      return {
-        ...data,
-        licenses: data.employee_licenses,
-        availability: data.employee_availability,
-        regions: data.employee_regions,
-        tour_count: 0, // Placeholder
-        vehicle_count: 0 // Placeholder
-      };
-    },
-    enabled: !!id,
-    staleTime: 30000, // 30 Sekunden
-  });
-
-  // Create employee
+  // Mutation for creating a new employee
   const createEmployee = useMutation({
-    mutationFn: async (employeeData: CreateEmployeeData) => {
-      if (!company?.id) {
-        throw new Error('No company ID found');
-      }
+    mutationFn: async (employee: any) => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('employees')
+          .insert([
+            {
+              first_name: employee.first_name,
+              last_name: employee.last_name,
+              position: employee.position,
+              email: employee.email,
+              phone: employee.phone,
+              employee_type: employee.employee_type,
+              payment_type: employee.payment_type,
+              hourly_rate: employee.hourly_rate,
+              gross_salary: employee.gross_salary,
+              net_salary: employee.net_salary,
+              location: employee.location,
+              notes: employee.notes,
+              company_id: company?.id,
+              user_id: employee.user_id,
+            },
+          ])
+          .select()
+          .single();
 
-      const { licenses, availability, regions, ...employeeBase } = employeeData;
-
-      // Insert employee base record
-      const { data: employeeResult, error: employeeError } = await supabase
-        .from('employees')
-        .insert({
-          ...employeeBase,
-          company_id: company.id,
-          user_id: (await supabase.auth.getUser()).data.user?.id || '',
-        })
-        .select()
-        .single();
-
-      if (employeeError) {
-        throw employeeError;
-      }
-
-      // Insert licenses
-      if (licenses.length > 0) {
-        const licensesData = licenses.map(license => ({
-          employee_id: employeeResult.id,
-          license_type: license.license_type,
-          description: license.description
-        }));
-
-        const { error: licensesError } = await supabase
-          .from('employee_licenses')
-          .insert(licensesData);
-
-        if (licensesError) {
-          throw licensesError;
+        if (error) throw error;
+        
+        // Handle licenses if any
+        if (employee.licenses && employee.licenses.length > 0) {
+          const licensesData = employee.licenses.map((license: any) => ({
+            employee_id: data.id,
+            license_type: license.type,
+            description: license.description,
+          }));
+          
+          const { error: licensesError } = await supabase
+            .from('employee_licenses')
+            .insert(licensesData);
+            
+          if (licensesError) throw licensesError;
         }
-      }
-
-      // Insert availability
-      if (availability.length > 0) {
-        const availabilityData = availability.map(avail => ({
-          employee_id: employeeResult.id,
-          day_of_week: avail.day_of_week,
-          is_available: avail.is_available,
-          start_time: avail.start_time,
-          end_time: avail.end_time,
-          notes: avail.notes
-        }));
-
-        const { error: availabilityError } = await supabase
-          .from('employee_availability')
-          .insert(availabilityData);
-
-        if (availabilityError) {
-          throw availabilityError;
+        
+        // Handle availability if any
+        if (employee.availability && Object.keys(employee.availability).length > 0) {
+          const availabilityData = Object.entries(employee.availability).map(
+            ([day, schedule]: [string, any]) => ({
+              employee_id: data.id,
+              day_of_week: parseInt(day),
+              is_available: schedule.is_available || false,
+              start_time: schedule.start_time,
+              end_time: schedule.end_time,
+              notes: schedule.notes,
+            })
+          );
+          
+          const { error: availabilityError } = await supabase
+            .from('employee_availability')
+            .insert(availabilityData);
+            
+          if (availabilityError) throw availabilityError;
         }
-      }
-
-      // Insert regions
-      if (regions.length > 0) {
-        const regionsData = regions.map(region => ({
-          employee_id: employeeResult.id,
-          country: region.country
-        }));
-
-        const { error: regionsError } = await supabase
-          .from('employee_regions')
-          .insert(regionsData);
-
-        if (regionsError) {
-          throw regionsError;
+        
+        // Handle regions if any
+        if (employee.regions && employee.regions.length > 0) {
+          const regionsData = employee.regions.map((region: string) => ({
+            employee_id: data.id,
+            country: region,
+          }));
+          
+          const { error: regionsError } = await supabase
+            .from('employee_regions')
+            .insert(regionsData);
+            
+          if (regionsError) throw regionsError;
         }
-      }
 
-      return employeeResult;
+        return data;
+      } finally {
+        setIsLoading(false);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['employees'] });
       toast({
-        title: t('success.created'),
-        description: t('employees.createSuccess'),
+        title: t('employees.createSuccess'),
+        description: t('employees.employeeCreated'),
       });
     },
     onError: (error: any) => {
-      console.error('Error creating employee:', error);
       toast({
-        title: t('errors.createFailed'),
+        title: t('employees.createError'),
         description: error.message,
         variant: 'destructive',
       });
-    }
+    },
   });
 
-  // Update employee
+  // Mutation for updating an employee
   const updateEmployee = useMutation({
-    mutationFn: async ({ id, ...data }: Partial<Employee> & { id: string }) => {
-      const { licenses, availability, regions, ...employeeBase } = data;
+    mutationFn: async (employee: any) => {
+      setIsLoading(true);
+      try {
+        // Update employee base data
+        const { error } = await supabase
+          .from('employees')
+          .update({
+            first_name: employee.first_name,
+            last_name: employee.last_name,
+            position: employee.position,
+            email: employee.email,
+            phone: employee.phone,
+            employee_type: employee.employee_type,
+            payment_type: employee.payment_type,
+            hourly_rate: employee.hourly_rate,
+            gross_salary: employee.gross_salary,
+            net_salary: employee.net_salary,
+            location: employee.location,
+            notes: employee.notes,
+          })
+          .eq('id', employee.id);
 
-      // Update base employee record
-      const { error: employeeError } = await supabase
-        .from('employees')
-        .update(employeeBase)
-        .eq('id', id);
-
-      if (employeeError) {
-        throw employeeError;
-      }
-
-      // Update licenses if provided
-      if (licenses) {
-        // Delete existing licenses
-        const { error: deleteError } = await supabase
-          .from('employee_licenses')
-          .delete()
-          .eq('employee_id', id);
-
-        if (deleteError) {
-          throw deleteError;
-        }
-
-        // Insert new licenses
-        if (licenses.length > 0) {
-          const licensesData = licenses.map(license => ({
-            employee_id: id,
-            license_type: license.license_type,
-            description: license.description
-          }));
-
-          const { error: licensesError } = await supabase
+        if (error) throw error;
+        
+        // Handle licenses: delete old ones and add new ones
+        if (employee.licenses !== undefined) {
+          // Delete old licenses
+          const { error: deleteLicensesError } = await supabase
             .from('employee_licenses')
-            .insert(licensesData);
-
-          if (licensesError) {
-            throw licensesError;
+            .delete()
+            .eq('employee_id', employee.id);
+            
+          if (deleteLicensesError) throw deleteLicensesError;
+          
+          // Add new licenses
+          if (employee.licenses && employee.licenses.length > 0) {
+            const licensesData = employee.licenses.map((license: any) => ({
+              employee_id: employee.id,
+              license_type: license.type,
+              description: license.description,
+            }));
+            
+            const { error: licensesError } = await supabase
+              .from('employee_licenses')
+              .insert(licensesData);
+              
+            if (licensesError) throw licensesError;
           }
         }
-      }
-
-      // Update availability if provided
-      if (availability) {
-        // Delete existing availability
-        const { error: deleteError } = await supabase
-          .from('employee_availability')
-          .delete()
-          .eq('employee_id', id);
-
-        if (deleteError) {
-          throw deleteError;
-        }
-
-        // Insert new availability
-        if (availability.length > 0) {
-          const availabilityData = availability.map(avail => ({
-            employee_id: id,
-            day_of_week: avail.day_of_week,
-            is_available: avail.is_available,
-            start_time: avail.start_time,
-            end_time: avail.end_time,
-            notes: avail.notes
-          }));
-
-          const { error: availabilityError } = await supabase
+        
+        // Handle availability: delete old ones and add new ones
+        if (employee.availability !== undefined) {
+          // Delete old availability
+          const { error: deleteAvailabilityError } = await supabase
             .from('employee_availability')
-            .insert(availabilityData);
-
-          if (availabilityError) {
-            throw availabilityError;
+            .delete()
+            .eq('employee_id', employee.id);
+            
+          if (deleteAvailabilityError) throw deleteAvailabilityError;
+          
+          // Add new availability
+          if (employee.availability && Object.keys(employee.availability).length > 0) {
+            const availabilityData = Object.entries(employee.availability).map(
+              ([day, schedule]: [string, any]) => ({
+                employee_id: employee.id,
+                day_of_week: parseInt(day),
+                is_available: schedule.is_available || false,
+                start_time: schedule.start_time,
+                end_time: schedule.end_time,
+                notes: schedule.notes,
+              })
+            );
+            
+            const { error: availabilityError } = await supabase
+              .from('employee_availability')
+              .insert(availabilityData);
+              
+            if (availabilityError) throw availabilityError;
           }
         }
-      }
-
-      // Update regions if provided
-      if (regions) {
-        // Delete existing regions
-        const { error: deleteError } = await supabase
-          .from('employee_regions')
-          .delete()
-          .eq('employee_id', id);
-
-        if (deleteError) {
-          throw deleteError;
-        }
-
-        // Insert new regions
-        if (regions.length > 0) {
-          const regionsData = regions.map(region => ({
-            employee_id: id,
-            country: region.country
-          }));
-
-          const { error: regionsError } = await supabase
+        
+        // Handle regions: delete old ones and add new ones
+        if (employee.regions !== undefined) {
+          // Delete old regions
+          const { error: deleteRegionsError } = await supabase
             .from('employee_regions')
-            .insert(regionsData);
-
-          if (regionsError) {
-            throw regionsError;
+            .delete()
+            .eq('employee_id', employee.id);
+            
+          if (deleteRegionsError) throw deleteRegionsError;
+          
+          // Add new regions
+          if (employee.regions && employee.regions.length > 0) {
+            const regionsData = employee.regions.map((region: string) => ({
+              employee_id: employee.id,
+              country: region,
+            }));
+            
+            const { error: regionsError } = await supabase
+              .from('employee_regions')
+              .insert(regionsData);
+              
+            if (regionsError) throw regionsError;
           }
         }
-      }
 
-      return { id };
+        return employee;
+      } finally {
+        setIsLoading(false);
+      }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['employees'] });
-      queryClient.invalidateQueries({ queryKey: ['employee', data.id] });
       toast({
-        title: t('success.updated'),
-        description: t('employees.updateSuccess'),
+        title: t('employees.updateSuccess'),
+        description: t('employees.employeeUpdated'),
       });
     },
     onError: (error: any) => {
-      console.error('Error updating employee:', error);
       toast({
-        title: t('errors.updateFailed'),
+        title: t('employees.updateError'),
         description: error.message,
         variant: 'destructive',
       });
-    }
+    },
   });
 
-  // Delete employee
+  // Mutation for deleting an employee
   const deleteEmployee = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('employees')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        throw error;
-      }
-
+      const { error } = await supabase.from('employees').delete().eq('id', id);
+      if (error) throw error;
       return id;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['employees'] });
       toast({
-        title: t('success.deleted'),
-        description: t('employees.deleteSuccess'),
+        title: t('employees.deleteSuccess'),
+        description: t('employees.employeeDeleted'),
       });
     },
     onError: (error: any) => {
-      console.error('Error deleting employee:', error);
       toast({
-        title: t('errors.deleteFailed'),
+        title: t('employees.deleteError'),
         description: error.message,
         variant: 'destructive',
       });
-    }
+    },
   });
 
   return {
-    employees,
-    isLoading,
-    refetch,
-    filter,
-    setFilter,
-    employeeTypeFilter,
-    setEmployeeTypeFilter,
-    positionFilter,
-    setPositionFilter,
-    availabilityFilter,
-    setAvailabilityFilter,
-    useEmployee,
-    createEmployee,
-    updateEmployee,
-    deleteEmployee
+    employees: employeesQuery.data || [],
+    isLoading: isLoading || employeesQuery.isLoading,
+    isError: employeesQuery.isError,
+    createEmployee: createEmployee.mutate,
+    updateEmployee: updateEmployee.mutate,
+    deleteEmployee: deleteEmployee.mutate,
+  };
+};
+
+export const useEmployeeById = (employeeId?: string) => {
+  const { company } = useAuth();
+  const { t } = useTranslation();
+  
+  const fetchEmployee = async () => {
+    if (!employeeId || !company) return null;
+    
+    const { data, error } = await supabase
+      .from('employees')
+      .select(`
+        *,
+        employee_licenses(*),
+        employee_availability(*),
+        employee_regions(*)
+      `)
+      .eq('id', employeeId)
+      .eq('company_id', company.id)
+      .single();
+      
+    if (error) {
+      console.error('Error fetching employee:', error);
+      toast({
+        title: t('employees.fetchError'),
+        description: error.message,
+        variant: 'destructive',
+      });
+      return null;
+    }
+    
+    return data;
+  };
+  
+  const employeeQuery = useQuery({
+    queryKey: ['employee', employeeId],
+    queryFn: fetchEmployee,
+    enabled: !!employeeId && !!company,
+  });
+  
+  return {
+    employee: employeeQuery.data,
+    isLoading: employeeQuery.isLoading,
+    isError: employeeQuery.isError,
   };
 };

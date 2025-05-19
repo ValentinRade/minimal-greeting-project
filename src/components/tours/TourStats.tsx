@@ -84,19 +84,22 @@ const TourStats: React.FC<TourStatsProps> = ({ stats, isLoading }) => {
               <span className="text-xs">{t('tours.pending')}</span>
               <span className="text-xs">{stats.statusDistribution.pendingPercent}%</span>
             </div>
-            <Progress value={stats.statusDistribution.pendingPercent} className="h-2 bg-muted" indicatorClassName="bg-amber-500" />
+            <Progress value={stats.statusDistribution.pendingPercent} className="h-2 bg-muted" />
+            <div className="bg-amber-500 h-1 w-3 rounded-full ml-1"></div>
             
             <div className="flex justify-between items-center">
               <span className="text-xs">{t('tours.inProgress')}</span>
               <span className="text-xs">{stats.statusDistribution.inProgressPercent}%</span>
             </div>
-            <Progress value={stats.statusDistribution.inProgressPercent} className="h-2 bg-muted" indicatorClassName="bg-blue-500" />
+            <Progress value={stats.statusDistribution.inProgressPercent} className="h-2 bg-muted" />
+            <div className="bg-blue-500 h-1 w-3 rounded-full ml-1"></div>
             
             <div className="flex justify-between items-center">
               <span className="text-xs">{t('tours.completed')}</span>
               <span className="text-xs">{stats.statusDistribution.completedPercent}%</span>
             </div>
-            <Progress value={stats.statusDistribution.completedPercent} className="h-2 bg-muted" indicatorClassName="bg-green-500" />
+            <Progress value={stats.statusDistribution.completedPercent} className="h-2 bg-muted" />
+            <div className="bg-green-500 h-1 w-3 rounded-full ml-1"></div>
           </div>
         </CardContent>
       </Card>

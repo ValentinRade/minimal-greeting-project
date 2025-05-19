@@ -25,16 +25,16 @@ const TourForm: React.FC<TourFormProps> = ({ initialData, onSubmit, isLoading })
   const [step, setStep] = useState(1);
   
   // Prepare schedule data
-  const initialSchedules = Array.from({ length: 7 }).reduce((acc, _, i) => {
+  const initialSchedules: Record<string, any> = {};
+  for (let i = 0; i < 7; i++) {
     const existingSchedule = initialData?.schedules?.find(s => s.day_of_week === i);
-    acc[i] = {
+    initialSchedules[i] = {
       is_active: existingSchedule?.is_active || false,
       start_time: existingSchedule?.start_time || '',
       loading_time: existingSchedule?.loading_time || 0,
       working_time: existingSchedule?.working_time || 0,
     };
-    return acc;
-  }, {} as Record<string, any>);
+  }
   
   const formSchema = z.object({
     // Step 1

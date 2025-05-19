@@ -194,9 +194,28 @@ export function useTours(filterOptions: TourFilterOptions) {
         const { data: tourData, error: tourError } = await supabase
           .from('tours')
           .insert({
-            ...tour,
             company_id: company.id,
             user_id: tour.user_id,
+            title: tour.title,
+            vehicle_type: tour.vehicle_type,
+            body_type: tour.body_type,
+            start_location: tour.start_location,
+            start_location_lat: tour.start_location_lat,
+            start_location_lng: tour.start_location_lng,
+            end_location: tour.end_location,
+            end_location_lat: tour.end_location_lat,
+            end_location_lng: tour.end_location_lng,
+            total_distance: tour.total_distance,
+            status: tour.status,
+            cargo_weight: tour.cargo_weight,
+            cargo_volume: tour.cargo_volume,
+            cargo_description: tour.cargo_description,
+            is_palletized: tour.is_palletized,
+            is_hazardous: tour.is_hazardous,
+            temperature_sensitive: tour.temperature_sensitive,
+            pallet_exchange: tour.pallet_exchange,
+            start_date: tour.start_date,
+            end_date: tour.end_date
           })
           .select()
           .single();
