@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -66,7 +65,14 @@ function App() {
                   </ProtectedRoute>
                 } />
                 
-                {/* Shipper CRM route */}
+                {/* Shipper CRM route - Fixed route path */}
+                <Route path="/shipper/crm" element={
+                  <ProtectedRoute>
+                    <CrmPage />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Keep the original route as well to maintain backward compatibility */}
                 <Route path="/dashboard/shipper/crm" element={
                   <ProtectedRoute>
                     <CrmPage />
