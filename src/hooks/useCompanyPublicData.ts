@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +37,51 @@ interface CompanyPublicData {
   isPrequalificationsLoading: boolean;
   isReferencesLoading: boolean;
 }
+
+// Add this function to map database tours to client-side format
+const mapDbTourToClientFormat = (dbTour: any): Tour => {
+  return {
+    id: dbTour.id,
+    title: dbTour.title,
+    status: dbTour.status as TourStatus,
+    createdAt: dbTour.created_at,
+    vehicle_type: dbTour.vehicle_type,
+    body_type: dbTour.body_type,
+    start_location: dbTour.start_location,
+    end_location: dbTour.end_location,
+    total_distance: dbTour.total_distance,
+    start_date: dbTour.start_date,
+    end_date: dbTour.end_date,
+    cargo_weight: dbTour.cargo_weight,
+    cargo_volume: dbTour.cargo_volume,
+    cargo_description: dbTour.cargo_description,
+    is_palletized: dbTour.is_palletized,
+    is_hazardous: dbTour.is_hazardous,
+    temperature_sensitive: dbTour.temperature_sensitive,
+    pallet_exchange: dbTour.pallet_exchange,
+    start_location_lat: dbTour.start_location_lat,
+    start_location_lng: dbTour.start_location_lng,
+    end_location_lat: dbTour.end_location_lat,
+    end_location_lng: dbTour.end_location_lng,
+    user_id: dbTour.user_id
+  };
+};
+
+// Update the function that returns tours
+const fetchCompanyTours = async (companyId: string): Promise<Tour[]> => {
+  const { data, error } = await supabase
+    .from('tours')
+    .select('*')
+    .eq('company_id', companyId);
+    
+  if (error) {
+    console.error('Error fetching company tours:', error);
+    return [];
+  }
+  
+  // Map the DB tours to our client interface
+  return data ? data.map(mapDbTourToClientFormat) : [];
+};
 
 export const useCompanyPublicData = (companyId: string | undefined): CompanyPublicData => {
   const { t } = useTranslation();
@@ -142,7 +186,8 @@ export const useCompanyPublicData = (companyId: string | undefined): CompanyPubl
         return [];
       }
 
-      return data || [];
+      // Map the DB tours to our client interface
+      return data ? data.map(mapDbTourToClientFormat) : [];
     },
     enabled: !!companyId,
   });

@@ -1,8 +1,20 @@
+
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { TourFilterOptions, TourStats, TourWithRelations, Tour, TourStatus, VehicleBodyType } from '@/types/tour';
+import { 
+  TourFilterOptions, 
+  TourStats, 
+  TourWithRelations, 
+  Tour, 
+  TourStatus, 
+  VehicleBodyType, 
+  DbTourStatus, 
+  DbVehicleBodyType,
+  TourStopDB,
+  TourScheduleDB
+} from '@/types/tour';
 import { toast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +23,26 @@ export function useTours(filterOptions: TourFilterOptions) {
   const { company } = useAuth();
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Helper function to map DB type to our client type
+  const mapDbBodyTypesToClientTypes = (dbType: DbVehicleBodyType): VehicleBodyType => {
+    // Map DB types to client types
+    const typeMap: Record<DbVehicleBodyType, VehicleBodyType> = {
+      'box': 'box',
+      'curtain': 'curtain',
+      'refrigerated': 'refrigerated',
+      'tanker': 'tank', // Map tanker to tank
+      'flatbed': 'flatbed',
+      'other': 'other'
+    };
+    return typeMap[dbType] || 'other';
+  };
+
+  // Helper function to map tour status
+  const mapDbStatusToClientStatus = (dbStatus: DbTourStatus): TourStatus => {
+    // Direct mapping of statuses
+    return dbStatus as TourStatus;
+  };
 
   // Fetch tours with relations
   const fetchTours = async (): Promise<TourWithRelations[]> => {
@@ -28,8 +60,10 @@ export function useTours(filterOptions: TourFilterOptions) {
 
     // Apply filters
     if (filterOptions.status !== 'all') {
-      // Using 'any' to bypass the type check temporarily
-      query = query.eq('status', filterOptions.status as any);
+      // Check if the status is one of the DB statuses
+      if (['pending', 'in_progress', 'completed'].includes(filterOptions.status)) {
+        query = query.eq('status', filterOptions.status);
+      }
     }
 
     if (filterOptions.timeframe !== 'all') {
@@ -70,10 +104,10 @@ export function useTours(filterOptions: TourFilterOptions) {
     return data?.map(tour => ({
       id: tour.id,
       title: tour.title,
-      status: tour.status as TourStatus,
+      status: mapDbStatusToClientStatus(tour.status as DbTourStatus),
       createdAt: tour.created_at,
       vehicle_type: tour.vehicle_type,
-      body_type: tour.body_type as VehicleBodyType,
+      body_type: mapDbBodyTypesToClientTypes(tour.body_type as DbVehicleBodyType),
       start_location: tour.start_location,
       end_location: tour.end_location,
       total_distance: tour.total_distance,
@@ -161,7 +195,8 @@ export function useTours(filterOptions: TourFilterOptions) {
       pending = statusData.filter(tour => tour.status === 'pending').length;
       inProgress = statusData.filter(tour => tour.status === 'in_progress').length;
       completed = statusData.filter(tour => tour.status === 'completed').length;
-      active = statusData.filter(tour => tour.status === 'active').length;
+      // Handle client-side statuses that might not be in DB
+      active = statusData.filter(tour => tour.status === 'active' || tour.status === 'pending').length;
       cancelled = statusData.filter(tour => tour.status === 'cancelled').length;
     }
 
@@ -185,7 +220,7 @@ export function useTours(filterOptions: TourFilterOptions) {
       });
 
       topRegions = Object.entries(regionCounts)
-        .map(([region, count]) => ({ name: region, count }))
+        .map(([name, count]) => ({ name, count }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 5);
     }
@@ -232,6 +267,9 @@ export function useTours(filterOptions: TourFilterOptions) {
       try {
         if (!company) throw new Error(t('tours.companyRequired'));
 
+        // Map client body type to DB body type if needed
+        const dbBodyType: DbVehicleBodyType = tour.body_type as DbVehicleBodyType;
+
         // Insert the tour
         const { data: tourData, error: tourError } = await supabase
           .from('tours')
@@ -240,7 +278,7 @@ export function useTours(filterOptions: TourFilterOptions) {
             user_id: tour.user_id,
             title: tour.title,
             vehicle_type: tour.vehicle_type,
-            body_type: tour.body_type as VehicleBodyType,
+            body_type: dbBodyType,
             start_location: tour.start_location,
             start_location_lat: tour.start_location_lat,
             start_location_lng: tour.start_location_lng,
@@ -248,7 +286,7 @@ export function useTours(filterOptions: TourFilterOptions) {
             end_location_lat: tour.end_location_lat,
             end_location_lng: tour.end_location_lng,
             total_distance: tour.total_distance,
-            status: tour.status as any,
+            status: (tour.status as DbTourStatus) || 'pending',
             cargo_weight: tour.cargo_weight,
             cargo_volume: tour.cargo_volume,
             cargo_description: tour.cargo_description,
@@ -268,9 +306,15 @@ export function useTours(filterOptions: TourFilterOptions) {
 
         // Insert tour stops if provided
         if (tour.stops && tour.stops.length > 0) {
+          // Map client stops to DB stops format
           const stopsToInsert = tour.stops.map(stop => ({
-            ...stop,
             tour_id: tourId,
+            location: stop.location,
+            stop_number: stop.order || 1, // Use order as stop_number
+            // Add other relevant fields
+            location_lat: null,
+            location_lng: null,
+            description: null
           }));
 
           const { error: stopsError } = await supabase
@@ -297,8 +341,8 @@ export function useTours(filterOptions: TourFilterOptions) {
         // Insert tour vehicles if provided
         if (tour.vehicles && tour.vehicles.length > 0) {
           const vehiclesToInsert = tour.vehicles.map(vehicle => ({
-            ...vehicle,
             tour_id: tourId,
+            vehicle_id: vehicle.id || vehicle.vehicle_id,
           }));
 
           const { error: vehiclesError } = await supabase
@@ -311,8 +355,8 @@ export function useTours(filterOptions: TourFilterOptions) {
         // Insert tour employees if provided
         if (tour.employees && tour.employees.length > 0) {
           const employeesToInsert = tour.employees.map(employee => ({
-            ...employee,
             tour_id: tourId,
+            employee_id: employee.id || employee.employee_id,
           }));
 
           const { error: employeesError } = await supabase
@@ -350,6 +394,10 @@ export function useTours(filterOptions: TourFilterOptions) {
       setIsLoading(true);
       try {
         if (!tour.id) throw new Error(t('tours.idRequired'));
+        
+        // Map client body type to DB body type if needed
+        const dbBodyType: DbVehicleBodyType = tour.body_type as DbVehicleBodyType;
+        const dbStatus: DbTourStatus = tour.status as DbTourStatus;
 
         // Update the tour
         const { data: tourData, error: tourError } = await supabase
@@ -357,7 +405,7 @@ export function useTours(filterOptions: TourFilterOptions) {
           .update({
             title: tour.title,
             vehicle_type: tour.vehicle_type,
-            body_type: tour.body_type as VehicleBodyType,
+            body_type: dbBodyType,
             start_location: tour.start_location,
             start_location_lat: tour.start_location_lat,
             start_location_lng: tour.start_location_lng,
@@ -365,7 +413,7 @@ export function useTours(filterOptions: TourFilterOptions) {
             end_location_lat: tour.end_location_lat,
             end_location_lng: tour.end_location_lng,
             total_distance: tour.total_distance,
-            status: tour.status as any,
+            status: dbStatus || 'pending',
             cargo_weight: tour.cargo_weight,
             cargo_volume: tour.cargo_volume,
             cargo_description: tour.cargo_description,
@@ -394,9 +442,15 @@ export function useTours(filterOptions: TourFilterOptions) {
 
           // Insert new stops
           if (tour.stops.length > 0) {
+            // Map client stops to DB stops format
             const stopsToInsert = tour.stops.map(stop => ({
-              ...stop,
               tour_id: tour.id,
+              location: stop.location,
+              stop_number: stop.order || 1, // Use order as stop_number
+              // Add other relevant fields
+              location_lat: null,
+              location_lng: null,
+              description: null
             }));
 
             const { error: stopsError } = await supabase
@@ -445,8 +499,8 @@ export function useTours(filterOptions: TourFilterOptions) {
           // Insert new vehicles
           if (tour.vehicles.length > 0) {
             const vehiclesToInsert = tour.vehicles.map(vehicle => ({
-              ...vehicle,
               tour_id: tour.id,
+              vehicle_id: vehicle.id || vehicle.vehicle_id,
             }));
 
             const { error: vehiclesError } = await supabase
@@ -470,8 +524,8 @@ export function useTours(filterOptions: TourFilterOptions) {
           // Insert new employees
           if (tour.employees.length > 0) {
             const employeesToInsert = tour.employees.map(employee => ({
-              ...employee,
               tour_id: tour.id,
+              employee_id: employee.id || employee.employee_id,
             }));
 
             const { error: employeesError } = await supabase
@@ -591,7 +645,38 @@ export function useTourById(tourId?: string) {
       return null;
     }
 
-    return data;
+    if (!data) return null;
+    
+    // Map DB fields to our interface
+    return {
+      id: data.id,
+      title: data.title,
+      status: data.status as TourStatus,
+      createdAt: data.created_at,
+      vehicle_type: data.vehicle_type,
+      body_type: data.body_type as DbVehicleBodyType,
+      start_location: data.start_location,
+      end_location: data.end_location,
+      total_distance: data.total_distance,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      cargo_weight: data.cargo_weight,
+      cargo_volume: data.cargo_volume,
+      cargo_description: data.cargo_description,
+      is_palletized: data.is_palletized,
+      is_hazardous: data.is_hazardous,
+      temperature_sensitive: data.temperature_sensitive,
+      pallet_exchange: data.pallet_exchange,
+      start_location_lat: data.start_location_lat,
+      start_location_lng: data.start_location_lng,
+      end_location_lat: data.end_location_lat,
+      end_location_lng: data.end_location_lng,
+      user_id: data.user_id,
+      stops: data.tour_stops,
+      schedules: data.tour_schedules,
+      vehicles: data.tour_vehicles,
+      employees: data.tour_employees
+    };
   };
 
   const tourQuery = useQuery({

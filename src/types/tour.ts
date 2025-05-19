@@ -55,9 +55,52 @@ export interface TourFormData {
   cancellationReason?: string;
 }
 
-// Add missing type definitions needed by components
+// Define the database enum values for tour status and vehicle body types
+export type DbTourStatus = 'pending' | 'in_progress' | 'completed';
+export type DbVehicleBodyType = 'box' | 'curtain' | 'refrigerated' | 'tanker' | 'flatbed' | 'other';
+
+// Client-side tour status with additional values
 export type TourStatus = 'active' | 'cancelled' | 'paused' | 'awarded' | 'draft' | 'completed' | 'pending' | 'in_progress';
 
+// Client-side body types
+export type VehicleBodyType = 
+  | 'tarp' // Plane
+  | 'refrigerated' // Frigo
+  | 'walking_floor' // Schubboden
+  | 'box'
+  | 'flatbed'
+  | 'tank' // Use tank instead of tanker to match db
+  | 'container'
+  | 'curtain'
+  | 'other';
+
+// Interface for DB tour stop
+export interface TourStopDB {
+  id: string;
+  tour_id: string;
+  location: string;
+  location_lat?: number;
+  location_lng?: number;
+  description?: string;
+  stop_number: number; // This corresponds to 'order' in our client
+  created_at: string;
+  updated_at: string;
+}
+
+// Interface for DB tour schedule
+export interface TourScheduleDB {
+  id: string;
+  tour_id: string;
+  day_of_week: number;
+  is_active: boolean;
+  start_time?: string;
+  loading_time?: number;
+  working_time?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Base tour interface that maps to database fields
 export interface Tour {
   id: string;
   title: string;
@@ -65,7 +108,7 @@ export interface Tour {
   createdAt: string;
   // Database fields
   vehicle_type: string;
-  body_type: VehicleBodyType;
+  body_type: DbVehicleBodyType | VehicleBodyType; // Make it accept both types
   start_location: string;
   end_location?: string;
   total_distance: number;
@@ -85,25 +128,18 @@ export interface Tour {
   user_id?: string;
 }
 
+// Extended tour interface with related data
 export interface TourWithRelations extends Tour {
-  // Add related fields
+  // Related fields
   driverId?: string;
   vehicleId?: string;
-  schedules?: {
-    day_of_week: number;
-    is_active: boolean;
-    start_time?: string;
-    loading_time?: number;
-    working_time?: number;
-  }[];
-  stops?: {
-    location: string;
-    order: number;
-  }[];
+  schedules?: TourScheduleDB[];
+  stops?: TourStopDB[];
   vehicles?: any[];
   employees?: any[];
 }
 
+// Tour statistics interface
 export interface TourStats {
   total: number;
   active: number;
@@ -124,6 +160,7 @@ export interface TourStats {
   }[];
 }
 
+// Tour filter options
 export interface TourFilterOptions {
   timeframe: 'today' | 'week' | 'month' | 'all';
   regions: string[];
@@ -133,15 +170,3 @@ export interface TourFilterOptions {
   sortBy: 'date' | 'status' | 'price';
   sortDirection: 'asc' | 'desc';
 }
-
-export type VehicleBodyType = 
-  | 'tarp' // Plane
-  | 'refrigerated' // Frigo
-  | 'walking_floor' // Schubboden
-  | 'box'
-  | 'flatbed'
-  | 'tank'
-  | 'container'
-  | 'curtain' // Added to match usage in the code
-  | 'tanker' // Added to match usage in the code
-  | 'other';
