@@ -27,6 +27,10 @@ const AddEmployee = () => {
     });
   };
 
+  const handleCancel = () => {
+    navigate('/dashboard/subcontractor/employees');
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -36,6 +40,7 @@ const AddEmployee = () => {
 
       <EmployeeForm 
         onSubmit={handleSubmit}
+        onCancel={handleCancel}
         isLoading={createEmployee.isPending}
       />
     </div>

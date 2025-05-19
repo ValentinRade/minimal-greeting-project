@@ -36,6 +36,14 @@ const EditEmployee = () => {
     });
   };
 
+  const handleCancel = () => {
+    if (id) {
+      navigate(`/dashboard/subcontractor/employees/${id}`);
+    } else {
+      navigate('/dashboard/subcontractor/employees');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -63,6 +71,7 @@ const EditEmployee = () => {
       <EmployeeForm 
         defaultValues={employee}
         onSubmit={handleSubmit}
+        onCancel={handleCancel}
         isLoading={updateEmployee.isPending}
         isEdit={true}
       />

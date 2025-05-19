@@ -97,5 +97,30 @@
     "friday": "Freitag",
     "saturday": "Samstag",
     "sunday": "Sonntag"
+  },
+  "common": {
+    "save": "Speichern",
+    "update": "Aktualisieren",
+    "cancel": "Abbrechen",
+    "loading": "Laden...",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "view": "Anzeigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "submit": "Absenden",
+    "search": "Suchen"
+  },
+  "errors": {
+    "createFailed": "Erstellung fehlgeschlagen",
+    "updateFailed": "Aktualisierung fehlgeschlagen",
+    "deleteFailed": "Löschung fehlgeschlagen",
+    "loadFailed": "Laden fehlgeschlagen",
+    "employeeNotFound": "Mitarbeiter nicht gefunden"
+  },
+  "success": {
+    "created": "Erfolgreich erstellt",
+    "updated": "Erfolgreich aktualisiert",
+    "deleted": "Erfolgreich gelöscht"
   }
 }

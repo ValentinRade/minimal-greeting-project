@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm, SubmitHandler, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -102,17 +101,19 @@ const employeeSchema = z.object({
 type FormValues = z.infer<typeof employeeSchema>;
 
 interface EmployeeFormProps {
-  employee?: Employee;
+  defaultValues?: Employee;
   onSubmit: (data: CreateEmployeeData) => void;
-  onCancel: () => void;
-  isSubmitting?: boolean;
+  onCancel?: () => void;
+  isLoading?: boolean;
+  isEdit?: boolean;
 }
 
 const EmployeeForm: React.FC<EmployeeFormProps> = ({
-  employee,
+  defaultValues,
   onSubmit,
   onCancel,
-  isSubmitting = false
+  isLoading = false,
+  isEdit = false
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('personal');
@@ -120,25 +121,25 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
   // Initialize form with default values or employee data
   const form = useForm<FormValues>({
     resolver: zodResolver(employeeSchema),
-    defaultValues: {
-      first_name: employee?.first_name || '',
-      last_name: employee?.last_name || '',
-      email: employee?.email || '',
-      phone: employee?.phone || '',
-      position: employee?.position || '',
-      employee_type: employee?.employee_type || 'employed',
-      payment_type: employee?.payment_type || 'salary',
-      hourly_rate: employee?.hourly_rate?.toString() || '',
-      net_salary: employee?.net_salary?.toString() || '',
-      gross_salary: employee?.gross_salary?.toString() || '',
-      location: employee?.location || '',
-      notes: employee?.notes || '',
-      licenses: employee?.licenses?.map((license) => ({
+    defaultValues: defaultValues ? {
+      first_name: defaultValues.first_name,
+      last_name: defaultValues.last_name,
+      email: defaultValues.email || '',
+      phone: defaultValues.phone || '',
+      position: defaultValues.position,
+      employee_type: defaultValues.employee_type,
+      payment_type: defaultValues.payment_type,
+      hourly_rate: defaultValues.hourly_rate?.toString() || '',
+      net_salary: defaultValues.net_salary?.toString() || '',
+      gross_salary: defaultValues.gross_salary?.toString() || '',
+      location: defaultValues.location || '',
+      notes: defaultValues.notes || '',
+      licenses: defaultValues.licenses?.map(license => ({
         license_type: license.license_type,
         description: license.description || ''
       })) || [],
       availability: Array.from({ length: 7 }, (_, i) => {
-        const existingAvail = employee?.availability?.find(a => a.day_of_week === i);
+        const existingAvail = defaultValues.availability?.find(a => a.day_of_week === i);
         return {
           day_of_week: i,
           is_available: existingAvail?.is_available || false,
@@ -147,9 +148,31 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
           notes: existingAvail?.notes || ''
         };
       }),
-      regions: employee?.regions?.map((region) => ({
+      regions: defaultValues.regions?.map(region => ({
         country: region.country
       })) || []
+    } : {
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      position: '',
+      employee_type: 'employed',
+      payment_type: 'salary',
+      hourly_rate: '',
+      net_salary: '',
+      gross_salary: '',
+      location: '',
+      notes: '',
+      licenses: [],
+      availability: Array.from({ length: 7 }, (_, i) => ({
+        day_of_week: i,
+        is_available: false,
+        start_time: '',
+        end_time: '',
+        notes: ''
+      })),
+      regions: []
     }
   });
 
@@ -213,14 +236,14 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
       // Ensure all required properties are present
       licenses: data.licenses.map(license => ({
         license_type: license.license_type,
-        description: license.description
+        description: license.description || ''
       })),
       availability: data.availability.map(avail => ({
         day_of_week: avail.day_of_week,
         is_available: avail.is_available,
-        start_time: avail.start_time || undefined,
-        end_time: avail.end_time || undefined,
-        notes: avail.notes || undefined
+        start_time: avail.start_time || '',
+        end_time: avail.end_time || '',
+        notes: avail.notes || ''
       })),
       regions: data.regions.map(region => ({
         country: region.country
@@ -231,7 +254,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
   };
 
   const handleCancel = () => {
-    onCancel();
+    if (onCancel) {
+      onCancel();
+    }
   };
 
   return (
@@ -514,12 +539,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      <SelectItem value="B">{t('licenses.B')}</SelectItem>
-                                      <SelectItem value="BE">{t('licenses.BE')}</SelectItem>
-                                      <SelectItem value="C1">{t('licenses.C1')}</SelectItem>
-                                      <SelectItem value="C1E">{t('licenses.C1E')}</SelectItem>
-                                      <SelectItem value="C">{t('licenses.C')}</SelectItem>
-                                      <SelectItem value="CE">{t('licenses.CE')}</SelectItem>
+                                      <SelectItem value="B">B</SelectItem>
+                                      <SelectItem value="BE">BE</SelectItem>
+                                      <SelectItem value="C1">C1</SelectItem>
+                                      <SelectItem value="C1E">C1E</SelectItem>
+                                      <SelectItem value="C">C</SelectItem>
+                                      <SelectItem value="CE">CE</SelectItem>
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -774,8 +799,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
           <Button type="button" variant="outline" onClick={handleCancel}>
             {t('common.cancel')}
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? t('common.loading') : (employee ? t('common.update') : t('common.save'))}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? t('common.loading') : (isEdit ? t('common.update') : t('common.save'))}
           </Button>
         </div>
       </form>
