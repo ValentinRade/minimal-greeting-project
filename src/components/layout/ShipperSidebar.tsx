@@ -22,17 +22,17 @@ const ShipperSidebar: React.FC = () => {
   const menuItems = [
     { 
       icon: Home, 
-      label: t('dashboard.overview'), 
+      label: 'Übersicht', 
       path: '/dashboard/shipper' 
     },
     { 
       icon: Package, 
-      label: t('dashboard.shipments'), 
+      label: 'Sendungen', 
       path: '/dashboard/shipper/shipments' 
     },
     { 
       icon: Truck, 
-      label: t('dashboard.contractors'), 
+      label: 'Spediteure', 
       path: '/dashboard/shipper/contractors' 
     },
     { 
@@ -52,7 +52,7 @@ const ShipperSidebar: React.FC = () => {
     },
     { 
       icon: Users, 
-      label: t('dashboard.customers'), 
+      label: 'Kunden', 
       path: '/dashboard/shipper/customers' 
     },
     { 
