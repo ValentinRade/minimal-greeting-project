@@ -423,6 +423,71 @@ export type Database = {
         }
         Relationships: []
       }
+      shipper_preferences: {
+        Row: {
+          additional_requirements: string
+          communication_preferences: string
+          company_id: string
+          created_at: string
+          id: string
+          industry: string
+          industry_requirements: string
+          partnership_preference: string
+          required_languages: string[]
+          selection_criteria: Json
+          subcontractor_frequency: string
+          transport_routes: string[]
+          transport_types: string[]
+          updated_at: string
+          user_id: string
+          vehicle_types: string[]
+        }
+        Insert: {
+          additional_requirements?: string
+          communication_preferences?: string
+          company_id: string
+          created_at?: string
+          id?: string
+          industry?: string
+          industry_requirements?: string
+          partnership_preference?: string
+          required_languages?: string[]
+          selection_criteria?: Json
+          subcontractor_frequency?: string
+          transport_routes?: string[]
+          transport_types?: string[]
+          updated_at?: string
+          user_id: string
+          vehicle_types?: string[]
+        }
+        Update: {
+          additional_requirements?: string
+          communication_preferences?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          industry?: string
+          industry_requirements?: string
+          partnership_preference?: string
+          required_languages?: string[]
+          selection_criteria?: Json
+          subcontractor_frequency?: string
+          transport_routes?: string[]
+          transport_types?: string[]
+          updated_at?: string
+          user_id?: string
+          vehicle_types?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipper_preferences_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subcontractor_awards: {
         Row: {
           awarded_at: string
