@@ -1,141 +1,19 @@
 
 {
-  "auth": {
-    "title": "Anmelden",
-    "subtitle": "Geben Sie Ihre Anmeldedaten ein, um auf Ihr Konto zuzugreifen",
-    "email": "E-Mail",
-    "emailPlaceholder": "Geben Sie Ihre E-Mail ein",
-    "password": "Passwort",
-    "passwordPlaceholder": "Geben Sie Ihr Passwort ein",
-    "rememberMe": "Angemeldet bleiben",
-    "forgotPassword": "Passwort vergessen?",
-    "login": "Anmelden",
-    "register": "Konto erstellen",
-    "noAccount": "Sie haben noch kein Konto?",
-    "createCompanyMessage": "Lassen Sie uns zunächst Ihr Unternehmen erstellen",
-    "companyInfo": "Unternehmensinformationen",
-    "companyType": "Unternehmenstyp",
-    "companyName": "Unternehmensname",
-    "companyLegalForm": "Rechtsform",
-    "companyStreet": "Straße & Hausnummer",
-    "companyPostalCode": "Postleitzahl",
-    "companyCity": "Stadt",
-    "companyCountry": "Land",
-    "companyVatId": "Umsatzsteuer-ID",
-    "companyTaxNumber": "Steuernummer",
-    "createCompany": "Unternehmen erstellen",
-    "shipper": "Versender",
-    "subcontractor": "Subunternehmer"
-  },
-  "common": {
-    "appName": "Transport OS",
-    "back": "Zurück",
-    "update": "Aktualisieren",
-    "loading": "Wird geladen...",
-    "save": "Speichern",
-    "cancel": "Abbrechen",
-    "delete": "Löschen",
-    "edit": "Bearbeiten",
-    "add": "Hinzufügen",
-    "remove": "Entfernen",
-    "next": "Weiter",
-    "previous": "Zurück",
-    "search": "Suchen",
-    "filter": "Filter",
-    "sort": "Sortieren",
-    "view": "Ansehen",
-    "actions": "Aktionen",
-    "saving": "Wird gespeichert...",
-    "notFound": "Nicht gefunden"
-  },
-  "dashboard": {
-    "navigation": "Navigation",
-    "overview": "Übersicht",
-    "assignments": "Aufträge",
-    "vehicles": "Fahrzeuge",
-    "employees": "Mitarbeiter",
-    "drivers": "Fahrer",
-    "preferences": "Präferenzen",
-    "selectionCriteria": "Auswahlkriterien",
-    "welcome": "Willkommen!",
-    "title": "Dashboard",
-    "shipperTitle": "Versender Dashboard",
-    "subcontractorTitle": "Subunternehmer Dashboard"
-  },
-  "notifications": {
-    "title": "Benachrichtigungen"
-  },
-  "profile": {
-    "settings": "Einstellungen",
-    "logout": "Abmelden"
-  },
-  "table": {
-    "rowsPerPage": "Zeilen pro Seite:",
-    "of": "von",
-    "loading": "Daten werden geladen...",
-    "noData": "Keine Daten vorhanden"
-  },
-  "success": {
-    "created": "Erfolgreich erstellt",
-    "updated": "Erfolgreich aktualisiert",
-    "deleted": "Erfolgreich gelöscht"
-  },
-  "errors": {
-    "fetchFailed": "Daten konnten nicht abgerufen werden",
-    "createFailed": "Eintrag konnte nicht erstellt werden",
-    "updateFailed": "Eintrag konnte nicht aktualisiert werden",
-    "deleteFailed": "Eintrag konnte nicht gelöscht werden",
-    "loadFailed": "Daten konnten nicht geladen werden",
-    "employeeNotFound": "Mitarbeiter nicht gefunden oder nicht zugänglich"
-  },
-  "general": {
-    "all": "Alle",
-    "none": "Keine",
-    "notProvided": "Nicht angegeben",
-    "notSet": "Nicht festgelegt"
-  },
-  "days": {
-    "monday": "Montag",
-    "tuesday": "Dienstag",
-    "wednesday": "Mittwoch",
-    "thursday": "Donnerstag",
-    "friday": "Freitag",
-    "saturday": "Samstag",
-    "sunday": "Sonntag"
-  },
-  "settings": {
-    "title": "Einstellungen",
-    "description": "Verwalten Sie Ihre Kontoeinstellungen und Präferenzen.",
-    "personalSettings": "Persönliche Einstellungen",
-    "companySettings": "Unternehmenseinstellungen",
-    "profile": "Profil",
-    "companyProfile": "Unternehmensprofil",
-    "users": "Benutzer",
-    "invitations": "Einladungen",
-    "roles": "Rolleninformationen"
-  },
-  "licenses": {
-    "B": "Pkw bis 3,5t (max. 8 Sitzplätze)",
-    "BE": "Pkw + Anhänger > 750kg",
-    "C1": "LKW bis 7,5t",
-    "C1E": "C1 + Anhänger",
-    "C": "LKW > 3,5t",
-    "CE": "LKW + schwerer Anhänger"
-  },
   "employees": {
     "title": "Mitarbeiter",
-    "description": "Verwalten Sie Ihre Mitarbeiter und Dienstleister",
+    "description": "Verwalten Sie Ihre Mitarbeiter und Auftragnehmer",
     "addNew": "Mitarbeiter hinzufügen",
-    "addDescription": "Fügen Sie einen neuen Mitarbeiter oder Dienstleister zu Ihrem Team hinzu",
+    "addDescription": "Fügen Sie einen neuen Mitarbeiter oder Auftragnehmer zu Ihrem Team hinzu",
     "edit": "Mitarbeiter bearbeiten",
     "editDescription": "Aktualisieren Sie Mitarbeiterinformationen und Details",
-    "totalEmployees": "Gesamtzahl Mitarbeiter",
+    "totalEmployees": "Gesamtzahl der Mitarbeiter",
     "employmentDistribution": "Beschäftigungsverteilung",
     "mostAvailableDay": "Tag mit höchster Verfügbarkeit",
     "employed": "Angestellt",
-    "contractors": "Dienstleister",
+    "contractors": "Auftragnehmer",
     "typeEmployed": "Angestellt",
-    "typeContractor": "Dienstleister",
+    "typeContractor": "Auftragnehmer",
     "paymentSalary": "Gehalt",
     "paymentInvoice": "Rechnung",
     "paymentCredit": "Gutschrift",
@@ -161,7 +39,7 @@
     "tabLicenses": "Führerscheine",
     "tabAvailability": "Verfügbarkeit",
     "tabRegions": "Regionen",
-    "tabOverview": "Übersicht",
+    "tabOverview": "Überblick",
     "tabSchedule": "Zeitplan",
     "personalInformation": "Persönliche Informationen",
     "personalInfoDescription": "Geben Sie grundlegende Informationen über den Mitarbeiter ein",
@@ -175,19 +53,19 @@
     "paymentType": "Zahlungsart",
     "selectPaymentType": "Zahlungsart auswählen",
     "hourlyRate": "Stundensatz",
-    "netSalary": "Nettolohn",
-    "grossSalary": "Bruttolohn",
+    "netSalary": "Nettogehalt",
+    "grossSalary": "Bruttogehalt",
     "notes": "Notizen",
     "driverLicenses": "Führerscheine",
     "licensesDescription": "Führerscheine hinzufügen und verwalten",
     "noLicensesAdded": "Es wurden noch keine Führerscheine hinzugefügt",
     "addLicense": "Führerschein hinzufügen",
     "license": "Führerschein",
-    "licenseType": "Führerscheinklasse",
-    "selectLicenseType": "Führerscheinklasse auswählen",
+    "licenseType": "Führerschein-Typ",
+    "selectLicenseType": "Führerschein-Typ auswählen",
     "additionalDescription": "Zusätzliche Beschreibung",
-    "licenseDescriptionHelper": "Optionale Details zu diesem Führerschein (Ausstellungsdatum, Hinweise)",
-    "regionsDescription": "Fügen Sie Regionen hinzu, in denen der Mitarbeiter arbeiten kann",
+    "licenseDescriptionHelper": "Optionale Details zu diesem Führerschein (Ausstellungsdatum, Notizen)",
+    "regionsDescription": "Regionen hinzufügen, in denen der Mitarbeiter arbeiten kann",
     "noRegionsAdded": "Es wurden noch keine Regionen hinzugefügt",
     "addRegion": "Region hinzufügen",
     "region": "Region",
@@ -199,16 +77,25 @@
     "startTime": "Startzeit",
     "endTime": "Endzeit",
     "availabilityNotesPlaceholder": "Optionale Notizen (z.B. 'Nur vormittags')",
-    "weeklySchedule": "Wochenplan",
-    "scheduleDescription": "Mitarbeiterverfügbarkeit im Wochenverlauf",
+    "weeklySchedule": "Wöchentlicher Zeitplan",
+    "scheduleDescription": "Verfügbarkeit des Mitarbeiters im Laufe der Woche",
     "hours": "Stunden",
-    "noScheduleData": "Keine Zeitplaninformationen verfügbar",
-    "paymentInformation": "Vergütungsinformationen"
+    "noScheduleData": "Keine Zeitplan-Informationen verfügbar",
+    "paymentInformation": "Zahlungsinformationen"
   },
-  "vehicles": {
-    "title": "Fahrzeuge"
+  "general": {
+    "all": "Alle",
+    "none": "Keine",
+    "notProvided": "Nicht angegeben",
+    "notSet": "Nicht festgelegt"
   },
-  "selection": {
-    "title": "Auswahlkriterien"
+  "days": {
+    "monday": "Montag",
+    "tuesday": "Dienstag",
+    "wednesday": "Mittwoch",
+    "thursday": "Donnerstag",
+    "friday": "Freitag",
+    "saturday": "Samstag",
+    "sunday": "Sonntag"
   }
 }
