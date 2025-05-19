@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
+import { toast } from '@/components/ui/use-toast';
 
 type AuthContextType = {
   session: Session | null;
@@ -24,7 +25,116 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [company, setCompany] = useState<any | null>(null);
   const [hasCompany, setHasCompany] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
+  const [companyLoading, setCompanyLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
   const { t } = useTranslation();
+
+  // Fetch profile data with debounce protection
+  const fetchProfile = async (userId: string) => {
+    if (profileLoading) return;
+    
+    try {
+      setProfileLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+        
+      if (error) throw error;
+      setProfile(data);
+    } catch (error) {
+      console.error(t('profile.errorFetchingProfile'), error);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  // Fetch company data with debounce protection
+  const fetchCompany = async (userId: string) => {
+    if (companyLoading) return;
+    
+    try {
+      setCompanyLoading(true);
+      console.log(t('company.fetchingCompanyData'), userId);
+      
+      // First, get company information
+      const { data: companyData, error: companyError } = await supabase
+        .from('companies')
+        .select(`
+          *,
+          company_types(name),
+          company_legal_forms(name)
+        `)
+        .eq('user_id', userId)
+        .maybeSingle();
+        
+      if (companyError && companyError.code !== 'PGRST116') {
+        console.error(t('company.errorFetchingCompany'), companyError);
+      }
+      
+      if (companyData) {
+        // For company creators, fetch their role
+        const { data: roleData } = await supabase
+          .from('company_users')
+          .select('role')
+          .eq('company_id', companyData.id)
+          .eq('user_id', userId)
+          .maybeSingle();
+        
+        // Add role to company data
+        const companyWithRole = {
+          ...companyData,
+          role: roleData?.role || 'company_admin' // Default to company_admin for creator
+        };
+        
+        console.log(t('company.foundCompanyThroughTable'), companyWithRole);
+        setCompany(companyWithRole);
+        setHasCompany(true);
+        return;
+      }
+      
+      // Check if user is part of a company but not the creator
+      const { data: companyUserData, error: companyUserError } = await supabase
+        .from('company_users')
+        .select(`
+          *,
+          company:company_id (
+            *,
+            company_types(name),
+            company_legal_forms(name)
+          )
+        `)
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (companyUserError && companyUserError.code !== 'PGRST116') {
+        console.error(t('company.errorFetchingCompanyUser'), companyUserError);
+      }
+      
+      if (companyUserData?.company) {
+        // Merge role information with company data
+        const companyWithRole = {
+          ...companyUserData.company,
+          role: companyUserData.role
+        };
+        
+        console.log(t('company.foundCompanyThroughUsers'), companyWithRole);
+        setCompany(companyWithRole);
+        setHasCompany(true);
+        return;
+      }
+      
+      setCompany(null);
+      setHasCompany(false);
+    } catch (error) {
+      console.error(t('company.errorFetchingCompany'), error);
+      setCompany(null);
+      setHasCompany(false);
+    } finally {
+      setCompanyLoading(false);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -46,9 +156,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
         
         // Fetch profile data if user is signed in
+        // Use setTimeout to avoid blocking the auth state change handler
         if (currentSession?.user) {
-          fetchProfile(currentSession.user.id);
-          fetchCompany(currentSession.user.id);
+          setTimeout(() => {
+            if (isMounted) {
+              fetchProfile(currentSession.user.id);
+              fetchCompany(currentSession.user.id);
+            }
+          }, 0);
         }
       }
     );
@@ -85,108 +200,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [t]);
 
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-        
-      if (error) throw error;
-      setProfile(data);
-    } catch (error) {
-      console.error(t('profile.errorFetchingProfile'), error);
-    }
-  };
-
-  const fetchCompany = async (userId: string) => {
-    try {
-      console.log(t('company.fetchingCompanyData'), userId);
-      
-      // First, get company information
-      const { data: companyData, error: companyError } = await supabase
-        .from('companies')
-        .select(`
-          *,
-          company_types(name),
-          company_legal_forms(name)
-        `)
-        .eq('user_id', userId)
-        .single();
-        
-      if (companyError) {
-        if (companyError.code !== 'PGRST116') { // PGRST116 means no rows returned
-          console.error(t('company.errorFetchingCompany'), companyError);
-        }
-        
-        // Check if user is part of a company but not the creator
-        const { data: companyUserData, error: companyUserError } = await supabase
-          .from('company_users')
-          .select(`
-            *,
-            company:company_id (
-              *,
-              company_types(name),
-              company_legal_forms(name)
-            )
-          `)
-          .eq('user_id', userId)
-          .maybeSingle(); // Use maybeSingle() instead of single()
-        
-        if (companyUserError) {
-          if (companyUserError.code !== 'PGRST116') { // PGRST116 means no rows returned
-            console.error(t('company.errorFetchingCompanyUser'), companyUserError);
-          }
-          setCompany(null);
-          setHasCompany(false);
-          return;
-        }
-        
-        if (companyUserData) {
-          // Merge role information with company data
-          const companyWithRole = {
-            ...companyUserData.company,
-            role: companyUserData.role
-          };
-          
-          console.log(t('company.foundCompanyThroughUsers'), companyWithRole);
-          setCompany(companyWithRole);
-          setHasCompany(true);
-          return;
-        }
-        
-        setCompany(null);
-        setHasCompany(false);
-        return;
-      }
-      
-      if (companyData) {
-        // For company creators, fetch their role
-        const { data: roleData } = await supabase
-          .from('company_users')
-          .select('role')
-          .eq('company_id', companyData.id)
-          .eq('user_id', userId)
-          .single();
-        
-        // Add role to company data
-        const companyWithRole = {
-          ...companyData,
-          role: roleData?.role || 'company_admin' // Default to company_admin for creator
-        };
-        
-        console.log(t('company.foundCompanyThroughTable'), companyWithRole);
-        setCompany(companyWithRole);
-        setHasCompany(true);
-      }
-    } catch (error) {
-      console.error(t('company.errorFetchingCompany'), error);
-      setCompany(null);
-      setHasCompany(false);
-    }
-  };
-
   const refreshCompanyData = async () => {
     if (user) {
       await fetchCompany(user.id);
@@ -194,10 +207,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setProfile(null);
-    setCompany(null);
-    setHasCompany(false);
+    try {
+      await supabase.auth.signOut();
+      setProfile(null);
+      setCompany(null);
+      setHasCompany(false);
+    } catch (error) {
+      console.error(t('auth.signOutError'), error);
+      toast({
+        title: t('auth.error'),
+        description: t('auth.signOutError'),
+        variant: "destructive"
+      });
+    }
   };
 
   const value = {

@@ -18,6 +18,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
   // Exclude certain paths from protection
   const isRegisterInvitedRoute = location.pathname === '/register-invited';
   const isAuthRoute = location.pathname === '/auth';
+  const isCreateCompanyRoute = location.pathname === '/create-company';
   
   // Wait for authentication and company data to be fully loaded
   useEffect(() => {
@@ -25,7 +26,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
       // Set a small timeout to ensure company data is fully loaded
       const timer = setTimeout(() => {
         setIsReady(true);
-      }, 200); // Increased timeout to ensure data is loaded
+      }, 100); // Reduced timeout to prevent excessive delay
       
       return () => clearTimeout(timer);
     }
@@ -46,7 +47,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
     return <Navigate to="/auth" />;
   }
   
-  // Log the current state to help debug
+  // Log the current state at a reasonable level (DEBUG only, not excessive)
   console.log("Protected Route Check:", {
     hasCompany,
     requireCompany,
@@ -54,18 +55,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
     isReady
   });
   
-  // Only check company requirements when we're sure auth and company data are fully loaded
-  if (isReady && requireCompany && !hasCompany && location.pathname !== '/create-company') {
+  // Handle redirect to create-company page
+  if (isReady && requireCompany && !hasCompany && !isCreateCompanyRoute) {
     console.log("No company found for user, redirecting to create company");
     return <Navigate to="/create-company" />;
   }
-
-  // Only redirect to dashboard when we're sure company data is fully loaded
-  // This section was blocking navigation to specific pages - let's fix it
-  if (isReady && hasCompany && company && 
-      location.pathname === '/' && 
-      !location.pathname.includes('/dashboard')) {
-    
+  
+  // Handle redirect to dashboard when on root path
+  if (isReady && hasCompany && company && location.pathname === '/') {
     // Company type 2 is for Shipper (Versender)
     // Company type 1 is for Subcontractor (Subunternehmer)
     if (company.company_type_id === 2) {
@@ -73,6 +70,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
     } else if (company.company_type_id === 1) {
       return <Navigate to="/dashboard/subcontractor" />;
     }
+  }
+  
+  // Handle redirect to appropriate homepage if on create-company but already has company
+  if (isReady && hasCompany && isCreateCompanyRoute) {
+    if (company?.company_type_id === 2) {
+      return <Navigate to="/dashboard/shipper" />;
+    } else if (company?.company_type_id === 1) {
+      return <Navigate to="/dashboard/subcontractor" />;
+    }
+    return <Navigate to="/" />;
   }
   
   return <>{children}</>;
