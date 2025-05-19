@@ -19,7 +19,12 @@
     "registrationFailed": "Rejestracja nieudana",
     "loginSuccess": "Logowanie udane",
     "welcomeBack": "Witamy ponownie!",
-    "loginFailed": "Logowanie nieudane"
+    "loginFailed": "Logowanie nieudane",
+    "emailPlaceholder": "Wprowadź adres email",
+    "passwordPlaceholder": "Wprowadź hasło",
+    "confirmPasswordPlaceholder": "Potwierdź hasło",
+    "errorInitializingAuth": "Błąd podczas inicjalizacji uwierzytelniania:",
+    "useAuthError": "useAuth musi być używany w AuthProvider"
   },
   "profile": {
     "welcome": "Witamy, {{name}}",
@@ -28,8 +33,8 @@
     "phone": "Telefon",
     "language": "Język",
     "logOut": "Wyloguj",
-    "selectLanguage": "Wybierz język",
-    "settings": "Ustawienia"
+    "selectLanguage": "Wybierz język", 
+    "errorFetchingProfile": "Błąd podczas pobierania profilu:"
   },
   "dashboard": {
     "shipperWelcome": "Panel Nadawcy",
@@ -303,5 +308,12 @@
     "show": "Pokaż",
     "hide": "Ukryj",
     "close": "Zamknij"
+  },
+  "company": {
+    "fetchingCompanyData": "Pobieranie danych firmy dla użytkownika:",
+    "errorFetchingCompany": "Błąd podczas pobierania firmy:",
+    "errorFetchingCompanyUser": "Błąd podczas pobierania użytkownika firmy:",
+    "foundCompanyThroughUsers": "Znaleziono firmę przez company_users:",
+    "foundCompanyThroughTable": "Znaleziono firmę przez tabelę companies:"
   }
 }

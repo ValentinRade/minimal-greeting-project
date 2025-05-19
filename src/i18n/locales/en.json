@@ -1,4 +1,3 @@
-
 {
   "common": {
     "appName": "FreightBridge",
@@ -166,7 +165,9 @@
     "alreadyHaveAccount": "Already have an account?",
     "dontHaveAccount": "Don't have an account?",
     "continueWithGoogle": "Continue with Google",
-    "continueWithMicrosoft": "Continue with Microsoft"
+    "continueWithMicrosoft": "Continue with Microsoft",
+    "errorInitializingAuth": "Error initializing auth:",
+    "useAuthError": "useAuth must be used within an AuthProvider"
   },
   "dashboard": {
     "overview": "Overview",
@@ -227,7 +228,8 @@
     "profilePicture": "Profile Picture",
     "uploadPicture": "Upload Picture",
     "removePicture": "Remove Picture",
-    "settings": "Settings"
+    "settings": "Settings",
+    "errorFetchingProfile": "Error fetching profile:"
   },
   "company": {
     "name": "Company Name",

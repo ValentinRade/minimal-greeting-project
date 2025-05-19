@@ -135,7 +135,7 @@ const Auth = () => {
                   <Input 
                     id="email"
                     type="email" 
-                    placeholder="you@example.com" 
+                    placeholder={t('auth.emailPlaceholder')} 
                     value={email} 
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -146,7 +146,7 @@ const Auth = () => {
                   <Input 
                     id="password"
                     type="password" 
-                    placeholder="••••••••" 
+                    placeholder={t('auth.passwordPlaceholder')} 
                     value={password} 
                     onChange={(e) => setPassword(e.target.value)}
                     required 
@@ -169,7 +169,7 @@ const Auth = () => {
                   <Input 
                     id="register-email"
                     type="email" 
-                    placeholder="you@example.com" 
+                    placeholder={t('auth.emailPlaceholder')} 
                     value={email} 
                     onChange={(e) => setEmail(e.target.value)}
                     required 
@@ -180,7 +180,7 @@ const Auth = () => {
                   <Input 
                     id="register-password"
                     type="password" 
-                    placeholder="••••••••" 
+                    placeholder={t('auth.passwordPlaceholder')} 
                     value={password} 
                     onChange={(e) => setPassword(e.target.value)}
                     required 
@@ -190,7 +190,7 @@ const Auth = () => {
                   <Label htmlFor="first-name">{t('auth.firstName')}</Label>
                   <Input 
                     id="first-name"
-                    placeholder="John" 
+                    placeholder={t('profile.firstName')} 
                     value={firstName} 
                     onChange={(e) => setFirstName(e.target.value)}
                     required 
@@ -200,7 +200,7 @@ const Auth = () => {
                   <Label htmlFor="last-name">{t('auth.lastName')}</Label>
                   <Input 
                     id="last-name"
-                    placeholder="Doe" 
+                    placeholder={t('profile.lastName')} 
                     value={lastName} 
                     onChange={(e) => setLastName(e.target.value)}
                     required 
@@ -211,7 +211,7 @@ const Auth = () => {
                   <Input 
                     id="phone"
                     type="tel" 
-                    placeholder="+1234567890" 
+                    placeholder={t('profile.phonePlaceholder')} 
                     value={phone} 
                     onChange={(e) => setPhone(e.target.value)}
                     required 
@@ -231,7 +231,7 @@ const Auth = () => {
                     }}
                   >
                     <SelectTrigger id="language">
-                      <SelectValue placeholder="Select your language" />
+                      <SelectValue placeholder={t('profile.selectLanguage')} />
                     </SelectTrigger>
                     <SelectContent>
                       {languages.map((lang) => (

@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
 
 type AuthContextType = {
   session: Session | null;
@@ -23,6 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [company, setCompany] = useState<any | null>(null);
   const [hasCompany, setHasCompany] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     let isMounted = true;
@@ -68,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setLoading(false);
         }
       } catch (error) {
-        console.error("Error initializing auth:", error);
+        console.error(t('auth.errorInitializingAuth'), error);
         if (isMounted) {
           setLoading(false);
         }
@@ -81,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [t]);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -94,13 +96,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
       setProfile(data);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error(t('profile.errorFetchingProfile'), error);
     }
   };
 
   const fetchCompany = async (userId: string) => {
     try {
-      console.log("Fetching company data for user:", userId);
+      console.log(t('company.fetchingCompanyData'), userId);
       
       // First, get company information
       const { data: companyData, error: companyError } = await supabase
@@ -115,7 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
       if (companyError) {
         if (companyError.code !== 'PGRST116') { // PGRST116 means no rows returned
-          console.error('Error fetching company:', companyError);
+          console.error(t('company.errorFetchingCompany'), companyError);
         }
         
         // Check if user is part of a company but not the creator
@@ -134,7 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         if (companyUserError) {
           if (companyUserError.code !== 'PGRST116') { // PGRST116 means no rows returned
-            console.error('Error fetching company user:', companyUserError);
+            console.error(t('company.errorFetchingCompanyUser'), companyUserError);
           }
           setCompany(null);
           setHasCompany(false);
@@ -148,7 +150,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             role: companyUserData.role
           };
           
-          console.log("Found company through company_users:", companyWithRole);
+          console.log(t('company.foundCompanyThroughUsers'), companyWithRole);
           setCompany(companyWithRole);
           setHasCompany(true);
           return;
@@ -174,12 +176,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           role: roleData?.role || 'company_admin' // Default to company_admin for creator
         };
         
-        console.log("Found company through companies table:", companyWithRole);
+        console.log(t('company.foundCompanyThroughTable'), companyWithRole);
         setCompany(companyWithRole);
         setHasCompany(true);
       }
     } catch (error) {
-      console.error('Error fetching company:', error);
+      console.error(t('company.errorFetchingCompany'), error);
       setCompany(null);
       setHasCompany(false);
     }
@@ -214,8 +216,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+  const { t } = useTranslation();
+  
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error(t('auth.useAuthError'));
   }
   return context;
 };

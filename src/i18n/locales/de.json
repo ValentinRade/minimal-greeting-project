@@ -1,4 +1,3 @@
-
 {
   "common": {
     "appName": "FreightBridge",
@@ -150,9 +149,26 @@
     "sunday": "Sonntag"
   },
   "auth": {
+    "welcome": "Willkommen",
+    "signInOrCreate": "Melden Sie sich an oder erstellen Sie ein neues Konto",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "phone": "Telefonnummer",
+    "language": "Sprache",
+    "signingIn": "Anmeldung läuft...",
     "signIn": "Anmelden",
-    "signUp": "Registrieren",
-    "signOut": "Abmelden",
+    "creatingAccount": "Konto wird erstellt...",
+    "createAccount": "Konto erstellen",
+    "registrationSuccess": "Registrierung erfolgreich",
+    "accountCreated": "Ihr Konto wurde erstellt.",
+    "registrationFailed": "Registrierung fehlgeschlagen",
+    "loginSuccess": "Anmeldung erfolgreich",
+    "welcomeBack": "Willkommen zurück!",
+    "loginFailed": "Anmeldung fehlgeschlagen",
     "emailPlaceholder": "E-Mail-Adresse eingeben",
     "passwordPlaceholder": "Passwort eingeben",
     "confirmPasswordPlaceholder": "Passwort bestätigen",
@@ -166,7 +182,9 @@
     "alreadyHaveAccount": "Haben Sie bereits ein Konto?",
     "dontHaveAccount": "Haben Sie noch kein Konto?",
     "continueWithGoogle": "Mit Google fortfahren",
-    "continueWithMicrosoft": "Mit Microsoft fortfahren"
+    "continueWithMicrosoft": "Mit Microsoft fortfahren",
+    "errorInitializingAuth": "Fehler bei der Initialisierung der Authentifizierung:",
+    "useAuthError": "useAuth muss innerhalb eines AuthProvider verwendet werden"
   },
   "dashboard": {
     "overview": "Übersicht",
@@ -227,7 +245,12 @@
     "profilePicture": "Profilbild",
     "uploadPicture": "Bild hochladen",
     "removePicture": "Bild entfernen",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "phonePlaceholder": "z.B. +49123456789",
+    "selectLanguage": "Sprache auswählen",
+    "errorFetchingProfile": "Fehler beim Abrufen des Profils:"
   },
   "company": {
     "name": "Unternehmensname",
@@ -489,5 +512,12 @@
       "next": "Weiter",
       "save": "Speichern"
     }
+  },
+  "company": {
+    "fetchingCompanyData": "Unternehmensdaten werden abgerufen für Benutzer:",
+    "errorFetchingCompany": "Fehler beim Abrufen des Unternehmens:",
+    "errorFetchingCompanyUser": "Fehler beim Abrufen des Unternehmensnutzers:",
+    "foundCompanyThroughUsers": "Unternehmen über company_users gefunden:",
+    "foundCompanyThroughTable": "Unternehmen über companies-Tabelle gefunden:"
   }
 }
