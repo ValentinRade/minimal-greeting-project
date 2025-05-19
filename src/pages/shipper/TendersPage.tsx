@@ -21,7 +21,7 @@ const TendersPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, loading } = useAuth();
+  const { user, loading, hasCompany } = useAuth();
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
@@ -49,12 +49,14 @@ const TendersPage: React.FC = () => {
   
   // Load tenders on mount and when user changes
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && user && hasCompany) {
       loadTenders();
     } else if (!loading && !user) {
       navigate('/auth');
+    } else if (!loading && user && !hasCompany) {
+      navigate('/create-company');
     }
-  }, [user, loading]);
+  }, [user, loading, hasCompany, navigate]);
   
   const loadTenders = async () => {
     setIsLoading(true);
@@ -141,6 +143,11 @@ const TendersPage: React.FC = () => {
 
   if (!user) {
     navigate('/auth');
+    return null;
+  }
+
+  if (!hasCompany) {
+    navigate('/create-company');
     return null;
   }
 

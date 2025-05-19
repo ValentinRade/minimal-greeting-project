@@ -15,18 +15,20 @@ import { toast } from '@/hooks/use-toast';
 const ShipperDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, hasCompany } = useAuth();
   const [tenderCount, setTenderCount] = useState<number | null>(null);
   const [subcontractorCount, setSubcontractorCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && user && hasCompany) {
       loadDashboardData();
     } else if (!loading && !user) {
       navigate('/auth');
+    } else if (!loading && user && !hasCompany) {
+      navigate('/create-company');
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, hasCompany, navigate]);
 
   const loadDashboardData = async () => {
     setIsLoading(true);
@@ -71,6 +73,18 @@ const ShipperDashboard = () => {
         </div>
       </AppLayout>
     );
+  }
+
+  // If user is not authenticated, redirect to auth page
+  if (!user) {
+    navigate('/auth');
+    return null;
+  }
+
+  // If user doesn't have a company, redirect to create company page
+  if (!hasCompany) {
+    navigate('/create-company');
+    return null;
   }
 
   return (
