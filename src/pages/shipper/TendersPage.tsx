@@ -8,7 +8,7 @@ import { Plus, X, Calendar, ArrowRight, Edit, Trash2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CreateTenderForm from '@/components/tenders/CreateTenderForm';
-import { getTenders } from '@/services/tenderService';
+import { getTenders, deleteTender } from '@/services/tenderService';
 import { TenderDetails } from '@/types/tender';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
@@ -16,17 +16,20 @@ import { de } from 'date-fns/locale';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const TendersPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   
   // Handle resize to determine if mobile view should be used
-  React.useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
       setIsMobileView(window.innerWidth < 768);
     };
@@ -35,10 +38,12 @@ const TendersPage: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  // Load tenders on mount
+  // Load tenders on mount and when user changes
   useEffect(() => {
-    loadTenders();
-  }, []);
+    if (!isAuthLoading && user) {
+      loadTenders();
+    }
+  }, [user, isAuthLoading]);
   
   const loadTenders = async () => {
     setIsLoading(true);
@@ -60,6 +65,32 @@ const TendersPage: React.FC = () => {
   const handleTenderCreated = () => {
     setIsCreateFormOpen(false);
     loadTenders();
+    toast({
+      title: "Ausschreibung erstellt",
+      description: "Ihre Ausschreibung wurde erfolgreich erstellt",
+      variant: "default"
+    });
+  };
+
+  const handleDeleteTender = async (id: string) => {
+    setIsDeleting(id);
+    try {
+      await deleteTender(id);
+      setTenders(tenders.filter(tender => tender.id !== id));
+      toast({
+        title: "Ausschreibung gelöscht",
+        description: "Die Ausschreibung wurde erfolgreich gelöscht",
+        variant: "default"
+      });
+    } catch (error) {
+      toast({
+        title: "Fehler beim Löschen",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(null);
+    }
   };
   
   const getStatusBadge = (status: string) => {
@@ -88,6 +119,19 @@ const TendersPage: React.FC = () => {
   const handleToursClick = () => {
     navigate('/dashboard/shipper/tours');
   };
+
+  if (isAuthLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    navigate('/auth');
+    return null;
+  }
 
   return (
     <div className="space-y-6">
@@ -210,8 +254,12 @@ const TendersPage: React.FC = () => {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                                <AlertDialogAction className="bg-red-500 hover:bg-red-600">
-                                  Löschen
+                                <AlertDialogAction 
+                                  onClick={() => handleDeleteTender(tender.id)}
+                                  className="bg-red-500 hover:bg-red-600"
+                                  disabled={isDeleting === tender.id}
+                                >
+                                  {isDeleting === tender.id ? 'Wird gelöscht...' : 'Löschen'}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>

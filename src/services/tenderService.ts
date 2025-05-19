@@ -1,140 +1,173 @@
-
 import { TenderDetails } from "@/types/tender";
 import { supabase } from "@/integrations/supabase/client";
 
 export const createTender = async (tenderData: Omit<TenderDetails, 'id' | 'createdAt' | 'status' | 'toursCount'>) => {
-  const user = supabase.auth.getUser();
-  const { data: userData } = await user;
-  
-  if (!userData.user) {
-    throw new Error("User not authenticated");
-  }
-  
-  // Bereite die Daten für die Supabase-Tabelle vor
-  const dbTenderData = {
-    user_id: userData.user.id,
-    title: tenderData.title,
-    description: tenderData.description,
-    tender_type: tenderData.tenderType,
-    show_contact_info: tenderData.showContactInfo,
-    prequalifications: tenderData.prequalifications,
-    duration: tenderData.duration,
-    commercial_calculation: tenderData.commercialCalculation === 'yes',
-    service_provider_option: tenderData.serviceProviderOption,
-    contractor_preferences: tenderData.contractorPreferences,
-    status: 'active',
-    company_id: userData.user.user_metadata?.company_id || null,
-  };
-
-  // Speichere in Supabase
-  const { data, error } = await supabase
-    .from('tenders')
-    .insert(dbTenderData)
-    .select()
-    .single();
-
-  if (error) {
-    console.error("Error creating tender:", error);
-    throw error;
-  }
-
-  // Speichere die Einladungen, falls vorhanden
-  if (tenderData.inviteServiceProviders?.email) {
-    const invitationData = {
-      tender_id: data.id,
-      email: tenderData.inviteServiceProviders.email,
-      confirmed: tenderData.inviteServiceProviders.confirmed || false,
+  try {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !userData.user) {
+      throw new Error("User not authenticated");
+    }
+    
+    // Bereite die Daten für die Supabase-Tabelle vor
+    const dbTenderData = {
+      user_id: userData.user.id,
+      title: tenderData.title,
+      description: tenderData.description,
+      tender_type: tenderData.tenderType,
+      show_contact_info: tenderData.showContactInfo,
+      prequalifications: tenderData.prequalifications,
+      duration: tenderData.duration,
+      commercial_calculation: tenderData.commercialCalculation === 'yes',
+      service_provider_option: tenderData.serviceProviderOption,
+      contractor_preferences: tenderData.contractorPreferences,
+      status: 'active',
+      company_id: userData.user.user_metadata?.company_id || null,
     };
 
-    const { error: invitationError } = await supabase
-      .from('tender_invitations')
-      .insert(invitationData);
+    // Log der Daten für Debugging
+    console.log("Creating tender with data:", dbTenderData);
 
-    if (invitationError) {
-      console.error("Error creating tender invitation:", invitationError);
-      // Wir werfen keinen Fehler, da das Hauptobjekt erfolgreich erstellt wurde
+    // Speichere in Supabase
+    const { data, error } = await supabase
+      .from('tenders')
+      .insert(dbTenderData)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating tender:", error);
+      throw error;
     }
-  }
 
-  // Konvertiere zurück zum TenderDetails-Format
-  const newTender: TenderDetails = {
-    id: data.id,
-    title: data.title,
-    description: data.description || '',
-    tenderType: data.tender_type as 'transport_route' | 'fixed_area',
-    showContactInfo: data.show_contact_info,
-    prequalifications: data.prequalifications || [],
-    duration: data.duration as { value: string; unit: 'days' | 'weeks' | 'months' },
-    commercialCalculation: data.commercial_calculation ? 'yes' : 'no',
-    serviceProviderOption: data.service_provider_option as 'own_fleet' | 'single_provider',
-    inviteServiceProviders: { 
-      email: tenderData.inviteServiceProviders?.email || '',
-      confirmed: tenderData.inviteServiceProviders?.confirmed || false 
-    },
-    contractorPreferences: data.contractor_preferences as TenderDetails['contractorPreferences'],
-    createdAt: data.created_at,
-    status: data.status as 'active' | 'draft' | 'closed' | 'awarded',
-    toursCount: 0
-  };
-  
-  return newTender;
+    // Speichere die Einladungen, falls vorhanden
+    if (tenderData.inviteServiceProviders?.email) {
+      const invitationData = {
+        tender_id: data.id,
+        email: tenderData.inviteServiceProviders.email,
+        confirmed: tenderData.inviteServiceProviders.confirmed || false,
+      };
+
+      const { error: invitationError } = await supabase
+        .from('tender_invitations')
+        .insert(invitationData);
+
+      if (invitationError) {
+        console.error("Error creating tender invitation:", invitationError);
+        // Wir werfen keinen Fehler, da das Hauptobjekt erfolgreich erstellt wurde
+      }
+    }
+
+    // Konvertiere zurück zum TenderDetails-Format
+    const newTender: TenderDetails = {
+      id: data.id,
+      title: data.title,
+      description: data.description || '',
+      tenderType: data.tender_type as 'transport_route' | 'fixed_area',
+      showContactInfo: data.show_contact_info,
+      prequalifications: data.prequalifications || [],
+      duration: data.duration as { value: string; unit: 'days' | 'weeks' | 'months' },
+      commercialCalculation: data.commercial_calculation ? 'yes' : 'no',
+      serviceProviderOption: data.service_provider_option as 'own_fleet' | 'single_provider',
+      inviteServiceProviders: { 
+        email: tenderData.inviteServiceProviders?.email || '',
+        confirmed: tenderData.inviteServiceProviders?.confirmed || false 
+      },
+      contractorPreferences: data.contractor_preferences as TenderDetails['contractorPreferences'],
+      createdAt: data.created_at,
+      status: data.status as 'active' | 'draft' | 'closed' | 'awarded',
+      toursCount: 0
+    };
+    
+    return newTender;
+  } catch (error) {
+    console.error("Error in createTender:", error);
+    throw error;
+  }
 };
 
 export const getTenders = async (): Promise<TenderDetails[]> => {
-  const { data: tenders, error } = await supabase
-    .from('tenders')
-    .select(`
-      id, 
-      title, 
-      description, 
-      tender_type, 
-      show_contact_info, 
-      prequalifications, 
-      duration, 
-      commercial_calculation, 
-      service_provider_option, 
-      contractor_preferences,
-      created_at,
-      status
-    `)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error("Error fetching tenders:", error);
-    throw error;
-  }
-
-  // Zähle die zugehörigen Touren
-  const tendersWithTourCount = await Promise.all(tenders.map(async (tender) => {
-    const { count, error: countError } = await supabase
-      .from('tender_tours')
-      .select('*', { count: 'exact', head: true })
-      .eq('tender_id', tender.id);
-
-    if (countError) {
-      console.error("Error counting tours for tender:", countError);
+  try {
+    // Get the current user first
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !userData.user) {
+      console.error("User not authenticated:", userError);
+      throw new Error("User not authenticated");
+    }
+    
+    const companyId = userData.user.user_metadata?.company_id;
+    
+    if (!companyId) {
+      console.error("No company ID found in user metadata");
+      throw new Error("Company information missing. Please ensure you have created a company and are properly logged in.");
     }
 
-    // Konvertiere die Daten in das richtige Format mit expliziten Typ-Assertions
-    return {
-      id: tender.id,
-      title: tender.title,
-      description: tender.description || '',
-      tenderType: tender.tender_type as 'transport_route' | 'fixed_area',
-      showContactInfo: tender.show_contact_info,
-      prequalifications: tender.prequalifications || [],
-      duration: tender.duration as { value: string; unit: 'days' | 'weeks' | 'months' },
-      commercialCalculation: tender.commercial_calculation ? 'yes' : 'no',
-      serviceProviderOption: tender.service_provider_option as 'own_fleet' | 'single_provider',
-      inviteServiceProviders: { email: '', confirmed: false },
-      contractorPreferences: tender.contractor_preferences as TenderDetails['contractorPreferences'],
-      createdAt: tender.created_at,
-      status: tender.status as 'active' | 'draft' | 'closed' | 'awarded',
-      toursCount: count || 0
-    } as TenderDetails;
-  }));
+    // Log for debugging
+    console.log("Fetching tenders for company ID:", companyId);
 
-  return tendersWithTourCount;
+    const { data: tenders, error } = await supabase
+      .from('tenders')
+      .select(`
+        id, 
+        title, 
+        description, 
+        tender_type, 
+        show_contact_info, 
+        prequalifications, 
+        duration, 
+        commercial_calculation, 
+        service_provider_option, 
+        contractor_preferences,
+        created_at,
+        status
+      `)
+      .eq('company_id', companyId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error("Error fetching tenders:", error);
+      throw error;
+    }
+
+    console.log("Fetched tenders:", tenders);
+
+    // Zähle die zugehörigen Touren
+    const tendersWithTourCount = await Promise.all(tenders.map(async (tender) => {
+      const { count, error: countError } = await supabase
+        .from('tender_tours')
+        .select('*', { count: 'exact', head: true })
+        .eq('tender_id', tender.id);
+
+      if (countError) {
+        console.error("Error counting tours for tender:", countError);
+      }
+
+      // Konvertiere die Daten in das richtige Format mit expliziten Typ-Assertions
+      return {
+        id: tender.id,
+        title: tender.title,
+        description: tender.description || '',
+        tenderType: tender.tender_type as 'transport_route' | 'fixed_area',
+        showContactInfo: tender.show_contact_info,
+        prequalifications: tender.prequalifications || [],
+        duration: tender.duration as { value: string; unit: 'days' | 'weeks' | 'months' },
+        commercialCalculation: tender.commercial_calculation ? 'yes' : 'no',
+        serviceProviderOption: tender.service_provider_option as 'own_fleet' | 'single_provider',
+        inviteServiceProviders: { email: '', confirmed: false },
+        contractorPreferences: tender.contractor_preferences as TenderDetails['contractorPreferences'],
+        createdAt: tender.created_at,
+        status: tender.status as 'active' | 'draft' | 'closed' | 'awarded',
+        toursCount: count || 0
+      } as TenderDetails;
+    }));
+
+    console.log("Processed tenders with tour count:", tendersWithTourCount);
+    return tendersWithTourCount;
+  } catch (error) {
+    console.error("Error in getTenders:", error);
+    throw error;
+  }
 };
 
 export const getTenderById = async (id: string): Promise<TenderDetails | undefined> => {
