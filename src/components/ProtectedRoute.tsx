@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -36,7 +37,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireCompan
     return () => {
       routeCheckedRef.current = false;
     };
-  }, [location.pathname, authLoading, hasCompany, requireCompany]);
+  }, [location.pathname, authLoading, hasCompany, requireCompany, isRegisterInvitedRoute, isAuthRoute]);
   
   // Skip checks for specific routes that don't need auth
   if (isRegisterInvitedRoute || isAuthRoute) {

@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -191,7 +192,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setCompanyLoading(false);
     }
-  }, [companyLoading, t, CACHE_DURATION, MIN_FETCH_INTERVAL]);
+  }, [companyLoading, t]);
 
   useEffect(() => {
     let isMounted = true;
@@ -307,10 +308,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  const { t } = useTranslation();
   
   if (!context) {
-    throw new Error(t('auth.useAuthError'));
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
