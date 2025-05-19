@@ -16,6 +16,7 @@ import ShipperDashboard from "./pages/ShipperDashboard";
 import SubcontractorDashboard from "./pages/SubcontractorDashboard";
 import NotFound from "./pages/NotFound";
 import CrmPage from "./pages/shipper/CrmPage";
+import SubcontractorDatabasePage from "./pages/shipper/SubcontractorDatabasePage";
 
 // Settings pages
 import SettingsLayout from "./pages/settings/SettingsLayout";
@@ -69,6 +70,13 @@ function App() {
                 <Route path="/dashboard/shipper/crm" element={
                   <ProtectedRoute>
                     <CrmPage />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Shipper Subcontractor Database route */}
+                <Route path="/dashboard/shipper/subcontractor-database" element={
+                  <ProtectedRoute>
+                    <SubcontractorDatabasePage />
                   </ProtectedRoute>
                 } />
                 
