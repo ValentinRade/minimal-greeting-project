@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
 import { toast } from '@/hooks/use-toast';
 import type { Employee } from '@/types/employee';
-import type { Tour } from '@/types/tour';
+import type { Tour, TourStatus } from '@/types/tour';
 import { mapDbEmployeeToEmployee } from '@/utils/employeeUtils';
 import { useCompanyPrequalifications } from './useCompanyPrequalifications';
 import { useCompanyReferences } from './useCompanyReferences';

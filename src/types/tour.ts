@@ -87,6 +87,20 @@ export interface TourStopDB {
   updated_at: string;
 }
 
+// Client-side tour stop interface (make sure it includes both stop_number and order for compatibility)
+export interface TourStop {
+  id?: string;
+  tour_id?: string;
+  location: string;
+  location_lat?: number;
+  location_lng?: number;
+  description?: string;
+  stop_number?: number;
+  order: number;  // Client uses order, database uses stop_number
+  created_at?: string;
+  updated_at?: string;
+}
+
 // Interface for DB tour schedule
 export interface TourScheduleDB {
   id: string;
@@ -128,13 +142,13 @@ export interface Tour {
   user_id?: string;
 }
 
-// Extended tour interface with related data
+// Extended tour interface with related data, now with stops as TourStop[]
 export interface TourWithRelations extends Tour {
   // Related fields
   driverId?: string;
   vehicleId?: string;
   schedules?: TourScheduleDB[];
-  stops?: TourStopDB[];
+  stops?: TourStop[];  // Use TourStop instead of TourStopDB
   vehicles?: any[];
   employees?: any[];
 }

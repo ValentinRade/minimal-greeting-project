@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -60,8 +59,9 @@ export function useTours(filterOptions: TourFilterOptions) {
 
     // Apply filters
     if (filterOptions.status !== 'all') {
-      // Check if the status is one of the DB statuses
+      // Convert client status to DB status if needed
       if (['pending', 'in_progress', 'completed'].includes(filterOptions.status)) {
+        // Only use status filter for DB statuses that actually exist
         query = query.eq('status', filterOptions.status);
       }
     }
@@ -101,35 +101,50 @@ export function useTours(filterOptions: TourFilterOptions) {
     }
 
     // Map DB fields to our interface
-    return data?.map(tour => ({
-      id: tour.id,
-      title: tour.title,
-      status: mapDbStatusToClientStatus(tour.status as DbTourStatus),
-      createdAt: tour.created_at,
-      vehicle_type: tour.vehicle_type,
-      body_type: mapDbBodyTypesToClientTypes(tour.body_type as DbVehicleBodyType),
-      start_location: tour.start_location,
-      end_location: tour.end_location,
-      total_distance: tour.total_distance,
-      start_date: tour.start_date,
-      end_date: tour.end_date,
-      cargo_weight: tour.cargo_weight,
-      cargo_volume: tour.cargo_volume,
-      cargo_description: tour.cargo_description,
-      is_palletized: tour.is_palletized,
-      is_hazardous: tour.is_hazardous,
-      temperature_sensitive: tour.temperature_sensitive,
-      pallet_exchange: tour.pallet_exchange,
-      start_location_lat: tour.start_location_lat,
-      start_location_lng: tour.start_location_lng,
-      end_location_lat: tour.end_location_lat,
-      end_location_lng: tour.end_location_lng,
-      user_id: tour.user_id,
-      stops: tour.tour_stops,
-      schedules: tour.tour_schedules,
-      vehicles: tour.tour_vehicles,
-      employees: tour.tour_employees
-    })) || [];
+    return data?.map(tour => {
+      // Convert tour stops to match client interface
+      const stops = tour.tour_stops?.map(stop => ({
+        id: stop.id,
+        tour_id: stop.tour_id,
+        location: stop.location,
+        location_lat: stop.location_lat,
+        location_lng: stop.location_lng,
+        description: stop.description,
+        order: stop.stop_number, // Map stop_number to order for client interface
+        created_at: stop.created_at,
+        updated_at: stop.updated_at
+      })) || [];
+
+      return {
+        id: tour.id,
+        title: tour.title,
+        status: mapDbStatusToClientStatus(tour.status as DbTourStatus),
+        createdAt: tour.created_at,
+        vehicle_type: tour.vehicle_type,
+        body_type: mapDbBodyTypesToClientTypes(tour.body_type as DbVehicleBodyType),
+        start_location: tour.start_location,
+        end_location: tour.end_location,
+        total_distance: tour.total_distance,
+        start_date: tour.start_date,
+        end_date: tour.end_date,
+        cargo_weight: tour.cargo_weight,
+        cargo_volume: tour.cargo_volume,
+        cargo_description: tour.cargo_description,
+        is_palletized: tour.is_palletized,
+        is_hazardous: tour.is_hazardous,
+        temperature_sensitive: tour.temperature_sensitive,
+        pallet_exchange: tour.pallet_exchange,
+        start_location_lat: tour.start_location_lat,
+        start_location_lng: tour.start_location_lng,
+        end_location_lat: tour.end_location_lat,
+        end_location_lng: tour.end_location_lng,
+        user_id: tour.user_id,
+        stops: stops,
+        schedules: tour.tour_schedules,
+        vehicles: tour.tour_vehicles,
+        employees: tour.tour_employees
+      };
+    }) || [];
   };
 
   // Fetch tour statistics
@@ -195,9 +210,11 @@ export function useTours(filterOptions: TourFilterOptions) {
       pending = statusData.filter(tour => tour.status === 'pending').length;
       inProgress = statusData.filter(tour => tour.status === 'in_progress').length;
       completed = statusData.filter(tour => tour.status === 'completed').length;
+      
       // Handle client-side statuses that might not be in DB
-      active = statusData.filter(tour => tour.status === 'active' || tour.status === 'pending').length;
-      cancelled = statusData.filter(tour => tour.status === 'cancelled').length;
+      // Map database states to client-side states as needed
+      active = statusData.filter(tour => tour.status === 'pending').length; // Consider pending tours as active for client UI
+      cancelled = 0; // Since cancelled might not be a DB state, default to 0 or compute differently
     }
 
     const pendingPercent = total ? Math.round((pending / total) * 100) : 0;
@@ -310,7 +327,7 @@ export function useTours(filterOptions: TourFilterOptions) {
           const stopsToInsert = tour.stops.map(stop => ({
             tour_id: tourId,
             location: stop.location,
-            stop_number: stop.order || 1, // Use order as stop_number
+            stop_number: stop.order || 1, // Map order to stop_number for DB
             // Add other relevant fields
             location_lat: null,
             location_lng: null,
@@ -446,7 +463,7 @@ export function useTours(filterOptions: TourFilterOptions) {
             const stopsToInsert = tour.stops.map(stop => ({
               tour_id: tour.id,
               location: stop.location,
-              stop_number: stop.order || 1, // Use order as stop_number
+              stop_number: stop.order || 1, // Map order to stop_number for DB
               // Add other relevant fields
               location_lat: null,
               location_lng: null,
@@ -647,6 +664,19 @@ export function useTourById(tourId?: string) {
 
     if (!data) return null;
     
+    // Convert tour stops to match client interface
+    const stops = data.tour_stops?.map(stop => ({
+      id: stop.id,
+      tour_id: stop.tour_id,
+      location: stop.location,
+      location_lat: stop.location_lat,
+      location_lng: stop.location_lng,
+      description: stop.description,
+      order: stop.stop_number, // Map stop_number to order for client interface
+      created_at: stop.created_at,
+      updated_at: stop.updated_at
+    })) || [];
+    
     // Map DB fields to our interface
     return {
       id: data.id,
@@ -672,7 +702,7 @@ export function useTourById(tourId?: string) {
       end_location_lat: data.end_location_lat,
       end_location_lng: data.end_location_lng,
       user_id: data.user_id,
-      stops: data.tour_stops,
+      stops: stops,
       schedules: data.tour_schedules,
       vehicles: data.tour_vehicles,
       employees: data.tour_employees

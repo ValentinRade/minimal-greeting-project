@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Metric } from '@/components/ui/metric';
 import { Skeleton } from '@/components/ui/skeleton';
-import { TourStats as TourStatsType } from '@/types/tour';
+import type { TourStats as TourStatsType } from '@/types/tour';
 
 interface TourStatsProps {
   stats: TourStatsType;
