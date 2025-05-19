@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,24 +19,38 @@ const ShipperPreferencesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
   useEffect(() => {
-    if (user && hasCompany) {
-      loadPreferences();
-    } else if (user && !hasCompany) {
-      setIsLoading(false);
-      setError("Sie müssen ein Unternehmen erstellen, bevor Sie Präferenzen festlegen können.");
-    } else if (!user) {
-      setIsLoading(false);
-      setError("Sie müssen angemeldet sein, um Präferenzen festlegen zu können.");
+    // Only run this effect once to prevent infinite loops
+    if (isInitialLoad) {
+      setIsInitialLoad(false);
+      
+      if (!user) {
+        setIsLoading(false);
+        setError("Sie müssen angemeldet sein, um Präferenzen festlegen zu können.");
+        return;
+      }
+      
+      if (user && !hasCompany) {
+        setIsLoading(false);
+        setError("Sie müssen ein Unternehmen erstellen, bevor Sie Präferenzen festlegen können.");
+        return;
+      }
+      
+      if (user && hasCompany) {
+        loadPreferences();
+      }
     }
-  }, [user, hasCompany]);
+  }, [user, hasCompany, isInitialLoad]);
 
   const loadPreferences = async () => {
     setIsLoading(true);
     setError(null);
     try {
+      console.log("Loading preferences for user:", user?.id);
       const data = await getShipperPreferences();
+      console.log("Loaded preferences:", data);
       setPreferences(data);
       setIsEditMode(!data); // Enter edit mode if no preferences exist
     } catch (error: any) {
