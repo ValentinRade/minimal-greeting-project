@@ -39,37 +39,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const MIN_FETCH_INTERVAL = 10000;
   const lastFetchTime = useRef<number>(0);
 
-  // Ref, um den Status der Ladeprozesse zu verfolgen
-  const dataLoadingRef = useRef({
-    profileRequested: false,
-    companyRequested: false,
-    profileLoaded: false,
-    companyLoaded: false
-  });
-
-  // Funktion, um zu prüfen ob alle Daten geladen sind und den Ladezustand zu aktualisieren
-  const checkDataLoaded = useCallback(() => {
-    const { profileRequested, companyRequested, profileLoaded, companyLoaded } = dataLoadingRef.current;
-    
-    // Wenn beide Datensätze angefragt und geladen wurden, setze loading auf false
-    if (profileRequested && companyRequested && profileLoaded && companyLoaded) {
-      setLoading(false);
-    }
-  }, []);
-
   // Fetch profile data with debounce protection
   const fetchProfile = useCallback(async (userId: string) => {
     if (profileLoading) return;
     
-    // Markiere Profil als angefragt
-    dataLoadingRef.current.profileRequested = true;
-    
-    // Clear any pending timeouts
-    if (fetchProfileTimeoutRef.current) {
-      clearTimeout(fetchProfileTimeoutRef.current);
-    }
-    
-    // Ausführung direkt ohne setTimeout - reduziert die Anzahl der Anfragen
     try {
       setProfileLoading(true);
       const { data, error } = await supabase
@@ -80,36 +53,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
       if (error) throw error;
       setProfile(data);
-      
-      // Markiere Profil als geladen
-      dataLoadingRef.current.profileLoaded = true;
-      checkDataLoaded();
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error(t('profile.errorFetchingProfile'), error);
       }
-      // Auch bei Fehler als geladen markieren, um den Ladezustand zu beenden
-      dataLoadingRef.current.profileLoaded = true;
-      checkDataLoaded();
     } finally {
       setProfileLoading(false);
-      fetchProfileTimeoutRef.current = null;
     }
-  }, [profileLoading, t, checkDataLoaded]);
+  }, [profileLoading, t]);
 
   // Fetch company data with debounce and caching
   const fetchCompany = useCallback(async (userId: string) => {
     if (companyLoading) return;
     
-    // Markiere Unternehmen als angefragt
-    dataLoadingRef.current.companyRequested = true;
-    
     // Überprüfen, ob genug Zeit seit der letzten Abfrage vergangen ist
     const now = Date.now();
     if (now - lastFetchTime.current < MIN_FETCH_INTERVAL) {
-      // Bei zu häufigen Anfragen trotzdem als geladen markieren
-      dataLoadingRef.current.companyLoaded = true;
-      checkDataLoaded();
       return; // Zu häufige Abfragen verhindern
     }
     
@@ -125,22 +84,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setCompany(null);
         setHasCompany(false);
       }
-      
-      // Markiere Unternehmensdaten als geladen (aus Cache)
-      dataLoadingRef.current.companyLoaded = true;
-      checkDataLoaded();
       return;
     }
     
     // Update last fetch time
     lastFetchTime.current = now;
     
-    // Clear any pending timeouts
-    if (fetchCompanyTimeoutRef.current) {
-      clearTimeout(fetchCompanyTimeoutRef.current);
-    }
-    
-    // Ausführung direkt ohne setTimeout - reduziert die Anzahl der Anfragen
     try {
       setCompanyLoading(true);
       
@@ -184,10 +133,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         setCompany(companyWithRole);
         setHasCompany(true);
-        
-        // Markiere Unternehmensdaten als geladen
-        dataLoadingRef.current.companyLoaded = true;
-        checkDataLoaded();
         return;
       }
       
@@ -226,10 +171,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         setCompany(companyWithRole);
         setHasCompany(true);
-        
-        // Markiere Unternehmensdaten als geladen
-        dataLoadingRef.current.companyLoaded = true;
-        checkDataLoaded();
         return;
       }
       
@@ -241,36 +182,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       setCompany(null);
       setHasCompany(false);
-      
-      // Auch bei fehlendem Unternehmen als geladen markieren
-      dataLoadingRef.current.companyLoaded = true;
-      checkDataLoaded();
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error(t('company.errorFetchingCompany'), error);
       }
       setCompany(null);
       setHasCompany(false);
-      
-      // Auch bei Fehler als geladen markieren
-      dataLoadingRef.current.companyLoaded = true;
-      checkDataLoaded();
     } finally {
       setCompanyLoading(false);
-      fetchCompanyTimeoutRef.current = null;
     }
-  }, [companyLoading, t, CACHE_DURATION, MIN_FETCH_INTERVAL, checkDataLoaded]);
+  }, [companyLoading, t, CACHE_DURATION, MIN_FETCH_INTERVAL]);
 
   useEffect(() => {
     let isMounted = true;
-    
-    // Zurücksetzen des Ladezustands bei Montage
-    dataLoadingRef.current = {
-      profileRequested: false,
-      companyRequested: false,
-      profileLoaded: false,
-      companyLoaded: false
-    };
     
     // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -287,26 +211,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setHasCompany(false);
           // Clear caches on signout
           companyDataCache.current.clear();
-          
-          // Zurücksetzen des Ladezustands
-          dataLoadingRef.current = {
-            profileRequested: false,
-            companyRequested: false,
-            profileLoaded: false,
-            companyLoaded: false
-          };
-          
-          setLoading(false);
           return;
         }
         
-        // Bei Anmeldung/Sitzungsänderung als noch nicht geladen markieren
-        setLoading(true);
-        
-        // Fetch profile data if user is signed in - ohne setTimeout
-        if (currentSession?.user && isMounted) {
-          fetchProfile(currentSession.user.id);
-          fetchCompany(currentSession.user.id);
+        // Fetch profile data if user is signed in
+        if (currentSession?.user) {
+          setTimeout(() => {
+            if (isMounted) {
+              fetchProfile(currentSession.user.id);
+              fetchCompany(currentSession.user.id);
+            }
+          }, 100); // Kleiner Delay, um die Initialisierung abzuschließen
         }
       }
     );
@@ -323,10 +238,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (currentSession?.user) {
             await fetchProfile(currentSession.user.id);
             await fetchCompany(currentSession.user.id);
-          } else {
-            // Wenn kein Benutzer vorhanden ist, können wir den Ladezustand beenden
-            setLoading(false);
           }
+          
+          setLoading(false);
         }
       } catch (error) {
         if (process.env.NODE_ENV === 'development') {
@@ -343,14 +257,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       isMounted = false;
       subscription.unsubscribe();
-      
-      // Clear any pending timeouts on unmount
-      if (fetchProfileTimeoutRef.current) {
-        clearTimeout(fetchProfileTimeoutRef.current);
-      }
-      if (fetchCompanyTimeoutRef.current) {
-        clearTimeout(fetchCompanyTimeoutRef.current);
-      }
     };
   }, [t, fetchProfile, fetchCompany]);
 
