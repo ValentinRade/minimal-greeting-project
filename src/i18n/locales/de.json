@@ -433,6 +433,8 @@
     "resources": "Ressourcen"
   },
   "vehicles": {
+    "title": "Fahrzeuge",
+    "list": "Fahrzeugliste",
     "all": "Alle Fahrzeuge",
     "active": "Aktive Fahrzeuge",
     "inactive": "Inaktive Fahrzeuge",
@@ -462,8 +464,9 @@
     "vehicleUpdated": "Fahrzeug erfolgreich aktualisiert",
     "vehicleRemoved": "Fahrzeug erfolgreich entfernt",
     "confirmRemove": "Sind Sie sicher, dass Sie dieses Fahrzeug entfernen möchten?",
-    "noVehicles": "Keine Fahrzeuge gefunden",
-    "description": "Verwalten Sie Ihre Fahrzeugflotte",
+    "confirmDelete": "Sind Sie sicher, dass Sie dieses Fahrzeug löschen möchten?",
+    "delete": "Fahrzeug löschen",
+    "vehicleDeleted": "Fahrzeug erfolgreich gelöscht",
     "form": {
       "step1": "Grundinformationen",
       "step2": "Technische Daten",

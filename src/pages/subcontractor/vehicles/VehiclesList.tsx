@@ -106,7 +106,7 @@ const VehiclesList = () => {
       if (error) throw error;
 
       toast({
-        title: t('vehicles.vehicleDeleted'),
+        title: t('vehicles.vehicleRemoved'),
         duration: 3000,
       });
 
@@ -129,7 +129,7 @@ const VehiclesList = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">{t('vehicles.title')}</h1>
+          <h1 className="text-3xl font-bold">{t('vehicles.all')}</h1>
           <p className="text-muted-foreground">{t('vehicles.description')}</p>
         </div>
         <Button asChild>
@@ -142,7 +142,7 @@ const VehiclesList = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('vehicles.list')}</CardTitle>
+          <CardTitle>{t('vehicles.all')}</CardTitle>
           <CardDescription>
             {t('vehicles.description')}
           </CardDescription>
@@ -203,7 +203,7 @@ const VehiclesList = () => {
                             size="icon"
                             onClick={() => handleDeleteClick(vehicle.id)}
                           >
-                            <span className="sr-only">{t('vehicles.delete')}</span>
+                            <span className="sr-only">{t('vehicles.remove')}</span>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -220,15 +220,15 @@ const VehiclesList = () => {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('vehicles.delete')}</AlertDialogTitle>
+            <AlertDialogTitle>{t('vehicles.remove')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('vehicles.confirmDelete')}
+              {t('vehicles.confirmRemove')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirmDelete} className="bg-destructive text-destructive-foreground">
-              {t('vehicles.delete')}
+              {t('vehicles.remove')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

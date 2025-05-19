@@ -413,6 +413,8 @@
     "resources": "Resources"
   },
   "vehicles": {
+    "title": "Vehicles",
+    "list": "Vehicles List",
     "all": "All Vehicles",
     "active": "Active Vehicles",
     "inactive": "Inactive Vehicles",
@@ -444,6 +446,9 @@
     "confirmRemove": "Are you sure you want to remove this vehicle?",
     "noVehicles": "No vehicles found",
     "description": "Manage your vehicle fleet",
+    "confirmDelete": "Are you sure you want to delete this vehicle?",
+    "delete": "Delete Vehicle",
+    "vehicleDeleted": "Vehicle deleted successfully",
     "form": {
       "step1": "Basic Information",
       "step2": "Technical Data",
