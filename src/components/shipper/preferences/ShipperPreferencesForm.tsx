@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { createShipperPreferences, updateShipperPreferences } from '@/services/shipperPreferencesService';
 import { useToast } from '@/hooks/use-toast';
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface ShipperPreferencesFormProps {
   initialData?: ShipperPreferences;
@@ -22,6 +24,7 @@ const ShipperPreferencesForm: React.FC<ShipperPreferencesFormProps> = ({ initial
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const defaultValues: ShipperPreferencesFormData = {
     industry: initialData?.industry || '',
@@ -57,6 +60,8 @@ const ShipperPreferencesForm: React.FC<ShipperPreferencesFormProps> = ({ initial
 
   const handleSubmit = async (data: ShipperPreferencesFormData) => {
     setIsSubmitting(true);
+    setError(null);
+    
     try {
       let result;
       if (initialData) {
@@ -74,7 +79,8 @@ const ShipperPreferencesForm: React.FC<ShipperPreferencesFormProps> = ({ initial
       }
       onSuccess(result);
     } catch (error) {
-      console.error(error);
+      console.error("Error saving preferences:", error);
+      setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
       toast({
         title: "Fehler",
         description: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
@@ -112,6 +118,13 @@ const ShipperPreferencesForm: React.FC<ShipperPreferencesFormProps> = ({ initial
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        
         <Card>
           <CardContent className="pt-6">
             <div className="space-y-6">

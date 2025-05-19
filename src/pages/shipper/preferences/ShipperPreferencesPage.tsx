@@ -7,7 +7,8 @@ import { getShipperPreferences } from '@/services/shipperPreferencesService';
 import ShipperPreferencesForm from '@/components/shipper/preferences/ShipperPreferencesForm';
 import { ShipperPreferences } from '@/types/shipperPreference';
 import { useToast } from '@/hooks/use-toast';
-import { Edit } from 'lucide-react';
+import { Edit, AlertCircle, Loader2 } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const ShipperPreferencesPage: React.FC = () => {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ const ShipperPreferencesPage: React.FC = () => {
 
   const loadPreferences = async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const data = await getShipperPreferences();
       setPreferences(data);
@@ -51,6 +53,7 @@ const ShipperPreferencesPage: React.FC = () => {
         <Card>
           <CardContent className="pt-6">
             <div className="flex justify-center items-center min-h-[200px]">
+              <Loader2 className="h-6 w-6 mr-2 animate-spin" />
               <p>Präferenzen werden geladen...</p>
             </div>
           </CardContent>
@@ -68,6 +71,10 @@ const ShipperPreferencesPage: React.FC = () => {
             <CardDescription>{error}</CardDescription>
           </CardHeader>
           <CardContent>
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
             <div className="flex justify-center">
               <Button onClick={loadPreferences}>Erneut versuchen</Button>
             </div>
