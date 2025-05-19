@@ -1,8 +1,6 @@
-
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter, Plus, Search, MoreHorizontal } from 'lucide-react';
-import AppLayout from '@/components/layout/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -89,126 +87,124 @@ const CrmPage: React.FC = () => {
   ];
   
   return (
-    <AppLayout>
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">CRM</h1>
-            <p className="text-muted-foreground">
-              Verwalten Sie Ihre Kunden- und Geschäftsbeziehungen.
-            </p>
-          </div>
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            Neuer Kontakt
-          </Button>
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">CRM</h1>
+          <p className="text-muted-foreground">
+            Verwalten Sie Ihre Kunden- und Geschäftsbeziehungen.
+          </p>
         </div>
-        
-        {/* Filterleiste */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-grow">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Button className="gap-2">
+          <Plus className="h-4 w-4" />
+          Neuer Kontakt
+        </Button>
+      </div>
+      
+      {/* Filterleiste */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-grow">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Nach Kontakten suchen..."
+                className="pl-9 w-full"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+            <div className="flex gap-2">
+              <div className="w-40">
+                <Select value={selectedPriority} onValueChange={setSelectedPriority}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Priorität" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Alle Prioritäten</SelectItem>
+                    <SelectItem value="Hoch">Hoch</SelectItem>
+                    <SelectItem value="Mittel">Mittel</SelectItem>
+                    <SelectItem value="Niedrig">Niedrig</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="w-40">
                 <Input
-                  type="search"
-                  placeholder="Nach Kontakten suchen..."
-                  className="pl-9 w-full"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
                 />
               </div>
               
-              <div className="flex gap-2">
-                <div className="w-40">
-                  <Select value={selectedPriority} onValueChange={setSelectedPriority}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Priorität" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">Alle Prioritäten</SelectItem>
-                      <SelectItem value="Hoch">Hoch</SelectItem>
-                      <SelectItem value="Mittel">Mittel</SelectItem>
-                      <SelectItem value="Niedrig">Niedrig</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="w-40">
-                  <Input
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                  />
-                </div>
-                
-                <Button variant="outline" onClick={() => {
-                  setSearchQuery('');
-                  setSelectedPriority('');
-                  setSelectedDate('');
-                }}>
-                  Zurücksetzen
-                </Button>
+              <Button variant="outline" onClick={() => {
+                setSearchQuery('');
+                setSelectedPriority('');
+                setSelectedDate('');
+              }}>
+                Zurücksetzen
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Kanban Board */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {columns.map((column) => (
+          <div key={column.id} className="flex flex-col h-full">
+            <div className={`${column.color} px-4 py-2 rounded-t-lg flex items-center justify-between`}>
+              <h3 className="font-semibold text-white">{column.title}</h3>
+              <Badge variant="secondary" className="bg-white bg-opacity-20">
+                {filteredCards[column.id].length}
+              </Badge>
+            </div>
+            
+            <div className="bg-slate-100 p-2 flex-grow rounded-b-lg min-h-[70vh] overflow-y-auto">
+              <div className="space-y-2">
+                {filteredCards[column.id].map((card) => (
+                  <Card key={card.id} className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardHeader className="p-4 pb-2">
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-lg">{card.title}</CardTitle>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Bearbeiten</DropdownMenuItem>
+                            <DropdownMenuItem>Verschieben</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600">Löschen</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                      <CardDescription className="mt-1">{card.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0">
+                      <div className="text-sm">
+                        <span className="font-medium">Kontakt:</span> {card.contact}
+                      </div>
+                    </CardContent>
+                    <CardFooter className="p-4 pt-0 flex justify-between">
+                      <Badge variant="outline" className={priorityColors[card.priority]}>
+                        {card.priority}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">{card.date}</span>
+                    </CardFooter>
+                  </Card>
+                ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
-        
-        {/* Kanban Board */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {columns.map((column) => (
-            <div key={column.id} className="flex flex-col h-full">
-              <div className={`${column.color} px-4 py-2 rounded-t-lg flex items-center justify-between`}>
-                <h3 className="font-semibold text-white">{column.title}</h3>
-                <Badge variant="secondary" className="bg-white bg-opacity-20">
-                  {filteredCards[column.id].length}
-                </Badge>
-              </div>
-              
-              <div className="bg-slate-100 p-2 flex-grow rounded-b-lg min-h-[70vh] overflow-y-auto">
-                <div className="space-y-2">
-                  {filteredCards[column.id].map((card) => (
-                    <Card key={card.id} className="cursor-pointer hover:shadow-md transition-shadow">
-                      <CardHeader className="p-4 pb-2">
-                        <div className="flex justify-between items-start">
-                          <CardTitle className="text-lg">{card.title}</CardTitle>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem>Bearbeiten</DropdownMenuItem>
-                              <DropdownMenuItem>Verschieben</DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600">Löschen</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                        <CardDescription className="mt-1">{card.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0">
-                        <div className="text-sm">
-                          <span className="font-medium">Kontakt:</span> {card.contact}
-                        </div>
-                      </CardContent>
-                      <CardFooter className="p-4 pt-0 flex justify-between">
-                        <Badge variant="outline" className={priorityColors[card.priority]}>
-                          {card.priority}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">{card.date}</span>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
-    </AppLayout>
+    </div>
   );
 };
 
