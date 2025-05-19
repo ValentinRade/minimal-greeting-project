@@ -15,26 +15,17 @@ import { toast } from '@/hooks/use-toast';
 const ShipperDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, loading, hasCompany } = useAuth();
+  const { user, loading } = useAuth();
   const [tenderCount, setTenderCount] = useState<number | null>(null);
   const [subcontractorCount, setSubcontractorCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        navigate('/auth');
-        return;
-      }
-      
-      if (!hasCompany) {
-        navigate('/create-company');
-        return;
-      }
-      
+    // Only load data when auth is done loading and user is logged in
+    if (!loading && user) {
       loadDashboardData();
     }
-  }, [user, loading, hasCompany, navigate]);
+  }, [user, loading]);
 
   const loadDashboardData = async () => {
     setIsLoading(true);
@@ -81,9 +72,6 @@ const ShipperDashboard = () => {
     );
   }
 
-  // Simplify the rendering - we don't need additional redirect logic here
-  // since the useEffect hook handles that already
-  
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto">

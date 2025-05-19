@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, X, Calendar, ArrowRight, Edit, Trash2 } from 'lucide-react';
+import { Plus, Calendar, ArrowRight, Edit, Trash2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CreateTenderForm from '@/components/tenders/CreateTenderForm';
@@ -21,7 +22,7 @@ const TendersPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, loading, hasCompany } = useAuth();
+  const { user, loading } = useAuth();
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
@@ -35,7 +36,7 @@ const TendersPage: React.FC = () => {
       // Clear the state to prevent reopening on page refresh
       navigate(location.pathname, { replace: true });
     }
-  }, [location]);
+  }, [location, navigate]);
   
   // Handle resize to determine if mobile view should be used
   useEffect(() => {
@@ -47,24 +48,16 @@ const TendersPage: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  // Load tenders on mount and when user changes
+  // Load tenders when user is authenticated
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        navigate('/auth');
-        return;
-      }
-      
-      if (!hasCompany) {
-        navigate('/create-company');
-        return;
-      }
-      
+    if (!loading && user) {
       loadTenders();
     }
-  }, [user, loading, hasCompany, navigate]);
+  }, [user, loading]);
   
   const loadTenders = async () => {
+    if (!user) return;
+    
     setIsLoading(true);
     try {
       const loadedTenders = await getTenders();
