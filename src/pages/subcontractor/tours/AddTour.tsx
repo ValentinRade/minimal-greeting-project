@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import TourForm from '@/components/tours/TourForm';
 import { useTours } from '@/hooks/useTours';
 import { useAuth } from '@/contexts/AuthContext';
+import { TourFilterOptions } from '@/types/tour';
 
 const AddTour: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  const defaultFilters = {
+  const defaultFilters: TourFilterOptions = {
     timeframe: 'all',
     regions: [],
     vehicleType: '',

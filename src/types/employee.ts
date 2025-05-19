@@ -78,3 +78,10 @@ export interface EmployeeFormProps {
   defaultValues?: Employee;
   isEdit?: boolean;
 }
+
+// Adding the missing EmployeeFilter interface
+export interface EmployeeFilter {
+  position?: string;
+  location?: string;
+  status?: string;
+}

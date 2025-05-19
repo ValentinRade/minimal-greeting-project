@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Employee, EmployeeFilter } from '@/types/employee';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 
 export const useEmployees = (filters?: EmployeeFilter) => {
@@ -12,6 +12,10 @@ export const useEmployees = (filters?: EmployeeFilter) => {
   const { company } = useAuth();
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
+  const [filter, setFilter] = useState('');
+  const [employeeTypeFilter, setEmployeeTypeFilter] = useState('');
+  const [positionFilter, setPositionFilter] = useState('');
+  const [availabilityFilter, setAvailabilityFilter] = useState<number | null>(null);
 
   const fetchEmployees = async (): Promise<Employee[]> => {
     console.log('Employees query started');
@@ -54,7 +58,15 @@ export const useEmployees = (filters?: EmployeeFilter) => {
       return [];
     }
     
-    return data || [];
+    // Transform the data to match the Employee interface
+    const employees: Employee[] = data ? data.map((item: any) => ({
+      ...item,
+      licenses: item.employee_licenses || [],
+      availability: item.employee_availability || [],
+      regions: item.employee_regions || []
+    })) : [];
+
+    return employees;
   };
 
   // Query for employees
@@ -99,7 +111,7 @@ export const useEmployees = (filters?: EmployeeFilter) => {
         if (employee.licenses && employee.licenses.length > 0) {
           const licensesData = employee.licenses.map((license: any) => ({
             employee_id: data.id,
-            license_type: license.type,
+            license_type: license.license_type,
             description: license.description,
           }));
           
@@ -111,17 +123,15 @@ export const useEmployees = (filters?: EmployeeFilter) => {
         }
         
         // Handle availability if any
-        if (employee.availability && Object.keys(employee.availability).length > 0) {
-          const availabilityData = Object.entries(employee.availability).map(
-            ([day, schedule]: [string, any]) => ({
-              employee_id: data.id,
-              day_of_week: parseInt(day),
-              is_available: schedule.is_available || false,
-              start_time: schedule.start_time,
-              end_time: schedule.end_time,
-              notes: schedule.notes,
-            })
-          );
+        if (employee.availability && employee.availability.length > 0) {
+          const availabilityData = employee.availability.map((avail: any) => ({
+            employee_id: data.id,
+            day_of_week: avail.day_of_week,
+            is_available: avail.is_available || false,
+            start_time: avail.start_time,
+            end_time: avail.end_time,
+            notes: avail.notes,
+          }));
           
           const { error: availabilityError } = await supabase
             .from('employee_availability')
@@ -132,9 +142,9 @@ export const useEmployees = (filters?: EmployeeFilter) => {
         
         // Handle regions if any
         if (employee.regions && employee.regions.length > 0) {
-          const regionsData = employee.regions.map((region: string) => ({
+          const regionsData = employee.regions.map((region: any) => ({
             employee_id: data.id,
-            country: region,
+            country: region.country || region,
           }));
           
           const { error: regionsError } = await supabase
@@ -205,7 +215,7 @@ export const useEmployees = (filters?: EmployeeFilter) => {
           if (employee.licenses && employee.licenses.length > 0) {
             const licensesData = employee.licenses.map((license: any) => ({
               employee_id: employee.id,
-              license_type: license.type,
+              license_type: license.license_type,
               description: license.description,
             }));
             
@@ -228,17 +238,15 @@ export const useEmployees = (filters?: EmployeeFilter) => {
           if (deleteAvailabilityError) throw deleteAvailabilityError;
           
           // Add new availability
-          if (employee.availability && Object.keys(employee.availability).length > 0) {
-            const availabilityData = Object.entries(employee.availability).map(
-              ([day, schedule]: [string, any]) => ({
-                employee_id: employee.id,
-                day_of_week: parseInt(day),
-                is_available: schedule.is_available || false,
-                start_time: schedule.start_time,
-                end_time: schedule.end_time,
-                notes: schedule.notes,
-              })
-            );
+          if (employee.availability && employee.availability.length > 0) {
+            const availabilityData = employee.availability.map((avail: any) => ({
+              employee_id: employee.id,
+              day_of_week: avail.day_of_week,
+              is_available: avail.is_available || false,
+              start_time: avail.start_time,
+              end_time: avail.end_time,
+              notes: avail.notes,
+            }));
             
             const { error: availabilityError } = await supabase
               .from('employee_availability')
@@ -260,9 +268,9 @@ export const useEmployees = (filters?: EmployeeFilter) => {
           
           // Add new regions
           if (employee.regions && employee.regions.length > 0) {
-            const regionsData = employee.regions.map((region: string) => ({
+            const regionsData = employee.regions.map((region: any) => ({
               employee_id: employee.id,
-              country: region,
+              country: region.country || region,
             }));
             
             const { error: regionsError } = await supabase
@@ -317,13 +325,41 @@ export const useEmployees = (filters?: EmployeeFilter) => {
     },
   });
 
+  // Filter employees based on search, type, position, and availability
+  const filteredEmployees = employeesQuery.data ? employeesQuery.data.filter(employee => {
+    const matchesSearch = filter.trim() === '' || 
+      `${employee.first_name} ${employee.last_name}`.toLowerCase().includes(filter.toLowerCase()) ||
+      (employee.email && employee.email.toLowerCase().includes(filter.toLowerCase())) ||
+      (employee.position && employee.position.toLowerCase().includes(filter.toLowerCase()));
+      
+    const matchesType = employeeTypeFilter === '' || employee.employee_type === employeeTypeFilter;
+    
+    const matchesPosition = positionFilter === '' || employee.position === positionFilter;
+    
+    const matchesAvailability = availabilityFilter === null || 
+      (employee.availability && employee.availability.some(a => 
+        a.day_of_week === availabilityFilter && a.is_available
+      ));
+      
+    return matchesSearch && matchesType && matchesPosition && matchesAvailability;
+  }) : [];
+
   return {
-    employees: employeesQuery.data || [],
+    employees: filteredEmployees,
     isLoading: isLoading || employeesQuery.isLoading,
     isError: employeesQuery.isError,
-    createEmployee: createEmployee.mutate,
-    updateEmployee: updateEmployee.mutate,
-    deleteEmployee: deleteEmployee.mutate,
+    createEmployee,
+    updateEmployee,
+    deleteEmployee,
+    filter,
+    setFilter,
+    employeeTypeFilter,
+    setEmployeeTypeFilter,
+    positionFilter,
+    setPositionFilter,
+    availabilityFilter,
+    setAvailabilityFilter,
+    useEmployee: useEmployeeById,
   };
 };
 
@@ -356,7 +392,15 @@ export const useEmployeeById = (employeeId?: string) => {
       return null;
     }
     
-    return data;
+    // Transform to match Employee interface
+    const employee: Employee = {
+      ...data,
+      licenses: data.employee_licenses || [],
+      availability: data.employee_availability || [],
+      regions: data.employee_regions || []
+    };
+    
+    return employee;
   };
   
   const employeeQuery = useQuery({

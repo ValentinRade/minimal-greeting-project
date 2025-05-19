@@ -40,7 +40,7 @@ const EmployeeDetails = () => {
   const navigate = useNavigate();
   const { useEmployee, deleteEmployee } = useEmployees();
   
-  const { data: employee, isLoading, error } = useEmployee(id);
+  const { employee, isLoading, error } = useEmployee(id);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleEditClick = () => {

@@ -6,6 +6,7 @@ import { ChevronLeft, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import TourDetail from '@/components/tours/TourDetail';
 import { useTourById, useTours } from '@/hooks/useTours';
+import { TourFilterOptions } from '@/types/tour';
 import {
   Dialog,
   DialogContent,
@@ -23,7 +24,7 @@ const TourDetails: React.FC = () => {
   
   const { tour, isLoading } = useTourById(tourId);
   
-  const defaultFilters = {
+  const defaultFilters: TourFilterOptions = {
     timeframe: 'all',
     regions: [],
     vehicleType: '',
