@@ -7,7 +7,7 @@ import EmployeeDetails from '@/pages/subcontractor/employees/EmployeeDetails';
 import AddEmployee from '@/pages/subcontractor/employees/AddEmployee';
 import EditEmployee from '@/pages/subcontractor/employees/EditEmployee';
 
-const SubcontractorEmployeesRoutes = () => {
+const SubcontractorEmployeesRoutes: React.FC = () => {
   return (
     <Routes>
       <Route element={<EmployeesLayout />}>

@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -19,6 +20,7 @@ export const useEmployees = () => {
   const { data: employees = [], isLoading, refetch } = useQuery({
     queryKey: ['employees', company?.id, filter, employeeTypeFilter, positionFilter, availabilityFilter],
     queryFn: async () => {
+      console.log("Fetching employees for company:", company?.id);
       if (!company?.id) return [];
 
       let query = supabase
@@ -45,6 +47,8 @@ export const useEmployees = () => {
       }
 
       const { data, error } = await query;
+      
+      console.log("Employees query response:", { data, error });
 
       if (error) {
         console.error('Error fetching employees:', error);

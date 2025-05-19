@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -109,6 +108,8 @@ const EmployeesList: React.FC = () => {
     const availableDays = employee.availability.filter(avail => avail.is_available).length;
     return t('employees.availableDays', { count: availableDays });
   };
+
+  console.log("EmployeesList rendering with employees:", employees);
 
   return (
     <div className="space-y-6">

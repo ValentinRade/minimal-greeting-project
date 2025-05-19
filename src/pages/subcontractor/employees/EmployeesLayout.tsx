@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
 import { useTranslation } from 'react-i18next';
 
-const EmployeesLayout = () => {
+const EmployeesLayout: React.FC = () => {
   const { t } = useTranslation();
   
   return (
