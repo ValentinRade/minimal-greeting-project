@@ -856,6 +856,139 @@ export type Database = {
           },
         ]
       }
+      tender_invitations: {
+        Row: {
+          confirmed: boolean | null
+          created_at: string | null
+          email: string
+          id: string
+          tender_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          confirmed?: boolean | null
+          created_at?: string | null
+          email: string
+          id?: string
+          tender_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          confirmed?: boolean | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          tender_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tender_invitations_tender_id_fkey"
+            columns: ["tender_id"]
+            isOneToOne: false
+            referencedRelation: "tenders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tender_tours: {
+        Row: {
+          created_at: string
+          id: string
+          tender_id: string
+          tour_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tender_id: string
+          tour_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tender_id?: string
+          tour_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tender_tours_tender_id_fkey"
+            columns: ["tender_id"]
+            isOneToOne: false
+            referencedRelation: "tenders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tender_tours_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenders: {
+        Row: {
+          commercial_calculation: boolean | null
+          company_id: string
+          contractor_preferences: Json | null
+          created_at: string
+          description: string | null
+          duration: Json
+          id: string
+          prequalifications: string[] | null
+          service_provider_option: string
+          show_contact_info: boolean
+          status: string
+          tender_type: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          commercial_calculation?: boolean | null
+          company_id: string
+          contractor_preferences?: Json | null
+          created_at?: string
+          description?: string | null
+          duration: Json
+          id?: string
+          prequalifications?: string[] | null
+          service_provider_option: string
+          show_contact_info?: boolean
+          status?: string
+          tender_type: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          commercial_calculation?: boolean | null
+          company_id?: string
+          contractor_preferences?: Json | null
+          created_at?: string
+          description?: string | null
+          duration?: Json
+          id?: string
+          prequalifications?: string[] | null
+          service_provider_option?: string
+          show_contact_info?: boolean
+          status?: string
+          tender_type?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenders_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tour_employees: {
         Row: {
           created_at: string
@@ -1040,6 +1173,7 @@ export type Database = {
           temperature_sensitive: boolean | null
           title: string
           total_distance: number
+          tour_type: string | null
           updated_at: string
           user_id: string
           vehicle_type: string
@@ -1067,6 +1201,7 @@ export type Database = {
           temperature_sensitive?: boolean | null
           title: string
           total_distance: number
+          tour_type?: string | null
           updated_at?: string
           user_id: string
           vehicle_type: string
@@ -1094,6 +1229,7 @@ export type Database = {
           temperature_sensitive?: boolean | null
           title?: string
           total_distance?: number
+          tour_type?: string | null
           updated_at?: string
           user_id?: string
           vehicle_type?: string

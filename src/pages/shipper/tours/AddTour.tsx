@@ -25,11 +25,12 @@ const AddTour: React.FC = () => {
 
   const handleSubmit = (data: Partial<TourWithRelations>) => {
     if (user) {
-      // Ensure date fields are properly formatted
+      // Vergewissere dich, dass Datumswerte richtig formatiert oder null sind
       const processedData = {
         ...data,
-        start_date: data.start_date || null,
-        end_date: data.end_date || null,
+        start_date: data.start_date ? data.start_date : null,
+        end_date: data.end_date ? data.end_date : null,
+        tour_type: 'shipper', // Setze den Tour-Typ auf "shipper"
         user_id: user.id,
       } as TourWithRelations;
       

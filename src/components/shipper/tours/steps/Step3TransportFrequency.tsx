@@ -80,7 +80,14 @@ const Step3TransportFrequency: React.FC<Step3TransportFrequencyProps> = ({ form 
                   <Calendar
                     mode="single"
                     selected={field.value ? new Date(field.value) : undefined}
-                    onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : '')}
+                    onSelect={(date) => {
+                      // Stelle sicher, dass entweder ein formatiertes Datum oder null übermittelt wird
+                      if (date) {
+                        field.onChange(format(date, "yyyy-MM-dd"));
+                      } else {
+                        field.onChange(null);
+                      }
+                    }}
                     initialFocus
                     className={cn("p-3 pointer-events-auto")}
                   />
@@ -123,7 +130,14 @@ const Step3TransportFrequency: React.FC<Step3TransportFrequencyProps> = ({ form 
                   <Calendar
                     mode="single"
                     selected={field.value ? new Date(field.value) : undefined}
-                    onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : null)}
+                    onSelect={(date) => {
+                      // Stelle sicher, dass entweder ein formatiertes Datum oder null übermittelt wird
+                      if (date) {
+                        field.onChange(format(date, "yyyy-MM-dd"));
+                      } else {
+                        field.onChange(null);
+                      }
+                    }}
                     initialFocus
                     className={cn("p-3 pointer-events-auto")}
                   />
