@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import AppLayout from '@/components/layout/AppLayout';
-import { Search, Database, User, MapPin, Truck, Check } from 'lucide-react';
+import { Search, Database, User, MapPin, Truck, Check, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,6 +17,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
 
 // Define the subcontractor data type based on the database structure
 type Subcontractor = {
@@ -35,23 +36,38 @@ type Subcontractor = {
   avg_rating: number | null;
   has_eu_license: boolean;
   has_adr_certificate: boolean;
+  // Add public profile fields
+  profile_url_path?: string | null;
+  has_public_profile?: boolean;
 };
 
 const SubcontractorDatabasePage: React.FC = () => {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Fetch subcontractors from Supabase
+  // Fetch subcontractors from Supabase with public profile info
   const { data: subcontractors, isLoading, error } = useQuery({
     queryKey: ['subcontractors'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('subcontractor_search_data')
-        .select('*')
+        .select(`
+          *,
+          public_profile:subcontractor_public_profiles!company_id(
+            profile_url_path,
+            enabled
+          )
+        `)
         .order('company_name');
         
       if (error) throw error;
-      return data as Subcontractor[];
+      
+      // Transform the data to include public profile information
+      return data.map(sub => ({
+        ...sub,
+        profile_url_path: sub.public_profile?.profile_url_path,
+        has_public_profile: !!sub.public_profile?.enabled,
+      })) as Subcontractor[];
     }
   });
   
@@ -128,9 +144,16 @@ const SubcontractorDatabasePage: React.FC = () => {
                   {filteredSubcontractors?.map((subcontractor) => (
                     <TableRow key={subcontractor.id}>
                       <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4" />
-                          {subcontractor.company_name}
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <User className="h-4 w-4" />
+                            {subcontractor.company_name}
+                          </div>
+                          {subcontractor.has_public_profile && (
+                            <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 self-start">
+                              Öffentliches Profil
+                            </Badge>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -179,13 +202,26 @@ const SubcontractorDatabasePage: React.FC = () => {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => console.log("Kontakt zu", subcontractor.company_name)}
-                        >
-                          Kontakt
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                          {subcontractor.has_public_profile && subcontractor.profile_url_path && (
+                            <Button 
+                              size="sm" 
+                              variant="secondary"
+                              asChild
+                            >
+                              <Link to={`/profile/${subcontractor.profile_url_path}`} target="_blank">
+                                Profil <ExternalLink className="ml-1 h-3 w-3" />
+                              </Link>
+                            </Button>
+                          )}
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => console.log("Kontakt zu", subcontractor.company_name)}
+                          >
+                            Kontakt
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
