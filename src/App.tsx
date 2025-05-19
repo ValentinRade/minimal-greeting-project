@@ -20,6 +20,7 @@ import SubcontractorSelectionRoutes from './routes/SubcontractorSelectionRoutes'
 import SubcontractorPreferencesRoutes from './routes/SubcontractorPreferencesRoutes';
 import SubcontractorPublicProfileRoutes from './routes/SubcontractorPublicProfileRoutes';
 import ShipperSubcontractorDatabaseRoutes from './routes/ShipperSubcontractorDatabaseRoutes';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 // Settings routes
 import SettingsLayout from './pages/settings/SettingsLayout';
@@ -35,7 +36,7 @@ import '@/i18n';
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Index />} />
@@ -84,7 +85,7 @@ function App() {
         </Routes>
       </Router>
       <Toaster />
-    </>
+    </AuthProvider>
   );
 }
 
