@@ -1,14 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, X, Calendar, ArrowRight, Edit, Trash2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CreateTenderForm from '@/components/tenders/CreateTenderForm';
-import { getTenders } from '@/services/tenderService';
 import { TenderDetails } from '@/types/tender';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
@@ -17,9 +16,188 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { toast } from '@/hooks/use-toast';
 
+// Mock tender data
+const mockTenders: TenderDetails[] = [
+  {
+    id: "tender-001",
+    title: "Lieferung von Pharmazeutischen Produkten",
+    description: "Regelmäßige Lieferungen von Pharmazeutika an 12 Standorte in Bayern mit Temperaturkontrolle.",
+    tenderType: 'transport_route',
+    showContactInfo: true,
+    prequalifications: ["GDP-Zertifizierung", "Temperaturgeführte Fahrzeuge"],
+    duration: {
+      value: "6",
+      unit: "months"
+    },
+    commercialCalculation: 'yes',
+    serviceProviderOption: 'single_provider',
+    inviteServiceProviders: {
+      email: "medsupply@example.com",
+      confirmed: true
+    },
+    contractorPreferences: {
+      experience: 'more_than_2_years',
+      fleetSize: '3_or_more_vehicles',
+      vehicleAge: 'less_than_1_year',
+      regionality: 'local',
+      industryExperience: 'yes',
+      flexibility: '1_week'
+    },
+    createdAt: "2025-05-01T10:30:00Z",
+    status: 'active',
+    toursCount: 8
+  },
+  {
+    id: "tender-002",
+    title: "Frische Lebensmittel für Einzelhandel",
+    description: "Tägliche Lieferung von frischen Lebensmitteln an Supermarktfilialen in Berlin und Brandenburg.",
+    tenderType: 'fixed_area',
+    showContactInfo: true,
+    prequalifications: ["HACCP-Zertifizierung", "Kühlfahrzeuge"],
+    duration: {
+      value: "12",
+      unit: "months"
+    },
+    commercialCalculation: 'yes',
+    serviceProviderOption: 'single_provider',
+    inviteServiceProviders: {
+      email: "",
+      confirmed: false
+    },
+    contractorPreferences: {
+      experience: 'more_than_1_year',
+      fleetSize: '3_or_more_vehicles',
+      vehicleAge: 'less_than_1_year',
+      regionality: 'local',
+      industryExperience: 'yes',
+      flexibility: '1_day'
+    },
+    createdAt: "2025-04-15T09:15:00Z",
+    status: 'active',
+    toursCount: 24
+  },
+  {
+    id: "tender-003",
+    title: "Automobil-Zuliefererlogistik",
+    description: "Just-in-time Lieferung von Automobilkomponenten zum BMW-Werk München.",
+    tenderType: 'transport_route',
+    showContactInfo: false,
+    prequalifications: ["VDA 6.2", "ISO 9001"],
+    duration: {
+      value: "24",
+      unit: "months"
+    },
+    commercialCalculation: 'yes',
+    serviceProviderOption: 'own_fleet',
+    inviteServiceProviders: {
+      email: "autoparts@example.com",
+      confirmed: false
+    },
+    contractorPreferences: {
+      experience: 'more_than_3_years',
+      fleetSize: '3_or_more_vehicles',
+      vehicleAge: 'less_than_1_year',
+      regionality: 'local',
+      industryExperience: 'yes',
+      flexibility: '1_day'
+    },
+    createdAt: "2025-03-28T14:45:00Z",
+    status: 'draft',
+    toursCount: 0
+  },
+  {
+    id: "tender-004",
+    title: "E-Commerce Paketlieferungen",
+    description: "Zustellung von Online-Bestellungen im Raum Hamburg und Umgebung.",
+    tenderType: 'fixed_area',
+    showContactInfo: true,
+    prequalifications: [],
+    duration: {
+      value: "3",
+      unit: "months"
+    },
+    commercialCalculation: 'no',
+    serviceProviderOption: 'single_provider',
+    inviteServiceProviders: {
+      email: "",
+      confirmed: false
+    },
+    contractorPreferences: {
+      experience: 'less_than_1_year',
+      fleetSize: 'less_than_3_vehicles',
+      vehicleAge: 'more_than_1_year',
+      regionality: 'local',
+      industryExperience: 'no',
+      flexibility: '1_week'
+    },
+    createdAt: "2025-05-07T08:20:00Z",
+    status: 'active',
+    toursCount: 6
+  },
+  {
+    id: "tender-005",
+    title: "Schwertransport für Windkraftanlagen",
+    description: "Transport von Windkraftanlagenkomponenten von Hamburg nach Bayern.",
+    tenderType: 'transport_route',
+    showContactInfo: true,
+    prequalifications: ["Schwertransportgenehmigung", "Erfahrung mit Sondertransporten"],
+    duration: {
+      value: "2",
+      unit: "months"
+    },
+    commercialCalculation: 'yes',
+    serviceProviderOption: 'single_provider',
+    inviteServiceProviders: {
+      email: "heavyhaul@example.com",
+      confirmed: true
+    },
+    contractorPreferences: {
+      experience: 'more_than_3_years',
+      fleetSize: '3_or_more_vehicles',
+      vehicleAge: 'more_than_1_year',
+      regionality: 'international',
+      industryExperience: 'yes',
+      flexibility: 'more_than_1_month'
+    },
+    createdAt: "2025-04-02T11:00:00Z",
+    status: 'awarded',
+    toursCount: 4
+  },
+  {
+    id: "tender-006",
+    title: "Gefahrguttransporte für Chemieunternehmen",
+    description: "Transport von ADR-pflichtigen Chemikalien zwischen drei Produktionsstandorten.",
+    tenderType: 'transport_route',
+    showContactInfo: false,
+    prequalifications: ["ADR-Zertifizierung", "SQAS"],
+    duration: {
+      value: "18",
+      unit: "months"
+    },
+    commercialCalculation: 'yes',
+    serviceProviderOption: 'single_provider',
+    inviteServiceProviders: {
+      email: "",
+      confirmed: false
+    },
+    contractorPreferences: {
+      experience: 'more_than_3_years',
+      fleetSize: '3_or_more_vehicles',
+      vehicleAge: 'less_than_1_year',
+      regionality: 'international',
+      industryExperience: 'yes',
+      flexibility: '1_week'
+    },
+    createdAt: "2025-03-10T16:30:00Z",
+    status: 'closed',
+    toursCount: 0
+  }
+];
+
 const TendersPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [tenders, setTenders] = useState<TenderDetails[]>([]);
@@ -35,6 +213,15 @@ const TendersPage: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
+  // Check if we should open create form based on location state
+  React.useEffect(() => {
+    if (location.state?.createNew) {
+      setIsCreateFormOpen(true);
+      // Clear the state so it doesn't open again on refresh
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location, navigate]);
+  
   // Load tenders on mount
   useEffect(() => {
     loadTenders();
@@ -43,8 +230,14 @@ const TendersPage: React.FC = () => {
   const loadTenders = async () => {
     setIsLoading(true);
     try {
-      const loadedTenders = await getTenders();
-      setTenders(loadedTenders);
+      // In a real app, we would call the API
+      // const loadedTenders = await getTenders();
+      
+      // For now, use mock data
+      setTimeout(() => {
+        setTenders(mockTenders);
+        setIsLoading(false);
+      }, 500); // Add a small delay to simulate API call
     } catch (error) {
       console.error("Error loading tenders:", error);
       toast({
@@ -52,7 +245,6 @@ const TendersPage: React.FC = () => {
         description: error instanceof Error ? error.message : "Unbekannter Fehler",
         variant: "destructive"
       });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -87,6 +279,14 @@ const TendersPage: React.FC = () => {
 
   const handleToursClick = () => {
     navigate('/dashboard/shipper/tours');
+  };
+
+  const handleDeleteTender = (id: string) => {
+    setTenders((prev) => prev.filter((tender) => tender.id !== id));
+    toast({
+      title: "Ausschreibung gelöscht",
+      description: "Die Ausschreibung wurde erfolgreich gelöscht."
+    });
   };
 
   return (
@@ -210,7 +410,10 @@ const TendersPage: React.FC = () => {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                                <AlertDialogAction className="bg-red-500 hover:bg-red-600">
+                                <AlertDialogAction 
+                                  className="bg-red-500 hover:bg-red-600"
+                                  onClick={() => handleDeleteTender(tender.id)}
+                                >
                                   Löschen
                                 </AlertDialogAction>
                               </AlertDialogFooter>
