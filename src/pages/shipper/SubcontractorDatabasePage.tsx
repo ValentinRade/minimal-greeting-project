@@ -1,10 +1,8 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import AppLayout from '@/components/layout/AppLayout';
-import { Search, Database, User, MapPin, Truck, Check, ExternalLink } from 'lucide-react';
+import { Search, Database, User, MapPin, Truck, Check, ExternalLink, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,157 +18,187 @@ import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 
-// Define the subcontractor data type based on the database structure
-type Subcontractor = {
-  id: string;
-  company_id: string;
-  company_name: string;
-  city: string;
-  country: string;
-  languages: string[];
-  vehicle_types: string[];
-  body_types: string[];
-  specializations: string[];
-  service_regions: string[];
-  total_vehicles: number;
-  total_employees: number;
-  avg_rating: number | null;
-  has_eu_license: boolean;
-  has_adr_certificate: boolean;
-  // Add public profile fields
-  profile_url_path?: string | null;
-  has_public_profile?: boolean;
-};
+// Mock-Subunternehmerdaten
+const mockSubcontractors = [
+  {
+    id: "sub-001",
+    company_id: "com-001",
+    company_name: "TransportExpress GmbH",
+    city: "München",
+    country: "Deutschland",
+    languages: ["Deutsch", "Englisch"],
+    vehicle_types: ["LKW", "Kühlfahrzeuge"],
+    body_types: ["Planenaufbau", "Kofferaufbau"],
+    specializations: ["Lebensmittellogistik", "Expresstransporte"],
+    service_regions: ["Bayern", "Baden-Württemberg", "Österreich"],
+    total_vehicles: 25,
+    total_employees: 42,
+    avg_rating: 4.8,
+    has_eu_license: true,
+    has_adr_certificate: true,
+    profile_url_path: "transportexpress",
+    has_public_profile: true,
+    description: "Spezialist für temperaturgeführte Transporte und Just-in-time Lieferungen im süddeutschen Raum.",
+    founded_year: 2005
+  },
+  {
+    id: "sub-002",
+    company_id: "com-002",
+    company_name: "NordCargoLogistics",
+    city: "Hamburg",
+    country: "Deutschland",
+    languages: ["Deutsch", "Englisch", "Dänisch"],
+    vehicle_types: ["Sattelzug", "Wechselbrücke"],
+    body_types: ["Curtainsider", "Containeraufbau"],
+    specializations: ["Seefrachtlogistik", "Hafenlogistik"],
+    service_regions: ["Hamburg", "Schleswig-Holstein", "Nordeuropa"],
+    total_vehicles: 38,
+    total_employees: 65,
+    avg_rating: 4.5,
+    has_eu_license: true,
+    has_adr_certificate: false,
+    profile_url_path: "nordcargo",
+    has_public_profile: true,
+    description: "Ihr Partner für alle Transportlösungen im Ostseeraum mit direkter Anbindung an die größten Häfen Nordeuropas.",
+    founded_year: 1998
+  },
+  {
+    id: "sub-003",
+    company_id: "com-003",
+    company_name: "Rhein Fracht AG",
+    city: "Köln",
+    country: "Deutschland",
+    languages: ["Deutsch", "Französisch", "Niederländisch"],
+    vehicle_types: ["Jumbo-LKW", "Gliederzug"],
+    body_types: ["Planenaufbau", "Pritsche"],
+    specializations: ["Schwerlasttransporte", "Projektlogistik"],
+    service_regions: ["NRW", "Rheinland-Pfalz", "Benelux"],
+    total_vehicles: 42,
+    total_employees: 78,
+    avg_rating: 4.7,
+    has_eu_license: true,
+    has_adr_certificate: true,
+    profile_url_path: "rheinfracht",
+    has_public_profile: true,
+    description: "Seit über 25 Jahren Ihr zuverlässiger Partner für anspruchsvolle Schwerlast- und Sondertransporte entlang der Rheinachse.",
+    founded_year: 1995
+  },
+  {
+    id: "sub-004",
+    company_id: "com-004",
+    company_name: "AlpenTransLog",
+    city: "Rosenheim",
+    country: "Deutschland",
+    languages: ["Deutsch", "Italienisch"],
+    vehicle_types: ["Kühlfahrzeuge", "Pritschenwagen"],
+    body_types: ["Kofferaufbau", "Kühlkofferaufbau"],
+    specializations: ["Alpentransit", "Kühllogistik"],
+    service_regions: ["Bayern", "Österreich", "Norditalien"],
+    total_vehicles: 18,
+    total_employees: 29,
+    avg_rating: 4.6,
+    has_eu_license: true,
+    has_adr_certificate: true,
+    profile_url_path: null,
+    has_public_profile: false,
+    description: "Spezialist für temperaturgeführte Transporte über die Alpen mit Schwerpunkt auf der Lebensmittelindustrie.",
+    founded_year: 2010
+  },
+  {
+    id: "sub-005",
+    company_id: "com-005",
+    company_name: "OstTrans GmbH & Co. KG",
+    city: "Berlin",
+    country: "Deutschland",
+    languages: ["Deutsch", "Polnisch", "Tschechisch", "Russisch"],
+    vehicle_types: ["LKW", "Sattelzug"],
+    body_types: ["Planenaufbau", "Kofferaufbau"],
+    specializations: ["Osteuropaverkehre", "Sammelgutverkehre"],
+    service_regions: ["Berlin", "Brandenburg", "Polen", "Tschechien"],
+    total_vehicles: 32,
+    total_employees: 48,
+    avg_rating: 4.3,
+    has_eu_license: true,
+    has_adr_certificate: false,
+    profile_url_path: "osttrans",
+    has_public_profile: true,
+    description: "Ihr Spezialist für Osteuropa-Verkehre mit eigenen Niederlassungen in Warschau und Prag.",
+    founded_year: 2008
+  },
+  {
+    id: "sub-006",
+    company_id: "com-006",
+    company_name: "GreenLogistics",
+    city: "Frankfurt",
+    country: "Deutschland",
+    languages: ["Deutsch", "Englisch"],
+    vehicle_types: ["Elektro-LKW", "CNG-Fahrzeuge"],
+    body_types: ["Kofferaufbau", "Citylogistik-Aufbau"],
+    specializations: ["Nachhaltige Logistik", "Citylogistik"],
+    service_regions: ["Hessen", "Rhein-Main-Gebiet"],
+    total_vehicles: 15,
+    total_employees: 23,
+    avg_rating: 4.9,
+    has_eu_license: true,
+    has_adr_certificate: false,
+    profile_url_path: "greenlogistics",
+    has_public_profile: true,
+    description: "Pionier für nachhaltige Transportlösungen mit einer zu 100% CO2-neutralen Flotte im städtischen Raum.",
+    founded_year: 2015
+  },
+  {
+    id: "sub-007",
+    company_id: "com-007",
+    company_name: "SafeTech Transport",
+    city: "Stuttgart",
+    country: "Deutschland",
+    languages: ["Deutsch", "Englisch", "Französisch"],
+    vehicle_types: ["Gefahrgut-LKW", "Tanklastzüge"],
+    body_types: ["ADR-Aufbauten", "Tankaufbauten"],
+    specializations: ["Gefahrguttransporte", "Chemielogistik"],
+    service_regions: ["Baden-Württemberg", "Schweiz", "Frankreich"],
+    total_vehicles: 22,
+    total_employees: 36,
+    avg_rating: 4.8,
+    has_eu_license: true,
+    has_adr_certificate: true,
+    profile_url_path: null,
+    has_public_profile: false,
+    description: "Zertifizierter Spezialist für die sichere Beförderung von Gefahrgütern aller Klassen.",
+    founded_year: 2003
+  },
+  {
+    id: "sub-008",
+    company_id: "com-008",
+    company_name: "MedikalExpress",
+    city: "Düsseldorf",
+    country: "Deutschland",
+    languages: ["Deutsch", "Englisch", "Türkisch"],
+    vehicle_types: ["Sprinter", "Pharma-LKW"],
+    body_types: ["GDP-zertifizierte Aufbauten", "Temperaturgeführte Aufbauten"],
+    specializations: ["Pharmalogistik", "Medizintechnik-Transporte"],
+    service_regions: ["NRW", "Benelux", "Deutschland"],
+    total_vehicles: 12,
+    total_employees: 20,
+    avg_rating: 4.9,
+    has_eu_license: true,
+    has_adr_certificate: true,
+    profile_url_path: "medikalexpress",
+    has_public_profile: true,
+    description: "GDP-zertifiziertes Logistikunternehmen für den Transport von Arzneimitteln und medizinischen Produkten.",
+    founded_year: 2012
+  }
+];
+
+type Subcontractor = typeof mockSubcontractors[0];
 
 const SubcontractorDatabasePage: React.FC = () => {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Fetch subcontractors from Supabase with public profile info
-  const { data: subcontractors, isLoading, error } = useQuery({
-    queryKey: ['subcontractors'],
-    queryFn: async () => {
-      console.log('===== Starting fetch of subcontractor data... =====');
-      
-      // Check if we can access the search data table at all
-      try {
-        // First, try to fetch a single row just to test access
-        const testAccess = await supabase
-          .from('subcontractor_search_data')
-          .select('id')
-          .limit(1);
-          
-        console.log('Test access response:', testAccess);
-        
-        if (testAccess.error) {
-          console.error('Access error:', testAccess.error);
-          toast({
-            title: "Zugriffsfehler",
-            description: "Keine Zugriffsrechte auf die Subunternehmer-Daten. Bitte kontaktieren Sie den Administrator.",
-            variant: "destructive",
-          });
-          throw new Error(`Zugriffsfehler: ${testAccess.error.message}`);
-        }
-        
-        // Try to fetch profiles table access as well
-        const profilesTest = await supabase
-          .from('subcontractor_public_profiles')
-          .select('id')
-          .limit(1);
-          
-        console.log('Profiles test access:', profilesTest);
-      } catch (e) {
-        console.error('Error testing table access:', e);
-      }
-      
-      // Now fetch all search data
-      const { data: searchData, error: searchError } = await supabase
-        .from('subcontractor_search_data')
-        .select('*')
-        .order('company_name');
-      
-      if (searchError) {
-        console.error('Error fetching search data:', searchError);
-        toast({
-          title: "Fehler beim Laden",
-          description: `Konnte Subunternehmer nicht laden: ${searchError.message}`,
-          variant: "destructive",
-        });
-        throw searchError;
-      }
-      
-      console.log('Search data result count:', searchData ? searchData.length : 0);
-      console.log('First few search records:', searchData ? searchData.slice(0, 3) : 'No data');
-      
-      if (!searchData || searchData.length === 0) {
-        console.log('No subcontractor search data found');
-        return [];
-      }
-      
-      // Get all public profiles without filtering
-      const { data: allProfiles, error: profilesError } = await supabase
-        .from('subcontractor_public_profiles')
-        .select('*');
-        
-      console.log('All profiles count:', allProfiles ? allProfiles.length : 0);
-      console.log('First few profiles:', allProfiles ? allProfiles.slice(0, 3) : 'No profiles');
-      
-      if (profilesError) {
-        console.error('Error fetching all profiles:', profilesError);
-      }
-      
-      // Now specifically get enabled profiles for comparison
-      const { data: profileData, error: profileError } = await supabase
-        .from('subcontractor_public_profiles')
-        .select('*')
-        .eq('enabled', true);
-      
-      if (profileError) {
-        console.error('Error fetching enabled profiles:', profileError);
-        // Continue anyway, we want to show subcontractors even without profiles
-      }
-      
-      console.log('Enabled profiles count:', profileData ? profileData.length : 0);
-      
-      // Create a map of company_id to profile data for easy lookup
-      const profileMap = {};
-      if (profileData && profileData.length > 0) {
-        profileData.forEach(profile => {
-          profileMap[profile.company_id] = profile;
-        });
-      }
-      
-      console.log('Profile map created with keys:', Object.keys(profileMap).length);
-      
-      // Combine the data
-      const result = searchData.map(sub => {
-        const profile = profileMap[sub.company_id];
-        console.log(`Company ${sub.company_name} (${sub.company_id}):`, 
-          'Has profile:', !!profile, 
-          profile ? `URL: ${profile.profile_url_path}, Enabled: ${profile.enabled}` : '');
-        
-        return {
-          ...sub,
-          profile_url_path: profile ? profile.profile_url_path : null,
-          has_public_profile: !!profile,
-        };
-      }) as Subcontractor[];
-      
-      console.log('Final result count:', result.length);
-      if (result.length > 0) {
-        console.log('Sample result item:', result[0]);
-      }
-      
-      return result;
-    },
-    staleTime: 60000, // Cache for 1 minute
-    retry: 2, // Retry twice if there's a failure
-  });
-  
-  console.log('Render state - isLoading:', isLoading, 'error:', !!error, 'subcontractors count:', subcontractors?.length);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Filter subcontractors based on search query
-  const filteredSubcontractors = subcontractors?.filter(sub => {
+  const filteredSubcontractors = mockSubcontractors.filter(sub => {
     if (!searchQuery) return true;
     
     const query = searchQuery.toLowerCase();
@@ -183,6 +211,20 @@ const SubcontractorDatabasePage: React.FC = () => {
       sub.vehicle_types.some(v => v && v.toLowerCase().includes(query))
     );
   });
+  
+  const handleViewProfile = (subcontractor: Subcontractor) => {
+    if (subcontractor.profile_url_path) {
+      // In einer richtigen App würden wir hier zur Profilseite navigieren
+      console.log(`Navigiere zu Profil: /profile/${subcontractor.profile_url_path}`);
+    }
+  };
+  
+  const handleContactSubcontractor = (subcontractor: Subcontractor) => {
+    toast({
+      title: "Kontaktanfrage gesendet",
+      description: `Ihre Anfrage an ${subcontractor.company_name} wurde erfolgreich übermittelt.`,
+    });
+  };
   
   return (
     <AppLayout>
@@ -218,27 +260,7 @@ const SubcontractorDatabasePage: React.FC = () => {
               <div className="flex justify-center p-6">
                 <p>Daten werden geladen...</p>
               </div>
-            ) : error ? (
-              <div className="flex justify-center p-6 text-red-500">
-                <p>Fehler beim Laden der Daten: {(error as Error).message}</p>
-              </div>
-            ) : !subcontractors || subcontractors.length === 0 ? (
-              <div className="flex justify-center p-6">
-                <p>Keine Subunternehmer gefunden</p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="ml-4"
-                  onClick={() => {
-                    console.log('Refreshing data...');
-                    // The invalidateQueries method is available on the QueryClient
-                    // You can get it using the useQueryClient hook
-                  }}
-                >
-                  Daten aktualisieren
-                </Button>
-              </div>
-            ) : !filteredSubcontractors || filteredSubcontractors.length === 0 ? (
+            ) : filteredSubcontractors.length === 0 ? (
               <div className="flex justify-center p-6">
                 <p>Keine Subunternehmer gefunden, die Ihren Suchkriterien entsprechen</p>
               </div>
@@ -248,7 +270,7 @@ const SubcontractorDatabasePage: React.FC = () => {
                   <TableRow>
                     <TableHead>Unternehmen</TableHead>
                     <TableHead>Standort</TableHead>
-                    <TableHead>Flottengröße</TableHead>
+                    <TableHead>Flotte</TableHead>
                     <TableHead>Spezialisierung</TableHead>
                     <TableHead>Zertifizierungen</TableHead>
                     <TableHead className="text-right">Aktion</TableHead>
@@ -262,12 +284,21 @@ const SubcontractorDatabasePage: React.FC = () => {
                           <div className="flex items-center gap-2">
                             <User className="h-4 w-4" />
                             {subcontractor.company_name}
+                            {subcontractor.avg_rating && (
+                              <div className="flex items-center text-amber-500 ml-1">
+                                <Star className="h-3 w-3 fill-current" />
+                                <span className="text-xs ml-0.5">{subcontractor.avg_rating.toFixed(1)}</span>
+                              </div>
+                            )}
                           </div>
                           {subcontractor.has_public_profile && (
                             <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 self-start">
                               Öffentliches Profil
                             </Badge>
                           )}
+                          <div className="text-xs text-muted-foreground mt-1">
+                            Seit {subcontractor.founded_year}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -322,17 +353,15 @@ const SubcontractorDatabasePage: React.FC = () => {
                             <Button 
                               size="sm" 
                               variant="secondary"
-                              asChild
+                              onClick={() => handleViewProfile(subcontractor)}
                             >
-                              <Link to={`/profile/${subcontractor.profile_url_path}`} target="_blank">
-                                Profil <ExternalLink className="ml-1 h-3 w-3" />
-                              </Link>
+                              Profil <ExternalLink className="ml-1 h-3 w-3" />
                             </Button>
                           )}
                           <Button 
                             size="sm" 
                             variant="outline"
-                            onClick={() => console.log("Kontakt zu", subcontractor.company_name)}
+                            onClick={() => handleContactSubcontractor(subcontractor)}
                           >
                             Kontakt
                           </Button>
