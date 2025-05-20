@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +15,7 @@ import ShipperDashboard from "./pages/ShipperDashboard";
 import SubcontractorDashboard from "./pages/SubcontractorDashboard";
 import NotFound from "./pages/NotFound";
 import CrmPage from "./pages/shipper/CrmPage";
+import SubcontractorDetailPage from "./pages/shipper/SubcontractorDetailPage"; // Import the new detail page
 import SubcontractorDatabasePage from "./pages/shipper/SubcontractorDatabasePage";
 import TendersPage from "./pages/shipper/TendersPage";
 import SpotLoadsPage from "./pages/shipper/SpotLoadsPage"; // Import the new page
@@ -81,12 +81,26 @@ function App() {
                   </ProtectedRoute>
                 } />
                 
+                {/* SRM detail view route */}
+                <Route path="/shipper/crm/details/:id" element={
+                  <ProtectedRoute>
+                    <SubcontractorDetailPage />
+                  </ProtectedRoute>
+                } />
+                
                 {/* SRM route path */}
                 <Route path="/dashboard/shipper/crm" element={
                   <ProtectedRoute>
                     <AppLayout>
                       <CrmPage />
                     </AppLayout>
+                  </ProtectedRoute>
+                } />
+                
+                {/* SRM detail route path */}
+                <Route path="/dashboard/shipper/crm/details/:id" element={
+                  <ProtectedRoute>
+                    <SubcontractorDetailPage />
                   </ProtectedRoute>
                 } />
                 

@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Filter, Plus, Search, MoreHorizontal, MoveHorizontal, Users, Truck, Star, FileText, ShieldCheck } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,16 +22,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from "@/components/ui/use-toast";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
 import {
   HoverCard,
   HoverCardContent,
@@ -329,12 +319,12 @@ const priorityColors = {
 const CrmPage: React.FC = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [cards, setCards] = useState(initialCards);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPriority, setSelectedPriority] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedPipeline, setSelectedPipeline] = useState<string>('standard');
-  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   // Laden der Pipeline-Daten beim Wechsel
   const handlePipelineChange = (value: string) => {
@@ -382,14 +372,9 @@ const CrmPage: React.FC = () => {
     return subcontractorDetails[id] || null;
   };
 
-  // Handler für das Öffnen der Detailansicht
+  // Handler for opening details page
   const handleOpenDetails = (cardId: number) => {
-    setSelectedCardId(cardId);
-  };
-
-  // Handler für das Schließen der Detailansicht
-  const handleCloseDetails = () => {
-    setSelectedCardId(null);
+    navigate(`/shipper/crm/details/${cardId}`);
   };
 
   // Funktion zum Verschieben einer Karte zwischen Phasen
@@ -624,226 +609,6 @@ const CrmPage: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {/* Drawer für Detailansicht */}
-      {selectedCardId && (
-        <Drawer open={selectedCardId !== null} onOpenChange={() => selectedCardId === null ? null : handleCloseDetails()}>
-          <DrawerContent className="max-h-[85vh]">
-            <DrawerHeader>
-              <DrawerTitle className="text-xl">
-                {subcontractorDetails[selectedCardId]?.company || "Subunternehmer Details"}
-              </DrawerTitle>
-              <DrawerDescription>
-                Detaillierte Informationen zum ausgewählten Subunternehmer
-              </DrawerDescription>
-            </DrawerHeader>
-            
-            <div className="px-4 py-2 overflow-auto max-h-[65vh]">
-              {subcontractorDetails[selectedCardId] ? (
-                <div className="space-y-6">
-                  {/* Kontaktinformationen */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Kontaktinformationen</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-2">
-                        <div className="flex justify-between">
-                          <span className="font-medium">Kontaktperson:</span>
-                          <span>{subcontractorDetails[selectedCardId].contactPerson}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">E-Mail:</span>
-                          <span>{subcontractorDetails[selectedCardId].email}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">Telefon:</span>
-                          <span>{subcontractorDetails[selectedCardId].phone}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">Website:</span>
-                          <span>{subcontractorDetails[selectedCardId].website}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">Adresse:</span>
-                          <span>{subcontractorDetails[selectedCardId].address}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">Gegründet:</span>
-                          <span>{subcontractorDetails[selectedCardId].foundedYear}</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Mitarbeiter */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2">
-                        <Users className="h-5 w-5" /> Mitarbeiter
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-2">
-                        <div className="flex justify-between">
-                          <span className="font-medium">Gesamtanzahl:</span>
-                          <span>{subcontractorDetails[selectedCardId].employees.total} Mitarbeiter</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">Fahrer:</span>
-                          <span>{subcontractorDetails[selectedCardId].employees.drivers}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">Büro:</span>
-                          <span>{subcontractorDetails[selectedCardId].employees.office}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">Management:</span>
-                          <span>{subcontractorDetails[selectedCardId].employees.management}</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Fuhrpark */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2">
-                        <Truck className="h-5 w-5" /> Fuhrpark
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex justify-between">
-                          <span className="font-medium">Gesamtanzahl:</span>
-                          <span>{subcontractorDetails[selectedCardId].fleet.total} Fahrzeuge</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">Durchschnittsalter:</span>
-                          <span>{subcontractorDetails[selectedCardId].fleet.averageAge} Jahre</span>
-                        </div>
-                        <div>
-                          <span className="font-medium">Fahrzeugtypen:</span>
-                          <div className="mt-2 grid grid-cols-2 gap-2">
-                            {subcontractorDetails[selectedCardId].fleet.types.map((vehicle, index) => (
-                              <div key={index} className="flex justify-between">
-                                <span>{vehicle.type}:</span>
-                                <span>{vehicle.count}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Referenzen */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2">
-                        <FileText className="h-5 w-5" /> Referenzen
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {subcontractorDetails[selectedCardId].references.length > 0 ? (
-                        <div className="space-y-4">
-                          {subcontractorDetails[selectedCardId].references.map((reference, index) => (
-                            <div key={index} className="border-b pb-2 last:border-0 last:pb-0">
-                              <div className="flex justify-between">
-                                <span className="font-medium">{reference.customer}</span>
-                                <span>Seit: {reference.since}</span>
-                              </div>
-                              <div className="text-sm text-muted-foreground">
-                                Branche: {reference.industry}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-muted-foreground text-center py-2">
-                          Keine Referenzen vorhanden
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Präqualifikationen */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2">
-                        <ShieldCheck className="h-5 w-5" /> Präqualifikationen
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {renderCertificationBadge("EU-Lizenz", subcontractorDetails[selectedCardId].prequalifications.eu_license)}
-                        {renderCertificationBadge("ADR-Zertifikat", subcontractorDetails[selectedCardId].prequalifications.adr_certificate)}
-                        {renderCertificationBadge("PQ KEP", subcontractorDetails[selectedCardId].prequalifications.pq_kep)}
-                        {renderCertificationBadge("ISO 9001", subcontractorDetails[selectedCardId].prequalifications.iso_9001)}
-                        {renderCertificationBadge("GDP-Zertifiziert", subcontractorDetails[selectedCardId].prequalifications.gdp_certified)}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Präferenzen */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2">
-                        <Star className="h-5 w-5" /> Präferenzen
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div>
-                          <span className="font-medium">Regionen:</span>
-                          <div className="mt-1 flex flex-wrap gap-1">
-                            {subcontractorDetails[selectedCardId].preferences.regions.map((region, index) => (
-                              <Badge key={index} variant="outline">{region}</Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <span className="font-medium">Spezialisierungen:</span>
-                          <div className="mt-1 flex flex-wrap gap-1">
-                            {subcontractorDetails[selectedCardId].preferences.specializations.map((spec, index) => (
-                              <Badge key={index} variant="outline">{spec}</Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">Min. Vertragsdauer:</span>
-                          <span>{subcontractorDetails[selectedCardId].preferences.minContractDuration}</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p>Details nicht verfügbar</p>
-                </div>
-              )}
-            </div>
-            
-            <DrawerFooter>
-              <div className="flex space-x-2">
-                <Button 
-                  onClick={() => {
-                    toast({
-                      title: "Kontakt aufgenommen",
-                      description: `Eine Nachricht wurde an ${subcontractorDetails[selectedCardId]?.contactPerson || "den Kontakt"} gesendet.`,
-                    });
-                  }}
-                >
-                  Kontaktieren
-                </Button>
-                <Button variant="outline" onClick={handleCloseDetails}>Schließen</Button>
-              </div>
-              <DrawerClose />
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-      )}
     </div>
   );
 };
