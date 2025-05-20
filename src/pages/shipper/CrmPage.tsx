@@ -83,15 +83,15 @@ const CrmPage: React.FC = () => {
   
   const filteredCards = getFilteredCards();
   
-  // Kanban Spalten-Konfiguration mit den neuen Pipeline-Phasen
+  // Kanban Spalten-Konfiguration mit den neuen Pipeline-Phasen und besser angepassten Farben
   const columns = [
-    { id: 'interessent', title: 'Interessent', color: 'bg-blue-500' },
-    { id: 'erstgespraech', title: 'Erstgespräch', color: 'bg-purple-500' },
-    { id: 'bewerbung', title: 'Bewerbung eingereicht', color: 'bg-cyan-500' },
-    { id: 'ueberpruefung', title: 'Überprüfung', color: 'bg-indigo-500' },
-    { id: 'verhandlung', title: 'Angebot / Verhandlung', color: 'bg-amber-500' },
-    { id: 'onhold', title: 'On Hold', color: 'bg-orange-500' },
-    { id: 'vertrag', title: 'Unter Vertrag', color: 'bg-green-500' },
+    { id: 'interessent', title: 'Interessent', color: 'border-t-4 border-t-primary bg-card' },
+    { id: 'erstgespraech', title: 'Erstgespräch', color: 'border-t-4 border-t-primary/80 bg-card' },
+    { id: 'bewerbung', title: 'Bewerbung eingereicht', color: 'border-t-4 border-t-primary/70 bg-card' },
+    { id: 'ueberpruefung', title: 'Überprüfung', color: 'border-t-4 border-t-primary/60 bg-card' },
+    { id: 'verhandlung', title: 'Angebot / Verhandlung', color: 'border-t-4 border-t-primary/50 bg-card' },
+    { id: 'onhold', title: 'On Hold', color: 'border-t-4 border-t-muted-foreground bg-card' },
+    { id: 'vertrag', title: 'Unter Vertrag', color: 'border-t-4 border-t-green-500 bg-card' },
   ];
   
   return (
@@ -164,17 +164,17 @@ const CrmPage: React.FC = () => {
         <div className="grid grid-cols-7 gap-4" style={{ minWidth: '1400px' }}>
           {columns.map((column) => (
             <div key={column.id} className="flex flex-col h-full">
-              <div className={`${column.color} px-4 py-2 rounded-t-lg flex items-center justify-between`}>
-                <h3 className="font-semibold text-white">{column.title}</h3>
-                <Badge variant="secondary" className="bg-white bg-opacity-20">
+              <div className={`${column.color} px-4 py-2 rounded-t-lg flex items-center justify-between shadow-sm`}>
+                <h3 className="font-semibold">{column.title}</h3>
+                <Badge variant="secondary" className="bg-background">
                   {filteredCards[column.id]?.length || 0}
                 </Badge>
               </div>
               
-              <div className="bg-slate-100 p-2 flex-grow rounded-b-lg min-h-[70vh] overflow-y-auto">
+              <div className="bg-muted/10 p-2 flex-grow rounded-b-lg min-h-[70vh] overflow-y-auto">
                 <div className="space-y-2">
                   {filteredCards[column.id]?.map((card) => (
-                    <Card key={card.id} className="cursor-pointer hover:shadow-md transition-shadow">
+                    <Card key={card.id} className="cursor-pointer hover:shadow-md transition-shadow card-modern">
                       <CardHeader className="p-4 pb-2">
                         <div className="flex justify-between items-start">
                           <CardTitle className="text-lg">{card.title}</CardTitle>
