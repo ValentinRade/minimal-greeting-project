@@ -36,6 +36,7 @@ const mockSubcontractors = [
     avg_rating: 4.8,
     has_eu_license: true,
     has_adr_certificate: true,
+    has_pq_kep: true,
     profile_url_path: "transportexpress",
     has_public_profile: true,
     description: "Spezialist für temperaturgeführte Transporte und Just-in-time Lieferungen im süddeutschen Raum.",
@@ -57,6 +58,7 @@ const mockSubcontractors = [
     avg_rating: 4.5,
     has_eu_license: true,
     has_adr_certificate: false,
+    has_pq_kep: false,
     profile_url_path: "nordcargo",
     has_public_profile: true,
     description: "Ihr Partner für alle Transportlösungen im Ostseeraum mit direkter Anbindung an die größten Häfen Nordeuropas.",
@@ -78,6 +80,7 @@ const mockSubcontractors = [
     avg_rating: 4.7,
     has_eu_license: true,
     has_adr_certificate: true,
+    has_pq_kep: true,
     profile_url_path: "rheinfracht",
     has_public_profile: true,
     description: "Seit über 25 Jahren Ihr zuverlässiger Partner für anspruchsvolle Schwerlast- und Sondertransporte entlang der Rheinachse.",
@@ -99,6 +102,7 @@ const mockSubcontractors = [
     avg_rating: 4.6,
     has_eu_license: true,
     has_adr_certificate: true,
+    has_pq_kep: false,
     profile_url_path: null,
     has_public_profile: false,
     description: "Spezialist für temperaturgeführte Transporte über die Alpen mit Schwerpunkt auf der Lebensmittelindustrie.",
@@ -120,6 +124,7 @@ const mockSubcontractors = [
     avg_rating: 4.3,
     has_eu_license: true,
     has_adr_certificate: false,
+    has_pq_kep: false,
     profile_url_path: "osttrans",
     has_public_profile: true,
     description: "Ihr Spezialist für Osteuropa-Verkehre mit eigenen Niederlassungen in Warschau und Prag.",
@@ -141,6 +146,7 @@ const mockSubcontractors = [
     avg_rating: 4.9,
     has_eu_license: true,
     has_adr_certificate: false,
+    has_pq_kep: true,
     profile_url_path: "greenlogistics",
     has_public_profile: true,
     description: "Pionier für nachhaltige Transportlösungen mit einer zu 100% CO2-neutralen Flotte im städtischen Raum.",
@@ -162,6 +168,7 @@ const mockSubcontractors = [
     avg_rating: 4.8,
     has_eu_license: true,
     has_adr_certificate: true,
+    has_pq_kep: true,
     profile_url_path: null,
     has_public_profile: false,
     description: "Zertifizierter Spezialist für die sichere Beförderung von Gefahrgütern aller Klassen.",
@@ -183,6 +190,7 @@ const mockSubcontractors = [
     avg_rating: 4.9,
     has_eu_license: true,
     has_adr_certificate: true,
+    has_pq_kep: false,
     profile_url_path: "medikalexpress",
     has_public_profile: true,
     description: "GDP-zertifiziertes Logistikunternehmen für den Transport von Arzneimitteln und medizinischen Produkten.",
@@ -343,6 +351,11 @@ const SubcontractorDatabasePage: React.FC = () => {
                           {subcontractor.has_adr_certificate && (
                             <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
                               <Check className="mr-1 h-3 w-3" /> ADR
+                            </Badge>
+                          )}
+                          {subcontractor.has_pq_kep && (
+                            <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200">
+                              <Check className="mr-1 h-3 w-3" /> PQ KEP
                             </Badge>
                           )}
                         </div>
