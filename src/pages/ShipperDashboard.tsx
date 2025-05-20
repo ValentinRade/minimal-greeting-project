@@ -10,6 +10,45 @@ import { useQuery } from '@tanstack/react-query';
 import { getTenders } from '@/services/tenderService';
 import { supabase } from '@/integrations/supabase/client';
 import { Metric } from '@/components/ui/metric';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
+// Mock data for messages
+const mockMessages = [
+  {
+    id: 1,
+    sender: 'Müller Transport GmbH',
+    avatar: 'MT',
+    message: 'Wir haben Interesse an der Ausschreibung #A-2023-42 und möchten ein Angebot einreichen.',
+    date: '2025-05-19T14:30:00',
+    read: false,
+  },
+  {
+    id: 2,
+    sender: 'Schmidt Logistik',
+    avatar: 'SL',
+    message: 'Die Dokumente für die Spotladung #SL-564 wurden hochgeladen und warten auf Ihre Überprüfung.',
+    date: '2025-05-18T09:15:00',
+    read: true,
+  },
+  {
+    id: 3,
+    sender: 'Wagner Spedition',
+    avatar: 'WS',
+    message: 'Können Sie die Lieferzeit für den Transport nach München anpassen? Wir hätten einen LKW verfügbar.',
+    date: '2025-05-17T16:45:00',
+    read: true,
+  },
+];
+
+// Mock data for spot loads
+const mockSpotLoads = [
+  { id: 1, origin: 'Hamburg', destination: 'München', date: '2025-05-22', status: 'Offen' },
+  { id: 2, origin: 'Berlin', destination: 'Köln', date: '2025-05-23', status: 'Vergeben' },
+  { id: 3, origin: 'Frankfurt', destination: 'Stuttgart', date: '2025-05-25', status: 'Offen' },
+  { id: 4, origin: 'Dresden', destination: 'Nürnberg', date: '2025-05-24', status: 'Offen' },
+  { id: 5, origin: 'Hannover', destination: 'Leipzig', date: '2025-05-26', status: 'Vergeben' },
+  { id: 6, origin: 'Düsseldorf', destination: 'Bremen', date: '2025-05-27', status: 'Offen' },
+];
 
 const ShipperDashboard = () => {
   const { t } = useTranslation();
@@ -41,6 +80,30 @@ const ShipperDashboard = () => {
   
   const handleSpotLoads = () => {
     navigate('/dashboard/shipper/spot-loads');
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (date.toDateString() === today.toDateString()) {
+      return `Heute, ${date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+    
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (date.toDateString() === yesterday.toDateString()) {
+      return `Gestern, ${date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+    
+    return date.toLocaleDateString('de-DE', { 
+      day: '2-digit', 
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
@@ -78,7 +141,7 @@ const ShipperDashboard = () => {
             <CardContent>
               <Metric 
                 title="Verfügbare Spot-Ladungen"
-                value={6}
+                value={mockSpotLoads.filter(load => load.status === 'Offen').length}
                 className="text-primary"
               />
             </CardContent>
@@ -128,8 +191,32 @@ const ShipperDashboard = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-center py-10 text-muted-foreground border border-dashed rounded-md">
-                Keine neuen Nachrichten
+              <div className="space-y-4">
+                {mockMessages.map((message) => (
+                  <div 
+                    key={message.id} 
+                    className={`flex items-start p-3 rounded-lg ${message.read ? 'bg-background' : 'bg-muted'}`}
+                  >
+                    <Avatar className="h-10 w-10 mr-3">
+                      <AvatarImage src={`/avatars/${message.id}.png`} alt={message.sender} />
+                      <AvatarFallback>{message.avatar}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start">
+                        <p className="font-medium">{message.sender}</p>
+                        <span className="text-xs text-muted-foreground">
+                          {formatDate(message.date)}
+                        </span>
+                      </div>
+                      <p className="text-sm mt-1 text-muted-foreground line-clamp-2">
+                        {message.message}
+                      </p>
+                    </div>
+                    {!message.read && (
+                      <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-2"></span>
+                    )}
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
