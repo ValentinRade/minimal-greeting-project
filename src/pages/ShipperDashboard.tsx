@@ -54,14 +54,15 @@ const ShipperDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Query to fetch tenders count
-  const { data: tenders, isLoading: isLoadingTenders } = useQuery({
+  // Query to fetch tenders count - replaced with mock data
+  const { isLoading: isLoadingTenders } = useQuery({
     queryKey: ['tenders'],
     queryFn: getTenders,
+    enabled: false, // Disable the actual API call since we're using mock data
   });
 
-  // Query to fetch subcontractors count
-  const { data: subcontractorsCount, isLoading: isLoadingSubcontractors } = useQuery({
+  // Query to fetch subcontractors count - replaced with mock data
+  const { isLoading: isLoadingSubcontractors } = useQuery({
     queryKey: ['subcontractorsCount'],
     queryFn: async () => {
       const { count, error } = await supabase
@@ -72,7 +73,12 @@ const ShipperDashboard = () => {
       if (error) throw error;
       return count || 0;
     },
+    enabled: false, // Disable the actual API call since we're using mock data
   });
+
+  // Mock data for tenders and subcontractors
+  const mockTendersCount = 35;
+  const mockSubcontractorsCount = 2247;
 
   const handleCreateTender = () => {
     navigate('/dashboard/shipper/tenders', { state: { createNew: true } });
@@ -126,7 +132,7 @@ const ShipperDashboard = () => {
             <CardContent>
               <Metric 
                 title="Aktive Ausschreibungen"
-                value={isLoadingTenders ? '...' : tenders?.length || 0}
+                value={isLoadingTenders ? '...' : mockTendersCount}
                 isLoading={isLoadingTenders}
                 className="text-white"
               />
@@ -155,7 +161,7 @@ const ShipperDashboard = () => {
             <CardContent>
               <Metric 
                 title="Registrierte Subunternehmer"
-                value={isLoadingSubcontractors ? '...' : subcontractorsCount || 0}
+                value={isLoadingSubcontractors ? '...' : mockSubcontractorsCount.toLocaleString('de-DE')}
                 isLoading={isLoadingSubcontractors}
               />
             </CardContent>
