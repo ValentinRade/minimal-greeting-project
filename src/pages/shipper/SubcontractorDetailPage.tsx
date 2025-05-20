@@ -35,6 +35,8 @@ const subcontractorDetails = {
     website: "www.schnell-transport.de",
     address: "Industriestr. 45, 80939 München",
     foundedYear: 2008,
+    rating: 4.2,
+    summary: "Zuverlässiger mittelständischer Logistikpartner mit Schwerpunkt im süddeutschen Raum. Spezialisiert auf Express- und Just-in-Time Lieferungen mit einer modernen Flotte und erfahrenen Fahrern. Bekannt für Pünktlichkeit und guten Service.",
     employees: {
       total: 28,
       drivers: 22,
@@ -75,6 +77,8 @@ const subcontractorDetails = {
     website: "www.logtech-ag.de",
     address: "Logistikpark 12, 12347 Berlin",
     foundedYear: 2015,
+    rating: 3.8,
+    summary: "Innovatives Logistikunternehmen mit Fokus auf technologiegestützte Transportlösungen. Spezialisiert auf temperaturgeführte Pharmatransporte und Hightech-Güter. Ein junges Team mit modernem Fuhrpark und digitalen Prozessen.",
     employees: {
       total: 42,
       drivers: 35,
@@ -116,6 +120,8 @@ const subcontractorDetails = {
     website: "www.cargo-express.de",
     address: "Hafenstraße 78, 20457 Hamburg",
     foundedYear: 2012,
+    rating: 4.7,
+    summary: "Langjährig etablierter Partner für internationale Containertransporte mit Schwerpunkt auf Hafenlogistik. Erfahrener Partner für Import/Export-Unternehmen mit kurzen Reaktionszeiten und flexiblen Lösungen für die Seefracht-Logistik.",
     employees: {
       total: 53,
       drivers: 45,
@@ -156,6 +162,8 @@ const subcontractorDetails = {
     website: "www.speedtrans.de",
     address: "Stadtring 123, 40468 Düsseldorf",
     foundedYear: 2017,
+    rating: 3.5,
+    summary: "Agiles KEP-Unternehmen mit Fokus auf Stadtlogistik und Last-Mile-Delivery. Moderner, emissionsarmer Fuhrpark aus Transportern und Sprintern. Spezialisiert auf zeitkritische Lieferungen in urbanen Räumen.",
     employees: {
       total: 18,
       drivers: 14,
@@ -195,6 +203,8 @@ const subcontractorDetails = {
     website: "www.greenlogistics.de",
     address: "Nachhaltigkeitsallee 42, 60329 Frankfurt",
     foundedYear: 2019,
+    rating: 4.0,
+    summary: "Nachhaltigkeitsorientierter Logistikanbieter mit CO2-neutralem Fuhrpark. Fokus auf umweltfreundliche Logistiklösungen für den Innenstadtbereich mit Elektro- und Hybridfahrzeugen. Idealer Partner für ökologisch ausgerichtete Unternehmen.",
     employees: {
       total: 24,
       drivers: 18,
@@ -248,6 +258,33 @@ const renderCertificationBadge = (name: string, isActive: boolean) => {
     <Badge className="bg-primary/10 text-primary hover:bg-primary/20 mb-2 mr-2">
       <ShieldCheck className="mr-1 h-3 w-3" /> {name}
     </Badge>
+  );
+};
+
+// Render star rating component
+const StarRating = ({ rating }: { rating: number }) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating - fullStars >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  
+  return (
+    <div className="flex items-center">
+      {[...Array(fullStars)].map((_, i) => (
+        <Star key={`full-${i}`} className="h-5 w-5 fill-primary text-primary" />
+      ))}
+      {hasHalfStar && (
+        <div className="relative">
+          <Star className="h-5 w-5 text-primary/30" />
+          <div className="absolute top-0 left-0 overflow-hidden w-1/2">
+            <Star className="h-5 w-5 fill-primary text-primary" />
+          </div>
+        </div>
+      )}
+      {[...Array(emptyStars)].map((_, i) => (
+        <Star key={`empty-${i}`} className="h-5 w-5 text-primary/30" />
+      ))}
+      <span className="ml-2 font-medium">{rating.toFixed(1)}</span>
+    </div>
   );
 };
 
@@ -368,6 +405,17 @@ const SubcontractorDetailPage: React.FC = () => {
                     ))}
                   </div>
                 </div>
+              </div>
+              
+              {/* Rating & Summary */}
+              <div className="bg-primary/5 rounded-lg p-4 mb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                  <h3 className="font-medium text-lg">Bewertung & Zusammenfassung</h3>
+                  <StarRating rating={subcontractor.rating} />
+                </div>
+                <p className="text-muted-foreground">
+                  {subcontractor.summary}
+                </p>
               </div>
               
               {/* Contact info */}
