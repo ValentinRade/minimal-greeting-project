@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Filter, Plus, Search, MoreHorizontal } from 'lucide-react';
+import { Filter, Plus, Search, MoreHorizontal, MoveHorizontal } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,28 +21,78 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useToast } from "@/components/ui/use-toast";
 
-// Dummy-Daten für das Kanban-Board
+// Pipelines for the SRM system
+const pipelines = [
+  { id: 'standard', name: 'Standard Pipeline' },
+  { id: 'express', name: 'Express Onboarding' },
+  { id: 'international', name: 'Internationale Subunternehmer' },
+];
+
+// Dummy-Daten für das Kanban-Board, angepasst an Logistiksubunternehmer
 const initialCards = {
   interessent: [
-    { id: 1, title: 'Media GmbH', description: 'Interessiert an Logistikdienstleistungen', priority: 'Hoch', contact: 'M. Müller', date: '2025-05-25' },
-    { id: 2, title: 'TechCorp AG', description: 'Anfrage für regelmäßige Transporte', priority: 'Mittel', contact: 'S. Schmidt', date: '2025-05-26' },
+    { id: 1, title: 'Schnell Transport GmbH', description: 'Spezialisiert auf Expresslieferungen in Süddeutschland', priority: 'Hoch', contact: 'M. Müller', date: '2025-05-25' },
+    { id: 2, title: 'LogTech AG', description: 'Moderne Flotte mit 15 LKWs, sucht langfristige Zusammenarbeit', priority: 'Mittel', contact: 'S. Schmidt', date: '2025-05-26' },
   ],
   erstgespraech: [
-    { id: 3, title: 'Furniture World', description: 'Preisanfrage für Möbeltransporte', priority: 'Hoch', contact: 'L. Weber', date: '2025-05-23' },
-    { id: 4, title: 'SoftDev GmbH', description: 'Meeting vereinbart für nächste Woche', priority: 'Niedrig', contact: 'K. Fischer', date: '2025-05-30' },
+    { id: 3, title: 'Cargo Express', description: 'Spezialisiert auf Möbeltransporte, 8 Jahre Erfahrung', priority: 'Hoch', contact: 'L. Weber', date: '2025-05-23' },
+    { id: 4, title: 'SpeedTrans GmbH', description: 'Flotte mit 5 Sprintern, fokussiert auf Stadttransporte', priority: 'Niedrig', contact: 'K. Fischer', date: '2025-05-30' },
   ],
   bewerbung: [
-    { id: 5, title: 'GreenTech Ltd.', description: 'Angebot für umweltfreundliche Logistik', priority: 'Mittel', contact: 'T. Becker', date: '2025-05-29' },
+    { id: 5, title: 'GreenLogistics Ltd.', description: 'Umweltfreundliche Elektro-LKWs für Innenstadtlieferungen', priority: 'Mittel', contact: 'T. Becker', date: '2025-05-29' },
+    { id: 8, title: 'Blitz Kurier', description: 'KEP-Dienstleister mit 25 Fahrern in Berlin und Umland', priority: 'Hoch', contact: 'A. Schulz', date: '2025-06-03' },
   ],
-  ueberpruefung: [],
+  ueberpruefung: [
+    { id: 9, title: 'TransEuropa GmbH', description: 'Internationale Transporte mit 40 LKWs und allen Zertifizierungen', priority: 'Hoch', contact: 'P. König', date: '2025-06-04' },
+  ],
   verhandlung: [
-    { id: 6, title: 'MetalWorks Inc.', description: 'Bestehender Kunde seit 2024', priority: 'Hoch', contact: 'R. Hoffmann', date: '2025-06-01' },
+    { id: 6, title: 'MetalTrans Inc.', description: 'Spezialist für Schwerlasttransporte, ISO 9001 zertifiziert', priority: 'Hoch', contact: 'R. Hoffmann', date: '2025-06-01' },
   ],
-  onhold: [],
+  onhold: [
+    { id: 10, title: 'Schnell & Sicher GmbH', description: 'Wartet auf Erneuerung der Transportlizenz', priority: 'Mittel', contact: 'M. Wagner', date: '2025-06-05' },
+  ],
   vertrag: [
-    { id: 7, title: 'EcoShipping AG', description: 'Vertrag bis Ende 2025', priority: 'Mittel', contact: 'C. Meyer', date: '2025-05-28' },
+    { id: 7, title: 'EcoFreight AG', description: 'Zuverlässiger Partner seit 2024, 20 LKWs verfügbar', priority: 'Mittel', contact: 'C. Meyer', date: '2025-05-28' },
   ],
+};
+
+// Pipeline-spezifische Daten
+const pipelineData = {
+  standard: initialCards,
+  express: {
+    interessent: [
+      { id: 11, title: 'FlashLogistics GmbH', description: 'Express-Lieferdienst mit 30 Sprintern', priority: 'Hoch', contact: 'F. Müller', date: '2025-05-22' },
+    ],
+    erstgespraech: [
+      { id: 12, title: 'RapidTrans AG', description: 'Spezialisiert auf Just-in-Time Lieferungen', priority: 'Mittel', contact: 'R. Schneider', date: '2025-05-24' },
+    ],
+    bewerbung: [],
+    ueberpruefung: [
+      { id: 13, title: 'QuickCarrier GmbH', description: 'Flotte von 15 Transportern mit GDP-Zertifizierung', priority: 'Hoch', contact: 'Q. Weber', date: '2025-05-27' },
+    ],
+    verhandlung: [],
+    onhold: [],
+    vertrag: [],
+  },
+  international: {
+    interessent: [
+      { id: 14, title: 'EuroTrans SpA', description: 'Italienisches Logistikunternehmen, 50 LKWs', priority: 'Mittel', contact: 'E. Rossi', date: '2025-05-21' },
+    ],
+    erstgespraech: [],
+    bewerbung: [
+      { id: 15, title: 'Nordic Freight AB', description: 'Skandinavische Transporte mit 35 LKWs', priority: 'Hoch', contact: 'N. Svensson', date: '2025-05-26' },
+    ],
+    ueberpruefung: [],
+    verhandlung: [
+      { id: 16, title: 'Trans-Iberia SL', description: 'Spezialist für iberische Halbinsel, 40 Fahrzeuge', priority: 'Mittel', contact: 'T. Garcia', date: '2025-05-29' },
+    ],
+    onhold: [],
+    vertrag: [
+      { id: 17, title: 'East Europe Logistics', description: 'Netzwerk in Osteuropa, 80 Fahrzeuge', priority: 'Hoch', contact: 'E. Nowak', date: '2025-05-23' },
+    ],
+  }
 };
 
 // Prioritätsfarben für Badges
@@ -54,10 +104,18 @@ const priorityColors = {
 
 const CrmPage: React.FC = () => {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [cards, setCards] = useState(initialCards);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPriority, setSelectedPriority] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<string>('');
+  const [selectedPipeline, setSelectedPipeline] = useState<string>('standard');
+
+  // Laden der Pipeline-Daten beim Wechsel
+  const handlePipelineChange = (value: string) => {
+    setSelectedPipeline(value);
+    setCards(pipelineData[value as keyof typeof pipelineData]);
+  };
 
   // Filtern der Karten basierend auf den Filterkriterien
   const getFilteredCards = () => {
@@ -93,6 +151,50 @@ const CrmPage: React.FC = () => {
     { id: 'onhold', title: 'On Hold', color: 'border-t-4 border-t-muted-foreground bg-card' },
     { id: 'vertrag', title: 'Unter Vertrag', color: 'border-t-4 border-t-green-500 bg-card' },
   ];
+
+  // Funktion zum Verschieben einer Karte zwischen Phasen
+  const handleCardMove = (cardId: number, sourceColumn: string, targetColumn: string) => {
+    if (sourceColumn === targetColumn) return;
+
+    setCards(prevCards => {
+      const newCards = { ...prevCards };
+      
+      // Finde die Karte in der Quellspalte
+      const cardIndex = newCards[sourceColumn].findIndex(card => card.id === cardId);
+      if (cardIndex === -1) return prevCards;
+      
+      // Entferne die Karte aus der Quellspalte
+      const [movedCard] = newCards[sourceColumn].splice(cardIndex, 1);
+      
+      // Füge die Karte zur Zielspalte hinzu
+      newCards[targetColumn] = [...newCards[targetColumn], movedCard];
+      
+      // Toast-Benachrichtigung
+      toast({
+        title: "Karte verschoben",
+        description: `${movedCard.title} wurde nach ${columns.find(col => col.id === targetColumn)?.title} verschoben`,
+      });
+      
+      return newCards;
+    });
+  };
+
+  // Drag-and-Drop-Funktionen
+  const handleDragStart = (e: React.DragEvent, cardId: number, column: string) => {
+    e.dataTransfer.setData('cardId', cardId.toString());
+    e.dataTransfer.setData('sourceColumn', column);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, targetColumn: string) => {
+    e.preventDefault();
+    const cardId = parseInt(e.dataTransfer.getData('cardId'));
+    const sourceColumn = e.dataTransfer.getData('sourceColumn');
+    handleCardMove(cardId, sourceColumn, targetColumn);
+  };
   
   return (
     <div className="space-y-6">
@@ -109,7 +211,7 @@ const CrmPage: React.FC = () => {
         </Button>
       </div>
       
-      {/* Filterleiste */}
+      {/* Erweiterte Filterleiste mit Pipeline-Auswahl */}
       <Card>
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
@@ -124,7 +226,21 @@ const CrmPage: React.FC = () => {
               />
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
+              {/* Pipeline-Auswahl */}
+              <div className="w-48">
+                <Select value={selectedPipeline} onValueChange={handlePipelineChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pipeline auswählen" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {pipelines.map(pipeline => (
+                      <SelectItem key={pipeline.id} value={pipeline.id}>{pipeline.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
               <div className="w-40">
                 <Select value={selectedPriority} onValueChange={setSelectedPriority}>
                   <SelectTrigger>
@@ -159,11 +275,16 @@ const CrmPage: React.FC = () => {
         </CardContent>
       </Card>
       
-      {/* Kanban Board mit horizontaler Scrollbar für die neuen sieben Spalten */}
+      {/* Kanban Board mit horizontaler Scrollbar und Drag-and-Drop-Funktionalität */}
       <div className="overflow-x-auto pb-6">
         <div className="grid grid-cols-7 gap-4" style={{ minWidth: '1400px' }}>
           {columns.map((column) => (
-            <div key={column.id} className="flex flex-col h-full">
+            <div 
+              key={column.id} 
+              className="flex flex-col h-full"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, column.id)}
+            >
               <div className={`${column.color} px-4 py-2 rounded-t-lg flex items-center justify-between shadow-sm`}>
                 <h3 className="font-semibold">{column.title}</h3>
                 <Badge variant="secondary" className="bg-background">
@@ -174,24 +295,42 @@ const CrmPage: React.FC = () => {
               <div className="bg-muted/10 p-2 flex-grow rounded-b-lg min-h-[70vh] overflow-y-auto">
                 <div className="space-y-2">
                   {filteredCards[column.id]?.map((card) => (
-                    <Card key={card.id} className="cursor-pointer hover:shadow-md transition-shadow card-modern">
+                    <Card 
+                      key={card.id} 
+                      className="cursor-move hover:shadow-md transition-shadow card-modern"
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, card.id, column.id)}
+                    >
                       <CardHeader className="p-4 pb-2">
                         <div className="flex justify-between items-start">
                           <CardTitle className="text-lg">{card.title}</CardTitle>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem>Bearbeiten</DropdownMenuItem>
-                              <DropdownMenuItem>Verschieben</DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600">Löschen</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <div className="flex items-center gap-2">
+                            <MoveHorizontal className="h-4 w-4 text-muted-foreground" />
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>Bearbeiten</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuLabel>Verschieben nach</DropdownMenuLabel>
+                                {columns.filter(c => c.id !== column.id).map(col => (
+                                  <DropdownMenuItem 
+                                    key={col.id}
+                                    onClick={() => handleCardMove(card.id, column.id, col.id)}
+                                  >
+                                    {col.title}
+                                  </DropdownMenuItem>
+                                ))}
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-red-600">Löschen</DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
                         </div>
                         <CardDescription className="mt-1">{card.description}</CardDescription>
                       </CardHeader>
