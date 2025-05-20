@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { FileText, Truck, Plus, MessageSquare } from 'lucide-react';
@@ -44,7 +44,9 @@ const ShipperDashboard = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-bold">{t('dashboard.shipperWelcome')}</h1>
-          <p className="text-gray-500 mt-1">{t('dashboard.todayIsDate', { date: new Date().toLocaleDateString() })}</p>
+          <p className="text-gray-500 mt-1">
+            {t('dashboard.todayIsDate', { date: new Date().toLocaleDateString() })}
+          </p>
         </div>
         
         {/* Key Metrics */}
