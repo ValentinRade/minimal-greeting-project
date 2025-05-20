@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Filter, Plus, Search, MoreHorizontal, MoveHorizontal } from 'lucide-react';
+import { Filter, Plus, Search, MoreHorizontal, MoveHorizontal, Users, Truck, Star, FileText, ShieldCheck } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +22,230 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+// Mock data for detailed subcontractor profiles
+const subcontractorDetails = {
+  1: {
+    company: "Schnell Transport GmbH",
+    contactPerson: "Max Müller",
+    email: "m.mueller@schnell-transport.de",
+    phone: "+49 89 12345678",
+    website: "www.schnell-transport.de",
+    address: "Industriestr. 45, 80939 München",
+    foundedYear: 2008,
+    employees: {
+      total: 28,
+      drivers: 22,
+      office: 4,
+      management: 2
+    },
+    fleet: {
+      total: 25,
+      types: [
+        { type: "Sattelschlepper", count: 12 },
+        { type: "Wechselbrücken-LKW", count: 8 },
+        { type: "Sprinter", count: 5 }
+      ],
+      averageAge: 3.2
+    },
+    references: [
+      { customer: "LogiTech AG", since: "2020", industry: "Elektronik" },
+      { customer: "FoodExpress GmbH", since: "2018", industry: "Lebensmittel" }
+    ],
+    prequalifications: {
+      eu_license: true,
+      adr_certificate: true,
+      pq_kep: true,
+      iso_9001: true,
+      gdp_certified: false
+    },
+    preferences: {
+      regions: ["Bayern", "Baden-Württemberg", "Österreich"],
+      specializations: ["Express", "Just-in-Time Lieferungen"],
+      minContractDuration: "6 Monate"
+    }
+  },
+  2: {
+    company: "LogTech AG",
+    contactPerson: "Sarah Schmidt",
+    email: "s.schmidt@logtech-ag.de",
+    phone: "+49 30 98765432",
+    website: "www.logtech-ag.de",
+    address: "Logistikpark 12, 12347 Berlin",
+    foundedYear: 2015,
+    employees: {
+      total: 42,
+      drivers: 35,
+      office: 5,
+      management: 2
+    },
+    fleet: {
+      total: 15,
+      types: [
+        { type: "Sattelschlepper", count: 8 },
+        { type: "Kühl-LKW", count: 5 },
+        { type: "Kastenwagen", count: 2 }
+      ],
+      averageAge: 2.5
+    },
+    references: [
+      { customer: "Pharma Plus GmbH", since: "2019", industry: "Pharmazeutik" },
+      { customer: "TechLogistics", since: "2021", industry: "Elektronik" },
+      { customer: "Anonymisierter Kunde", since: "2017", industry: "Automobil" }
+    ],
+    prequalifications: {
+      eu_license: true,
+      adr_certificate: false,
+      pq_kep: true,
+      iso_9001: true,
+      gdp_certified: true
+    },
+    preferences: {
+      regions: ["Berlin", "Brandenburg", "Sachsen", "Polen"],
+      specializations: ["Pharma-Logistik", "Temperaturgeführte Transporte"],
+      minContractDuration: "12 Monate"
+    }
+  },
+  3: {
+    company: "Cargo Express",
+    contactPerson: "Lisa Weber",
+    email: "l.weber@cargo-express.de",
+    phone: "+49 40 44556677",
+    website: "www.cargo-express.de",
+    address: "Hafenstraße 78, 20457 Hamburg",
+    foundedYear: 2012,
+    employees: {
+      total: 53,
+      drivers: 45,
+      office: 6,
+      management: 2
+    },
+    fleet: {
+      total: 38,
+      types: [
+        { type: "Container-LKW", count: 22 },
+        { type: "Sattelschlepper", count: 10 },
+        { type: "Wechselbrücken-LKW", count: 6 }
+      ],
+      averageAge: 4.1
+    },
+    references: [
+      { customer: "Global Shipping Inc.", since: "2016", industry: "Import/Export" },
+      { customer: "SeaTrade GmbH", since: "2018", industry: "Seefrachtlogistik" }
+    ],
+    prequalifications: {
+      eu_license: true,
+      adr_certificate: true,
+      pq_kep: false,
+      iso_9001: true,
+      gdp_certified: false
+    },
+    preferences: {
+      regions: ["Hamburg", "Bremen", "Niedersachsen", "Skandinavien"],
+      specializations: ["Hafenlogistik", "Containerverladung"],
+      minContractDuration: "3 Monate"
+    }
+  },
+  4: {
+    company: "SpeedTrans GmbH",
+    contactPerson: "Klaus Fischer",
+    email: "k.fischer@speedtrans.de",
+    phone: "+49 211 33445566",
+    website: "www.speedtrans.de",
+    address: "Stadtring 123, 40468 Düsseldorf",
+    foundedYear: 2017,
+    employees: {
+      total: 18,
+      drivers: 14,
+      office: 3,
+      management: 1
+    },
+    fleet: {
+      total: 12,
+      types: [
+        { type: "Sprinter", count: 8 },
+        { type: "Kastenwagen", count: 4 }
+      ],
+      averageAge: 1.8
+    },
+    references: [
+      { customer: "QuickDelivery", since: "2019", industry: "E-Commerce" },
+      { customer: "CityLog", since: "2020", industry: "Stückgut" }
+    ],
+    prequalifications: {
+      eu_license: true,
+      adr_certificate: false,
+      pq_kep: true,
+      iso_9001: false,
+      gdp_certified: false
+    },
+    preferences: {
+      regions: ["Nordrhein-Westfalen", "Rheinland-Pfalz"],
+      specializations: ["KEP-Dienste", "Letzte-Meile-Lieferung"],
+      minContractDuration: "1 Monat"
+    }
+  },
+  5: {
+    company: "GreenLogistics Ltd.",
+    contactPerson: "Thomas Becker",
+    email: "t.becker@greenlogistics.de",
+    phone: "+49 69 11223344",
+    website: "www.greenlogistics.de",
+    address: "Nachhaltigkeitsallee 42, 60329 Frankfurt",
+    foundedYear: 2019,
+    employees: {
+      total: 24,
+      drivers: 18,
+      office: 4,
+      management: 2
+    },
+    fleet: {
+      total: 20,
+      types: [
+        { type: "E-LKW", count: 12 },
+        { type: "Hybrid-LKW", count: 5 },
+        { type: "E-Transporter", count: 3 }
+      ],
+      averageAge: 1.2
+    },
+    references: [
+      { customer: "EcoRetail GmbH", since: "2020", industry: "Einzelhandel" },
+      { customer: "Nachhaltig AG", since: "2021", industry: "Konsumgüter" }
+    ],
+    prequalifications: {
+      eu_license: true,
+      adr_certificate: false,
+      pq_kep: true,
+      iso_9001: true,
+      gdp_certified: false
+    },
+    preferences: {
+      regions: ["Hessen", "Rhein-Main-Gebiet"],
+      specializations: ["CO2-neutrale Logistik", "Innenstadtlogistik"],
+      minContractDuration: "12 Monate"
+    }
+  }
+};
 
 // Pipelines for the SRM system
 const pipelines = [
@@ -110,6 +334,7 @@ const CrmPage: React.FC = () => {
   const [selectedPriority, setSelectedPriority] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedPipeline, setSelectedPipeline] = useState<string>('standard');
+  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   // Laden der Pipeline-Daten beim Wechsel
   const handlePipelineChange = (value: string) => {
@@ -151,6 +376,21 @@ const CrmPage: React.FC = () => {
     { id: 'onhold', title: 'On Hold', color: 'border-t-4 border-t-muted-foreground bg-card' },
     { id: 'vertrag', title: 'Unter Vertrag', color: 'border-t-4 border-t-green-500 bg-card' },
   ];
+
+  // Get card details from the subcontractorDetails object
+  const getSubcontractorDetails = (id: number) => {
+    return subcontractorDetails[id] || null;
+  };
+
+  // Handler für das Öffnen der Detailansicht
+  const handleOpenDetails = (cardId: number) => {
+    setSelectedCardId(cardId);
+  };
+
+  // Handler für das Schließen der Detailansicht
+  const handleCloseDetails = () => {
+    setSelectedCardId(null);
+  };
 
   // Funktion zum Verschieben einer Karte zwischen Phasen
   const handleCardMove = (cardId: number, sourceColumn: string, targetColumn: string) => {
@@ -194,6 +434,17 @@ const CrmPage: React.FC = () => {
     const cardId = parseInt(e.dataTransfer.getData('cardId'));
     const sourceColumn = e.dataTransfer.getData('sourceColumn');
     handleCardMove(cardId, sourceColumn, targetColumn);
+  };
+
+  // Render the badge for certification
+  const renderCertificationBadge = (name: string, isActive: boolean) => {
+    if (!isActive) return null;
+    
+    return (
+      <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
+        <ShieldCheck className="mr-1 h-3 w-3" /> {name}
+      </Badge>
+    );
   };
   
   return (
@@ -295,57 +546,77 @@ const CrmPage: React.FC = () => {
               <div className="bg-muted/10 p-2 flex-grow rounded-b-lg min-h-[70vh] overflow-y-auto">
                 <div className="space-y-2">
                   {filteredCards[column.id]?.map((card) => (
-                    <Card 
-                      key={card.id} 
-                      className="cursor-move hover:shadow-md transition-shadow card-modern"
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, card.id, column.id)}
-                    >
-                      <CardHeader className="p-4 pb-2">
-                        <div className="flex justify-between items-start">
-                          <CardTitle className="text-lg">{card.title}</CardTitle>
-                          <div className="flex items-center gap-2">
-                            <MoveHorizontal className="h-4 w-4 text-muted-foreground" />
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>Bearbeiten</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuLabel>Verschieben nach</DropdownMenuLabel>
-                                {columns.filter(c => c.id !== column.id).map(col => (
-                                  <DropdownMenuItem 
-                                    key={col.id}
-                                    onClick={() => handleCardMove(card.id, column.id, col.id)}
-                                  >
-                                    {col.title}
+                    <div key={card.id}>
+                      <Card 
+                        className="cursor-move hover:shadow-md transition-shadow card-modern group"
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, card.id, column.id)}
+                        onClick={() => handleOpenDetails(card.id)}
+                      >
+                        <CardHeader className="p-4 pb-2">
+                          <div className="flex justify-between items-start">
+                            <CardTitle className="text-lg">{card.title}</CardTitle>
+                            <div className="flex items-center gap-2">
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100">
+                                    <MoveHorizontal className="h-4 w-4 text-muted-foreground" />
+                                  </Button>
+                                </HoverCardTrigger>
+                                <HoverCardContent align="end" className="w-40 p-2">
+                                  <p className="text-xs text-center">Zum Verschieben ziehen oder Aktionsmenü verwenden</p>
+                                </HoverCardContent>
+                              </HoverCard>
+                              
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" className="h-8 w-8 p-0">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
+                                  <DropdownMenuItem onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenDetails(card.id);
+                                  }}>
+                                    Detailansicht
                                   </DropdownMenuItem>
-                                ))}
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-red-600">Löschen</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                                  <DropdownMenuItem>Bearbeiten</DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuLabel>Verschieben nach</DropdownMenuLabel>
+                                  {columns.filter(c => c.id !== column.id).map(col => (
+                                    <DropdownMenuItem 
+                                      key={col.id}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCardMove(card.id, column.id, col.id);
+                                      }}
+                                    >
+                                      {col.title}
+                                    </DropdownMenuItem>
+                                  ))}
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem className="text-red-600">Löschen</DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
                           </div>
-                        </div>
-                        <CardDescription className="mt-1">{card.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0">
-                        <div className="text-sm">
-                          <span className="font-medium">Kontakt:</span> {card.contact}
-                        </div>
-                      </CardContent>
-                      <CardFooter className="p-4 pt-0 flex justify-between">
-                        <Badge variant="outline" className={priorityColors[card.priority]}>
-                          {card.priority}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">{card.date}</span>
-                      </CardFooter>
-                    </Card>
+                          <CardDescription className="mt-1">{card.description}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-4 pt-0">
+                          <div className="text-sm">
+                            <span className="font-medium">Kontakt:</span> {card.contact}
+                          </div>
+                        </CardContent>
+                        <CardFooter className="p-4 pt-0 flex justify-between">
+                          <Badge variant="outline" className={priorityColors[card.priority]}>
+                            {card.priority}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">{card.date}</span>
+                        </CardFooter>
+                      </Card>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -353,6 +624,226 @@ const CrmPage: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Drawer für Detailansicht */}
+      {selectedCardId && (
+        <Drawer open={selectedCardId !== null} onOpenChange={() => selectedCardId === null ? null : handleCloseDetails()}>
+          <DrawerContent className="max-h-[85vh]">
+            <DrawerHeader>
+              <DrawerTitle className="text-xl">
+                {subcontractorDetails[selectedCardId]?.company || "Subunternehmer Details"}
+              </DrawerTitle>
+              <DrawerDescription>
+                Detaillierte Informationen zum ausgewählten Subunternehmer
+              </DrawerDescription>
+            </DrawerHeader>
+            
+            <div className="px-4 py-2 overflow-auto max-h-[65vh]">
+              {subcontractorDetails[selectedCardId] ? (
+                <div className="space-y-6">
+                  {/* Kontaktinformationen */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg">Kontaktinformationen</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-2">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Kontaktperson:</span>
+                          <span>{subcontractorDetails[selectedCardId].contactPerson}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">E-Mail:</span>
+                          <span>{subcontractorDetails[selectedCardId].email}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Telefon:</span>
+                          <span>{subcontractorDetails[selectedCardId].phone}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Website:</span>
+                          <span>{subcontractorDetails[selectedCardId].website}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Adresse:</span>
+                          <span>{subcontractorDetails[selectedCardId].address}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Gegründet:</span>
+                          <span>{subcontractorDetails[selectedCardId].foundedYear}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Mitarbeiter */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <Users className="h-5 w-5" /> Mitarbeiter
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-2">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Gesamtanzahl:</span>
+                          <span>{subcontractorDetails[selectedCardId].employees.total} Mitarbeiter</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Fahrer:</span>
+                          <span>{subcontractorDetails[selectedCardId].employees.drivers}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Büro:</span>
+                          <span>{subcontractorDetails[selectedCardId].employees.office}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Management:</span>
+                          <span>{subcontractorDetails[selectedCardId].employees.management}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Fuhrpark */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <Truck className="h-5 w-5" /> Fuhrpark
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Gesamtanzahl:</span>
+                          <span>{subcontractorDetails[selectedCardId].fleet.total} Fahrzeuge</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Durchschnittsalter:</span>
+                          <span>{subcontractorDetails[selectedCardId].fleet.averageAge} Jahre</span>
+                        </div>
+                        <div>
+                          <span className="font-medium">Fahrzeugtypen:</span>
+                          <div className="mt-2 grid grid-cols-2 gap-2">
+                            {subcontractorDetails[selectedCardId].fleet.types.map((vehicle, index) => (
+                              <div key={index} className="flex justify-between">
+                                <span>{vehicle.type}:</span>
+                                <span>{vehicle.count}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Referenzen */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <FileText className="h-5 w-5" /> Referenzen
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {subcontractorDetails[selectedCardId].references.length > 0 ? (
+                        <div className="space-y-4">
+                          {subcontractorDetails[selectedCardId].references.map((reference, index) => (
+                            <div key={index} className="border-b pb-2 last:border-0 last:pb-0">
+                              <div className="flex justify-between">
+                                <span className="font-medium">{reference.customer}</span>
+                                <span>Seit: {reference.since}</span>
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                Branche: {reference.industry}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-muted-foreground text-center py-2">
+                          Keine Referenzen vorhanden
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Präqualifikationen */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <ShieldCheck className="h-5 w-5" /> Präqualifikationen
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2">
+                        {renderCertificationBadge("EU-Lizenz", subcontractorDetails[selectedCardId].prequalifications.eu_license)}
+                        {renderCertificationBadge("ADR-Zertifikat", subcontractorDetails[selectedCardId].prequalifications.adr_certificate)}
+                        {renderCertificationBadge("PQ KEP", subcontractorDetails[selectedCardId].prequalifications.pq_kep)}
+                        {renderCertificationBadge("ISO 9001", subcontractorDetails[selectedCardId].prequalifications.iso_9001)}
+                        {renderCertificationBadge("GDP-Zertifiziert", subcontractorDetails[selectedCardId].prequalifications.gdp_certified)}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Präferenzen */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <Star className="h-5 w-5" /> Präferenzen
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div>
+                          <span className="font-medium">Regionen:</span>
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {subcontractorDetails[selectedCardId].preferences.regions.map((region, index) => (
+                              <Badge key={index} variant="outline">{region}</Badge>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <span className="font-medium">Spezialisierungen:</span>
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {subcontractorDetails[selectedCardId].preferences.specializations.map((spec, index) => (
+                              <Badge key={index} variant="outline">{spec}</Badge>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Min. Vertragsdauer:</span>
+                          <span>{subcontractorDetails[selectedCardId].preferences.minContractDuration}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p>Details nicht verfügbar</p>
+                </div>
+              )}
+            </div>
+            
+            <DrawerFooter>
+              <div className="flex space-x-2">
+                <Button 
+                  onClick={() => {
+                    toast({
+                      title: "Kontakt aufgenommen",
+                      description: `Eine Nachricht wurde an ${subcontractorDetails[selectedCardId]?.contactPerson || "den Kontakt"} gesendet.`,
+                    });
+                  }}
+                >
+                  Kontaktieren
+                </Button>
+                <Button variant="outline" onClick={handleCloseDetails}>Schließen</Button>
+              </div>
+              <DrawerClose />
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      )}
     </div>
   );
 };
