@@ -231,13 +231,13 @@ const subcontractorDetails = {
 
 // Phase types for UI representation
 const phaseTypes = {
-  'interessent': { name: 'Interessent', color: 'bg-blue-100 text-blue-800' },
-  'erstgespraech': { name: 'Erstgespräch', color: 'bg-indigo-100 text-indigo-800' },
-  'bewerbung': { name: 'Bewerbung', color: 'bg-purple-100 text-purple-800' },
-  'ueberpruefung': { name: 'Überprüfung', color: 'bg-amber-100 text-amber-800' },
-  'verhandlung': { name: 'Verhandlung', color: 'bg-orange-100 text-orange-800' },
-  'onhold': { name: 'On Hold', color: 'bg-gray-100 text-gray-800' },
-  'vertrag': { name: 'Unter Vertrag', color: 'bg-green-100 text-green-800' },
+  'interessent': { name: 'Interessent', color: 'bg-primary/10 text-primary' },
+  'erstgespraech': { name: 'Erstgespräch', color: 'bg-primary/20 text-primary' },
+  'bewerbung': { name: 'Bewerbung', color: 'bg-primary/30 text-primary' },
+  'ueberpruefung': { name: 'Überprüfung', color: 'bg-primary/40 text-primary' },
+  'verhandlung': { name: 'Verhandlung', color: 'bg-primary/50 text-primary' },
+  'onhold': { name: 'On Hold', color: 'bg-muted text-muted-foreground' },
+  'vertrag': { name: 'Unter Vertrag', color: 'bg-primary/70 text-primary-foreground' },
 };
 
 // Render certification badge function  
@@ -245,7 +245,7 @@ const renderCertificationBadge = (name: string, isActive: boolean) => {
   if (!isActive) return null;
   
   return (
-    <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 mb-2 mr-2">
+    <Badge className="bg-primary/10 text-primary hover:bg-primary/20 mb-2 mr-2">
       <ShieldCheck className="mr-1 h-3 w-3" /> {name}
     </Badge>
   );
@@ -345,13 +345,13 @@ const SubcontractorDetailPage: React.FC = () => {
         {/* Top section with key info and stats */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="lg:col-span-2 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-20"></div>
+            <div className="bg-primary h-20"></div>
             <div className="p-6 -mt-8">
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 mb-4">
+              <div className="bg-background dark:bg-gray-800 rounded-xl shadow-lg p-4 mb-4">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
                     <h2 className="text-2xl font-bold">{subcontractor.company}</h2>
-                    <p className="text-gray-500">
+                    <p className="text-muted-foreground">
                       Gegründet {subcontractor.foundedYear} • {subcontractor.address}
                     </p>
                   </div>
@@ -360,7 +360,7 @@ const SubcontractorDetailPage: React.FC = () => {
                     {Object.entries(phaseTypes).map(([phase, { name, color }]) => (
                       <Badge 
                         key={phase}
-                        className={`${currentPhase === phase ? color : 'bg-gray-100 text-gray-600'} cursor-pointer`}
+                        className={`${currentPhase === phase ? color : 'bg-muted/50 text-muted-foreground'} cursor-pointer`}
                         onClick={() => handlePhaseChange(phase)}
                       >
                         {name}
@@ -373,53 +373,53 @@ const SubcontractorDetailPage: React.FC = () => {
               {/* Contact info */}
               <div className="flex flex-col md:flex-row gap-4 mb-4">
                 <div className="flex items-center">
-                  <div className="bg-blue-100 rounded-full p-2 mr-3">
-                    <Phone className="h-4 w-4 text-blue-600" />
+                  <div className="bg-primary/10 rounded-full p-2 mr-3">
+                    <Phone className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Telefon</div>
+                    <div className="text-sm text-muted-foreground">Telefon</div>
                     <div>{subcontractor.phone}</div>
                   </div>
                 </div>
                 
                 <div className="flex items-center">
-                  <div className="bg-blue-100 rounded-full p-2 mr-3">
-                    <Mail className="h-4 w-4 text-blue-600" />
+                  <div className="bg-primary/10 rounded-full p-2 mr-3">
+                    <Mail className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Email</div>
+                    <div className="text-sm text-muted-foreground">Email</div>
                     <div>{subcontractor.email}</div>
                   </div>
                 </div>
                 
                 <div className="flex items-center">
-                  <div className="bg-blue-100 rounded-full p-2 mr-3">
-                    <Globe className="h-4 w-4 text-blue-600" />
+                  <div className="bg-primary/10 rounded-full p-2 mr-3">
+                    <Globe className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Website</div>
+                    <div className="text-sm text-muted-foreground">Website</div>
                     <div>{subcontractor.website}</div>
                   </div>
                 </div>
               </div>
               
               {/* Contact person */}
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+              <div className="bg-muted/10 dark:bg-gray-800 rounded-lg p-4">
                 <div className="flex items-center mb-2">
-                  <Users className="h-5 w-5 text-blue-600 mr-2" />
+                  <Users className="h-5 w-5 text-primary mr-2" />
                   <h3 className="font-medium">Kontaktperson</h3>
                 </div>
                 <div className="ml-7">
                   <div className="font-medium">{subcontractor.contactPerson}</div>
-                  <div className="text-sm text-gray-500">{subcontractor.email}</div>
-                  <div className="text-sm text-gray-500">{subcontractor.phone}</div>
+                  <div className="text-sm text-muted-foreground">{subcontractor.email}</div>
+                  <div className="text-sm text-muted-foreground">{subcontractor.phone}</div>
                 </div>
               </div>
             </div>
           </Card>
           
           {/* Stats Card */}
-          <Card className="bg-gradient-to-br from-indigo-50 to-blue-50 border-0">
+          <Card className="bg-primary/5 border-0">
             <CardHeader>
               <CardTitle className="text-xl">Profil Übersicht</CardTitle>
               <CardDescription>Vollständigkeit und Kennzahlen</CardDescription>
@@ -437,28 +437,28 @@ const SubcontractorDetailPage: React.FC = () => {
                 
                 {/* Key stats */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
-                    <div className="text-sm text-gray-500">Fahrzeuge</div>
-                    <div className="text-2xl font-bold text-blue-600">{subcontractor.fleet.total}</div>
+                  <div className="bg-background rounded-lg p-3 shadow-sm">
+                    <div className="text-sm text-muted-foreground">Fahrzeuge</div>
+                    <div className="text-2xl font-bold text-primary">{subcontractor.fleet.total}</div>
                   </div>
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
-                    <div className="text-sm text-gray-500">Fahrer</div>
-                    <div className="text-2xl font-bold text-blue-600">{subcontractor.employees.drivers}</div>
+                  <div className="bg-background rounded-lg p-3 shadow-sm">
+                    <div className="text-sm text-muted-foreground">Fahrer</div>
+                    <div className="text-2xl font-bold text-primary">{subcontractor.employees.drivers}</div>
                   </div>
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
-                    <div className="text-sm text-gray-500">Zertifikate</div>
-                    <div className="text-2xl font-bold text-blue-600">
+                  <div className="bg-background rounded-lg p-3 shadow-sm">
+                    <div className="text-sm text-muted-foreground">Zertifikate</div>
+                    <div className="text-2xl font-bold text-primary">
                       {Object.values(subcontractor.prequalifications).filter(Boolean).length}
                     </div>
                   </div>
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
-                    <div className="text-sm text-gray-500">Referenzen</div>
-                    <div className="text-2xl font-bold text-blue-600">{subcontractor.references.length}</div>
+                  <div className="bg-background rounded-lg p-3 shadow-sm">
+                    <div className="text-sm text-muted-foreground">Referenzen</div>
+                    <div className="text-2xl font-bold text-primary">{subcontractor.references.length}</div>
                   </div>
                 </div>
                 
                 <div className="flex justify-center">
-                  <Button onClick={handleContact} className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700">
+                  <Button onClick={handleContact} className="w-full">
                     Kontaktieren
                   </Button>
                 </div>
@@ -471,29 +471,29 @@ const SubcontractorDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
           {/* Employees Section */}
           <Card className="overflow-hidden border-0 shadow-md">
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 py-4 px-6">
+            <div className="bg-primary py-4 px-6">
               <div className="flex items-center">
-                <Users className="h-6 w-6 text-white mr-2" />
-                <h2 className="text-xl font-bold text-white">Mitarbeiter</h2>
+                <Users className="h-6 w-6 text-primary-foreground mr-2" />
+                <h2 className="text-xl font-bold text-primary-foreground">Mitarbeiter</h2>
               </div>
             </div>
             <CardContent className="p-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-500">Gesamtanzahl</div>
-                  <div className="text-2xl font-bold text-blue-700">{subcontractor.employees.total}</div>
+                <div className="bg-primary/5 rounded-lg p-4">
+                  <div className="text-sm text-muted-foreground">Gesamtanzahl</div>
+                  <div className="text-2xl font-bold text-primary">{subcontractor.employees.total}</div>
                 </div>
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-500">Fahrer</div>
-                  <div className="text-2xl font-bold text-blue-700">{subcontractor.employees.drivers}</div>
+                <div className="bg-primary/5 rounded-lg p-4">
+                  <div className="text-sm text-muted-foreground">Fahrer</div>
+                  <div className="text-2xl font-bold text-primary">{subcontractor.employees.drivers}</div>
                 </div>
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-500">Büropersonal</div>
-                  <div className="text-2xl font-bold text-blue-700">{subcontractor.employees.office}</div>
+                <div className="bg-primary/5 rounded-lg p-4">
+                  <div className="text-sm text-muted-foreground">Büropersonal</div>
+                  <div className="text-2xl font-bold text-primary">{subcontractor.employees.office}</div>
                 </div>
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-500">Management</div>
-                  <div className="text-2xl font-bold text-blue-700">{subcontractor.employees.management}</div>
+                <div className="bg-primary/5 rounded-lg p-4">
+                  <div className="text-sm text-muted-foreground">Management</div>
+                  <div className="text-2xl font-bold text-primary">{subcontractor.employees.management}</div>
                 </div>
               </div>
             </CardContent>
@@ -501,30 +501,30 @@ const SubcontractorDetailPage: React.FC = () => {
           
           {/* Fleet Section */}
           <Card className="overflow-hidden border-0 shadow-md">
-            <div className="bg-gradient-to-r from-green-500 to-emerald-600 py-4 px-6">
+            <div className="bg-primary py-4 px-6">
               <div className="flex items-center">
-                <Truck className="h-6 w-6 text-white mr-2" />
-                <h2 className="text-xl font-bold text-white">Fuhrpark</h2>
+                <Truck className="h-6 w-6 text-primary-foreground mr-2" />
+                <h2 className="text-xl font-bold text-primary-foreground">Fuhrpark</h2>
               </div>
             </div>
             <CardContent className="p-6">
               <div className="flex justify-between mb-4">
                 <div>
-                  <div className="text-sm text-gray-500">Gesamtanzahl</div>
-                  <div className="text-2xl font-bold text-green-700">{subcontractor.fleet.total}</div>
+                  <div className="text-sm text-muted-foreground">Gesamtanzahl</div>
+                  <div className="text-2xl font-bold text-primary">{subcontractor.fleet.total}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-500">Durchschnittsalter</div>
-                  <div className="text-2xl font-bold text-green-700">{subcontractor.fleet.averageAge} Jahre</div>
+                  <div className="text-sm text-muted-foreground">Durchschnittsalter</div>
+                  <div className="text-2xl font-bold text-primary">{subcontractor.fleet.averageAge} Jahre</div>
                 </div>
               </div>
               
               <div className="space-y-3">
                 <div className="text-sm font-medium">Fahrzeugtypen</div>
                 {subcontractor.fleet.types.map((vehicle, index) => (
-                  <div key={index} className="flex justify-between items-center bg-green-50 p-3 rounded-lg">
+                  <div key={index} className="flex justify-between items-center bg-primary/5 p-3 rounded-lg">
                     <span>{vehicle.type}</span>
-                    <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+                    <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
                       {vehicle.count} Fahrzeuge
                     </Badge>
                   </div>
@@ -537,65 +537,65 @@ const SubcontractorDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
           {/* Prequalifications */}
           <Card className="overflow-hidden border-0 shadow-md">
-            <div className="bg-gradient-to-r from-purple-500 to-violet-600 py-4 px-6">
+            <div className="bg-primary py-4 px-6">
               <div className="flex items-center">
-                <ShieldCheck className="h-6 w-6 text-white mr-2" />
-                <h2 className="text-xl font-bold text-white">Präqualifikationen</h2>
+                <ShieldCheck className="h-6 w-6 text-primary-foreground mr-2" />
+                <h2 className="text-xl font-bold text-primary-foreground">Präqualifikationen</h2>
               </div>
             </div>
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.eu_license ? 'bg-purple-50' : 'bg-gray-50'}`}>
+                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.eu_license ? 'bg-primary/5' : 'bg-muted/10'}`}>
                   <div className="flex items-center justify-between">
                     <span className="font-medium">EU-Lizenz</span>
                     {subcontractor.prequalifications.eu_license ? (
-                      <Badge className="bg-green-100 text-green-800">Vorhanden</Badge>
+                      <Badge className="bg-primary/10 text-primary">Vorhanden</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-gray-500">Nicht vorhanden</Badge>
+                      <Badge variant="outline" className="text-muted-foreground">Nicht vorhanden</Badge>
                     )}
                   </div>
                 </div>
                 
-                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.adr_certificate ? 'bg-purple-50' : 'bg-gray-50'}`}>
+                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.adr_certificate ? 'bg-primary/5' : 'bg-muted/10'}`}>
                   <div className="flex items-center justify-between">
                     <span className="font-medium">ADR-Zertifikat</span>
                     {subcontractor.prequalifications.adr_certificate ? (
-                      <Badge className="bg-green-100 text-green-800">Vorhanden</Badge>
+                      <Badge className="bg-primary/10 text-primary">Vorhanden</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-gray-500">Nicht vorhanden</Badge>
+                      <Badge variant="outline" className="text-muted-foreground">Nicht vorhanden</Badge>
                     )}
                   </div>
                 </div>
                 
-                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.pq_kep ? 'bg-purple-50' : 'bg-gray-50'}`}>
+                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.pq_kep ? 'bg-primary/5' : 'bg-muted/10'}`}>
                   <div className="flex items-center justify-between">
                     <span className="font-medium">PQ KEP</span>
                     {subcontractor.prequalifications.pq_kep ? (
-                      <Badge className="bg-green-100 text-green-800">Vorhanden</Badge>
+                      <Badge className="bg-primary/10 text-primary">Vorhanden</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-gray-500">Nicht vorhanden</Badge>
+                      <Badge variant="outline" className="text-muted-foreground">Nicht vorhanden</Badge>
                     )}
                   </div>
                 </div>
                 
-                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.iso_9001 ? 'bg-purple-50' : 'bg-gray-50'}`}>
+                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.iso_9001 ? 'bg-primary/5' : 'bg-muted/10'}`}>
                   <div className="flex items-center justify-between">
                     <span className="font-medium">ISO 9001</span>
                     {subcontractor.prequalifications.iso_9001 ? (
-                      <Badge className="bg-green-100 text-green-800">Vorhanden</Badge>
+                      <Badge className="bg-primary/10 text-primary">Vorhanden</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-gray-500">Nicht vorhanden</Badge>
+                      <Badge variant="outline" className="text-muted-foreground">Nicht vorhanden</Badge>
                     )}
                   </div>
                 </div>
                 
-                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.gdp_certified ? 'bg-purple-50' : 'bg-gray-50'}`}>
+                <div className={`p-4 rounded-lg ${subcontractor.prequalifications.gdp_certified ? 'bg-primary/5' : 'bg-muted/10'}`}>
                   <div className="flex items-center justify-between">
                     <span className="font-medium">GDP-Zertifiziert</span>
                     {subcontractor.prequalifications.gdp_certified ? (
-                      <Badge className="bg-green-100 text-green-800">Vorhanden</Badge>
+                      <Badge className="bg-primary/10 text-primary">Vorhanden</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-gray-500">Nicht vorhanden</Badge>
+                      <Badge variant="outline" className="text-muted-foreground">Nicht vorhanden</Badge>
                     )}
                   </div>
                 </div>
@@ -605,10 +605,10 @@ const SubcontractorDetailPage: React.FC = () => {
           
           {/* Preferences */}
           <Card className="overflow-hidden border-0 shadow-md">
-            <div className="bg-gradient-to-r from-amber-500 to-orange-600 py-4 px-6">
+            <div className="bg-primary py-4 px-6">
               <div className="flex items-center">
-                <Star className="h-6 w-6 text-white mr-2" />
-                <h2 className="text-xl font-bold text-white">Präferenzen</h2>
+                <Star className="h-6 w-6 text-primary-foreground mr-2" />
+                <h2 className="text-xl font-bold text-primary-foreground">Präferenzen</h2>
               </div>
             </div>
             <CardContent className="p-6">
@@ -616,7 +616,7 @@ const SubcontractorDetailPage: React.FC = () => {
                 <div className="text-sm font-medium mb-2">Regionen</div>
                 <div className="flex flex-wrap gap-2">
                   {subcontractor.preferences.regions.map((region, index) => (
-                    <Badge key={index} className="bg-amber-100 text-amber-800 hover:bg-amber-200">
+                    <Badge key={index} className="bg-primary/10 text-primary hover:bg-primary/20">
                       <MapPin className="mr-1 h-3 w-3" /> {region}
                     </Badge>
                   ))}
@@ -627,7 +627,7 @@ const SubcontractorDetailPage: React.FC = () => {
                 <div className="text-sm font-medium mb-2">Spezialisierungen</div>
                 <div className="flex flex-wrap gap-2">
                   {subcontractor.preferences.specializations.map((spec, index) => (
-                    <Badge key={index} className="bg-orange-100 text-orange-800 hover:bg-orange-200">
+                    <Badge key={index} className="bg-primary/10 text-primary hover:bg-primary/20">
                       <Star className="mr-1 h-3 w-3" /> {spec}
                     </Badge>
                   ))}
@@ -636,8 +636,8 @@ const SubcontractorDetailPage: React.FC = () => {
               
               <div>
                 <div className="text-sm font-medium mb-2">Min. Vertragsdauer</div>
-                <div className="bg-amber-50 p-3 rounded-lg flex items-center">
-                  <Calendar className="h-4 w-4 text-amber-600 mr-2" />
+                <div className="bg-primary/5 p-3 rounded-lg flex items-center">
+                  <Calendar className="h-4 w-4 text-primary mr-2" />
                   <span>{subcontractor.preferences.minContractDuration}</span>
                 </div>
               </div>
@@ -647,27 +647,27 @@ const SubcontractorDetailPage: React.FC = () => {
         
         {/* References */}
         <Card className="mb-6 overflow-hidden border-0 shadow-md">
-          <div className="bg-gradient-to-r from-cyan-500 to-teal-600 py-4 px-6">
+          <div className="bg-primary py-4 px-6">
             <div className="flex items-center">
-              <FileText className="h-6 w-6 text-white mr-2" />
-              <h2 className="text-xl font-bold text-white">Referenzen</h2>
+              <FileText className="h-6 w-6 text-primary-foreground mr-2" />
+              <h2 className="text-xl font-bold text-primary-foreground">Referenzen</h2>
             </div>
           </div>
           <CardContent className="p-6">
             {subcontractor.references.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {subcontractor.references.map((reference, index) => (
-                  <div key={index} className="bg-gradient-to-br from-cyan-50 to-blue-50 p-4 rounded-lg">
+                  <div key={index} className="bg-primary/5 p-4 rounded-lg">
                     <div className="flex items-center mb-2">
-                      <Building className="h-4 w-4 text-cyan-600 mr-2" />
+                      <Building className="h-4 w-4 text-primary mr-2" />
                       <div className="font-medium">{reference.customer}</div>
                     </div>
                     <div className="flex justify-between text-sm">
                       <div className="flex items-center">
-                        <Calendar className="h-3 w-3 text-cyan-600 mr-1" />
+                        <Calendar className="h-3 w-3 text-primary mr-1" />
                         <span>Seit: {reference.since}</span>
                       </div>
-                      <Badge className="bg-cyan-100 text-cyan-800">
+                      <Badge className="bg-primary/10 text-primary">
                         {reference.industry}
                       </Badge>
                     </div>
@@ -676,7 +676,7 @@ const SubcontractorDetailPage: React.FC = () => {
               </div>
             ) : (
               <div className="text-center py-6">
-                <p className="text-gray-500">Keine Referenzen vorhanden</p>
+                <p className="text-muted-foreground">Keine Referenzen vorhanden</p>
               </div>
             )}
           </CardContent>
