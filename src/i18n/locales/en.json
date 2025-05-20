@@ -542,5 +542,9 @@
       "previousSlide": "Previous slide",
       "nextSlide": "Next slide"
     }
+  },
+  "srm": {
+    "title": "Subcontractor Relationship Management",
+    "description": "Manage your subcontractor relationships and pipeline"
   }
 }

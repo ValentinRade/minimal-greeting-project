@@ -72,7 +72,7 @@ function App() {
                   </ProtectedRoute>
                 } />
                 
-                {/* Direct CRM route - most accessible path */}
+                {/* Direct SRM route - most accessible path */}
                 <Route path="/shipper/crm" element={
                   <ProtectedRoute>
                     <AppLayout>
@@ -81,7 +81,7 @@ function App() {
                   </ProtectedRoute>
                 } />
                 
-                {/* Legacy CRM route path */}
+                {/* SRM route path */}
                 <Route path="/dashboard/shipper/crm" element={
                   <ProtectedRoute>
                     <AppLayout>

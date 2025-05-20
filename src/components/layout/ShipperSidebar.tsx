@@ -27,7 +27,7 @@ const ShipperSidebar: React.FC = () => {
     },
     { 
       icon: Contact, 
-      label: 'CRM', 
+      label: 'SRM', 
       path: '/dashboard/shipper/crm' 
     },
     { 
