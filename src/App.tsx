@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import CrmPage from "./pages/shipper/CrmPage";
 import SubcontractorDatabasePage from "./pages/shipper/SubcontractorDatabasePage";
 import TendersPage from "./pages/shipper/TendersPage";
+import SpotLoadsPage from "./pages/shipper/SpotLoadsPage"; // Import the new page
 
 // Settings pages
 import SettingsLayout from "./pages/settings/SettingsLayout";
@@ -85,6 +86,15 @@ function App() {
                   <ProtectedRoute>
                     <AppLayout>
                       <CrmPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                } />
+                
+                {/* Shipper Spot Loads route */}
+                <Route path="/dashboard/shipper/spot-loads" element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <SpotLoadsPage />
                     </AppLayout>
                   </ProtectedRoute>
                 } />

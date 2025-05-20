@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
-import { FileText, Truck, Plus, MessageSquare } from 'lucide-react';
+import { FileText, Truck, Plus, MessageSquare, Route } from 'lucide-react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
@@ -38,6 +38,10 @@ const ShipperDashboard = () => {
   const handleCreateTender = () => {
     navigate('/dashboard/shipper/tenders', { state: { createNew: true } });
   };
+  
+  const handleSpotLoads = () => {
+    navigate('/dashboard/shipper/spot-loads');
+  };
 
   return (
     <AppLayout>
@@ -50,7 +54,7 @@ const ShipperDashboard = () => {
         </div>
         
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="card-modern bg-gradient-primary border-0 overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-xl font-semibold text-white">{t('dashboard.tenders')}</CardTitle>
@@ -62,6 +66,20 @@ const ShipperDashboard = () => {
                 value={isLoadingTenders ? '...' : tenders?.length || 0}
                 isLoading={isLoadingTenders}
                 className="text-white"
+              />
+            </CardContent>
+          </Card>
+          
+          <Card className="card-modern">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-xl font-semibold">Spot-Ladungen</CardTitle>
+              <Route className="h-5 w-5 text-gray-500" />
+            </CardHeader>
+            <CardContent>
+              <Metric 
+                title="Verfügbare Spot-Ladungen"
+                value={6}
+                className="text-primary"
               />
             </CardContent>
           </Card>
@@ -88,6 +106,11 @@ const ShipperDashboard = () => {
             <Button onClick={handleCreateTender} className="gap-2">
               <Plus className="h-4 w-4" />
               {t('dashboard.createNewTender')}
+            </Button>
+            
+            <Button onClick={handleSpotLoads} variant="outline" className="gap-2">
+              <Route className="h-4 w-4" />
+              Spot-Ladungen verwalten
             </Button>
           </div>
         </div>
