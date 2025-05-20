@@ -47,9 +47,9 @@ const ShipperDashboard = () => {
     <AppLayout>
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold">{t('dashboard.shipperWelcome')}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold">Willkommen im Verlader-Dashboard</h1>
           <p className="text-gray-500 mt-1">
-            {t('dashboard.todayIsDate', { date: new Date().toLocaleDateString() })}
+            Heute ist der {new Date().toLocaleDateString('de-DE')}
           </p>
         </div>
         
@@ -57,12 +57,12 @@ const ShipperDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="card-modern bg-gradient-primary border-0 overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-xl font-semibold text-white">{t('dashboard.tenders')}</CardTitle>
+              <CardTitle className="text-xl font-semibold text-white">Ausschreibungen</CardTitle>
               <FileText className="h-5 w-5 text-white/70" />
             </CardHeader>
             <CardContent>
               <Metric 
-                title={t('dashboard.activeTenders')}
+                title="Aktive Ausschreibungen"
                 value={isLoadingTenders ? '...' : tenders?.length || 0}
                 isLoading={isLoadingTenders}
                 className="text-white"
@@ -86,12 +86,12 @@ const ShipperDashboard = () => {
           
           <Card className="card-modern">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-xl font-semibold">{t('dashboard.subcontractors')}</CardTitle>
+              <CardTitle className="text-xl font-semibold">Subunternehmer</CardTitle>
               <Truck className="h-5 w-5 text-gray-500" />
             </CardHeader>
             <CardContent>
               <Metric 
-                title={t('dashboard.registeredSubcontractors')}
+                title="Registrierte Subunternehmer"
                 value={isLoadingSubcontractors ? '...' : subcontractorsCount || 0}
                 isLoading={isLoadingSubcontractors}
               />
@@ -101,11 +101,11 @@ const ShipperDashboard = () => {
         
         {/* Quick Actions */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">{t('dashboard.quickActions')}</h2>
+          <h2 className="text-xl font-semibold mb-4">Schnellzugriff</h2>
           <div className="flex flex-wrap gap-3">
             <Button onClick={handleCreateTender} className="gap-2">
               <Plus className="h-4 w-4" />
-              {t('dashboard.createNewTender')}
+              Neue Ausschreibung erstellen
             </Button>
             
             <Button onClick={handleSpotLoads} variant="outline" className="gap-2">
@@ -120,16 +120,16 @@ const ShipperDashboard = () => {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>{t('dashboard.messages')}</CardTitle>
+                <CardTitle>Nachrichten</CardTitle>
                 <Button variant="outline" size="sm" className="gap-2">
                   <MessageSquare className="h-4 w-4" />
-                  {t('dashboard.viewAllMessages')}
+                  Alle Nachrichten anzeigen
                 </Button>
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-center py-10 text-muted-foreground border border-dashed rounded-md">
-                {t('dashboard.noNewMessages')}
+                Keine neuen Nachrichten
               </div>
             </CardContent>
           </Card>
