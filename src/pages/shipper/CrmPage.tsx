@@ -24,19 +24,23 @@ import {
 
 // Dummy-Daten für das Kanban-Board
 const initialCards = {
-  lead: [
+  interessent: [
     { id: 1, title: 'Media GmbH', description: 'Interessiert an Logistikdienstleistungen', priority: 'Hoch', contact: 'M. Müller', date: '2025-05-25' },
     { id: 2, title: 'TechCorp AG', description: 'Anfrage für regelmäßige Transporte', priority: 'Mittel', contact: 'S. Schmidt', date: '2025-05-26' },
   ],
-  contact: [
+  erstgespraech: [
     { id: 3, title: 'Furniture World', description: 'Preisanfrage für Möbeltransporte', priority: 'Hoch', contact: 'L. Weber', date: '2025-05-23' },
     { id: 4, title: 'SoftDev GmbH', description: 'Meeting vereinbart für nächste Woche', priority: 'Niedrig', contact: 'K. Fischer', date: '2025-05-30' },
   ],
-  proposal: [
+  bewerbung: [
     { id: 5, title: 'GreenTech Ltd.', description: 'Angebot für umweltfreundliche Logistik', priority: 'Mittel', contact: 'T. Becker', date: '2025-05-29' },
   ],
-  customer: [
+  ueberpruefung: [],
+  verhandlung: [
     { id: 6, title: 'MetalWorks Inc.', description: 'Bestehender Kunde seit 2024', priority: 'Hoch', contact: 'R. Hoffmann', date: '2025-06-01' },
+  ],
+  onhold: [],
+  vertrag: [
     { id: 7, title: 'EcoShipping AG', description: 'Vertrag bis Ende 2025', priority: 'Mittel', contact: 'C. Meyer', date: '2025-05-28' },
   ],
 };
@@ -66,7 +70,7 @@ const CrmPage: React.FC = () => {
           card.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           card.contact.toLowerCase().includes(searchQuery.toLowerCase());
         
-        const matchesPriority = selectedPriority === '' || card.priority === selectedPriority;
+        const matchesPriority = selectedPriority === 'all' || card.priority === selectedPriority;
         
         const matchesDate = selectedDate === '' || card.date === selectedDate;
         
@@ -79,12 +83,15 @@ const CrmPage: React.FC = () => {
   
   const filteredCards = getFilteredCards();
   
-  // Kanban Spalten-Konfiguration
+  // Kanban Spalten-Konfiguration mit den neuen Pipeline-Phasen
   const columns = [
-    { id: 'lead', title: 'Leads', color: 'bg-blue-500' },
-    { id: 'contact', title: 'Kontaktiert', color: 'bg-purple-500' },
-    { id: 'proposal', title: 'Angebot', color: 'bg-amber-500' },
-    { id: 'customer', title: 'Kunde', color: 'bg-green-500' },
+    { id: 'interessent', title: 'Interessent', color: 'bg-blue-500' },
+    { id: 'erstgespraech', title: 'Erstgespräch', color: 'bg-purple-500' },
+    { id: 'bewerbung', title: 'Bewerbung eingereicht', color: 'bg-cyan-500' },
+    { id: 'ueberpruefung', title: 'Überprüfung', color: 'bg-indigo-500' },
+    { id: 'verhandlung', title: 'Angebot / Verhandlung', color: 'bg-amber-500' },
+    { id: 'onhold', title: 'On Hold', color: 'bg-orange-500' },
+    { id: 'vertrag', title: 'Unter Vertrag', color: 'bg-green-500' },
   ];
   
   return (
@@ -152,58 +159,60 @@ const CrmPage: React.FC = () => {
         </CardContent>
       </Card>
       
-      {/* Kanban Board */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {columns.map((column) => (
-          <div key={column.id} className="flex flex-col h-full">
-            <div className={`${column.color} px-4 py-2 rounded-t-lg flex items-center justify-between`}>
-              <h3 className="font-semibold text-white">{column.title}</h3>
-              <Badge variant="secondary" className="bg-white bg-opacity-20">
-                {filteredCards[column.id].length}
-              </Badge>
-            </div>
-            
-            <div className="bg-slate-100 p-2 flex-grow rounded-b-lg min-h-[70vh] overflow-y-auto">
-              <div className="space-y-2">
-                {filteredCards[column.id].map((card) => (
-                  <Card key={card.id} className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardHeader className="p-4 pb-2">
-                      <div className="flex justify-between items-start">
-                        <CardTitle className="text-lg">{card.title}</CardTitle>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Bearbeiten</DropdownMenuItem>
-                            <DropdownMenuItem>Verschieben</DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">Löschen</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                      <CardDescription className="mt-1">{card.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0">
-                      <div className="text-sm">
-                        <span className="font-medium">Kontakt:</span> {card.contact}
-                      </div>
-                    </CardContent>
-                    <CardFooter className="p-4 pt-0 flex justify-between">
-                      <Badge variant="outline" className={priorityColors[card.priority]}>
-                        {card.priority}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">{card.date}</span>
-                    </CardFooter>
-                  </Card>
-                ))}
+      {/* Kanban Board mit horizontaler Scrollbar für die neuen sieben Spalten */}
+      <div className="overflow-x-auto pb-6">
+        <div className="grid grid-cols-7 gap-4" style={{ minWidth: '1400px' }}>
+          {columns.map((column) => (
+            <div key={column.id} className="flex flex-col h-full">
+              <div className={`${column.color} px-4 py-2 rounded-t-lg flex items-center justify-between`}>
+                <h3 className="font-semibold text-white">{column.title}</h3>
+                <Badge variant="secondary" className="bg-white bg-opacity-20">
+                  {filteredCards[column.id]?.length || 0}
+                </Badge>
+              </div>
+              
+              <div className="bg-slate-100 p-2 flex-grow rounded-b-lg min-h-[70vh] overflow-y-auto">
+                <div className="space-y-2">
+                  {filteredCards[column.id]?.map((card) => (
+                    <Card key={card.id} className="cursor-pointer hover:shadow-md transition-shadow">
+                      <CardHeader className="p-4 pb-2">
+                        <div className="flex justify-between items-start">
+                          <CardTitle className="text-lg">{card.title}</CardTitle>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem>Bearbeiten</DropdownMenuItem>
+                              <DropdownMenuItem>Verschieben</DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600">Löschen</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                        <CardDescription className="mt-1">{card.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-0">
+                        <div className="text-sm">
+                          <span className="font-medium">Kontakt:</span> {card.contact}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="p-4 pt-0 flex justify-between">
+                        <Badge variant="outline" className={priorityColors[card.priority]}>
+                          {card.priority}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">{card.date}</span>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
